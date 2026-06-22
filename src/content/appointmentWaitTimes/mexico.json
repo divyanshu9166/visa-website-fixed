@@ -1,0 +1,241 @@
+{
+  "country": "Mexico",
+  "slug": "mexico",
+  "countryCode": "MX",
+  "lastUpdated": "2026-06-22",
+  "dataSource": "seed",
+  "consulates": [
+    {
+      "name": "Mexico City",
+      "waitTimeB1B2": 268,
+      "waitTimeStudent": 94,
+      "waitTimeOther": 147,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 278
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 267
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 258
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 258
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 261
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 269
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 256
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 267
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 276
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 279
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 276
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 268
+        }
+      ]
+    },
+    {
+      "name": "Guadalajara",
+      "waitTimeB1B2": 326,
+      "waitTimeStudent": 114,
+      "waitTimeOther": 179,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 337
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 325
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 316
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 315
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 319
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 328
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 313
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 326
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 335
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 339
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 335
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 326
+        }
+      ]
+    },
+    {
+      "name": "Tijuana",
+      "waitTimeB1B2": 275,
+      "waitTimeStudent": 96,
+      "waitTimeOther": 151,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 284
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 274
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 267
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 266
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 269
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 276
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 264
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 274
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 282
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 285
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 282
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 275
+        }
+      ]
+    },
+    {
+      "name": "Ciudad Juarez",
+      "waitTimeB1B2": 246,
+      "waitTimeStudent": 86,
+      "waitTimeOther": 135,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 255
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 245
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 238
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 238
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 240
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 248
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 236
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 246
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 253
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 256
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 253
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 246
+        }
+      ]
+    }
+  ]
+}

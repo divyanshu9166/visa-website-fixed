@@ -1,0 +1,245 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { BULLETIN_COUNTRIES, WAIT_TIME_COUNTRIES } from '../../scripts/lib/formsConfig.mjs';
+
+const forms = await getCollection('processingTimes');
+
+const searchIndex = [
+  ...forms.map((f) => ({ label: `${f.data.visaLabel} (${f.data.formType})`, href: `/uscis-processing-times/${f.data.visaSlug}`, type: 'Processing Time' })),
+  ...BULLETIN_COUNTRIES.map((c) => ({ label: `Visa Bulletin — ${c.name}`, href: `/green-card/visa-bulletin/${c.slug}`, type: 'Visa Bulletin' })),
+  ...WAIT_TIME_COUNTRIES.map((c) => ({ label: `Appointment Wait Times — ${c.name}`, href: `/us-visa-appointment-wait-times/${c.slug}`, type: 'Wait Times' })),
+  { label: 'Priority Date Calculator', href: '/green-card/priority-date-calculator', type: 'Tool' },
+];
+
+const faqs = [
+  {
+    question: "How accurate are USCIS processing times?",
+    answer: "USCIS processing times are estimates based on historical data. They represent the time it took to complete 80% of adjudicated cases over the past six months. While helpful for benchmarking, individual cases may fall outside these ranges due to background checks, requests for evidence (RFE), or administrative delays."
+  },
+  {
+    question: "When does the Visa Bulletin update?",
+    answer: "The US State Department typically publishes the Visa Bulletin between the 8th and 15th of each month. It provides the priority dates for the upcoming month, determining who can submit their I-485 Adjustment of Status applications or receive final green card approval."
+  },
+  {
+    question: "What is the difference between Final Action Dates and Dates for Filing?",
+    answer: "Final Action Dates indicate when a green card can actually be approved and issued. Dates for Filing indicate when applicants living in the US can submit their I-485 applications to USCIS. USCIS announces each month which chart applicants must use."
+  },
+  {
+    question: "Why is the H1B to Green Card wait so long for Indian nationals?",
+    answer: "US immigration law limits any single country to no more than 7% of the total employment-based green cards issued each year. Because there are significantly more applicants from India than the annual cap allows, a massive backlog has accumulated, leading to wait times that can span decades for EB-2 and EB-3 categories."
+  }
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+---
+
+<Layout title="Track US Visa & Immigration Processing Times" description="Check the latest USCIS processing times and State Department Visa Bulletin dates for H1B, Green Card, and Citizenship applications.">
+	
+	<!-- JSON-LD FAQ Schema -->
+	<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+	<div class="relative py-24 overflow-hidden">
+		<!-- Subtle radial gradient background -->
+		<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neutral-100 via-white to-[#fafafa] -z-10"></div>
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+			<h1 class="text-5xl font-extrabold tracking-tighter sm:text-6xl lg:text-7xl mb-6 text-neutral-900">
+				Track US Visa & <br class="hidden sm:block"/> Immigration Wait Times
+			</h1>
+			<p class="text-xl max-w-2xl mx-auto text-neutral-500 font-medium mb-10">
+				Stay updated with the latest USCIS processing times and Visa Bulletin dates. 
+				Clean, accurate government data to help you understand your timeline.
+			</p>
+			<form id="hero-search-form" class="max-w-xl mx-auto relative">
+				<input
+					id="hero-search-input"
+					type="text"
+					autocomplete="off"
+					placeholder="Search a visa type, form number, or country..."
+					class="w-full px-5 py-4 pr-14 rounded-2xl border border-neutral-200 bg-white shadow-sm text-base focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 transition-colors"
+				/>
+				<button type="submit" aria-label="Search" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-neutral-900 rounded-xl flex items-center justify-center hover:bg-neutral-700 transition-colors">
+					<svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z" /></svg>
+				</button>
+				<div id="hero-search-results" class="hidden absolute z-20 left-0 right-0 mt-2 bg-white border border-neutral-200 rounded-xl shadow-lg overflow-hidden text-left"></div>
+			</form>
+			<div class="flex flex-wrap justify-center gap-2 mt-4 text-xs text-neutral-400">
+				<span>Popular:</span>
+				<a href="/uscis-processing-times/h1b-visa" class="hover:text-neutral-900 hover:underline">H-1B</a>
+				<span>&middot;</span>
+				<a href="/uscis-processing-times/i-485-eb" class="hover:text-neutral-900 hover:underline">I-485</a>
+				<span>&middot;</span>
+				<a href="/green-card/visa-bulletin/india" class="hover:text-neutral-900 hover:underline">Visa Bulletin India</a>
+				<span>&middot;</span>
+				<a href="/uscis-processing-times/h4-ead" class="hover:text-neutral-900 hover:underline">H4 EAD</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+		
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+			<!-- H1B Card -->
+			<a href="/uscis-processing-times/h1b-visa" class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:border-neutral-800 hover:shadow-md transition-all group">
+				<div class="w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center mb-5 group-hover:bg-neutral-900 transition-colors">
+					<svg class="w-5 h-5 text-neutral-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+				</div>
+				<h3 class="text-lg font-semibold text-neutral-900 mb-1 tracking-tight">H-1B Processing Times</h3>
+				<p class="text-neutral-500 text-sm">Form I-129 processing times by service center, with trend charts.</p>
+			</a>
+
+			<!-- Green Card Card -->
+			<a href="/green-card/visa-bulletin" class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:border-neutral-800 hover:shadow-md transition-all group">
+				<div class="w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center mb-5 group-hover:bg-neutral-900 transition-colors">
+					<svg class="w-5 h-5 text-neutral-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+				</div>
+				<h3 class="text-lg font-semibold text-neutral-900 mb-1 tracking-tight">Visa Bulletin</h3>
+				<p class="text-neutral-500 text-sm">Check priority dates and movement for various categories.</p>
+			</a>
+
+			<!-- Calculator Card -->
+			<a href="/green-card/priority-date-calculator" class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:border-neutral-800 hover:shadow-md transition-all group col-span-1 md:col-span-2 lg:col-span-1 border-emerald-200 bg-gradient-to-b from-white to-emerald-50">
+				<div class="w-10 h-10 bg-emerald-100 rounded-md flex items-center justify-center mb-5 group-hover:bg-emerald-600 transition-colors">
+					<svg class="w-5 h-5 text-emerald-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+				</div>
+				<h3 class="text-lg font-semibold text-neutral-900 mb-1 tracking-tight flex items-center gap-2">Priority Date Estimator <span class="bg-emerald-100 text-emerald-800 text-[10px] uppercase font-bold px-1.5 py-0.5 rounded">New</span></h3>
+				<p class="text-neutral-500 text-sm">Calculate an estimated wait time for your green card to become current.</p>
+			</a>
+
+			<!-- I-140 Card -->
+			<a href="/uscis-stats/i-140" class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:border-neutral-800 hover:shadow-md transition-all group">
+				<div class="w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center mb-5 group-hover:bg-neutral-900 transition-colors">
+					<svg class="w-5 h-5 text-neutral-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+				</div>
+				<h3 class="text-lg font-semibold text-neutral-900 mb-1 tracking-tight">I-140 Petitions</h3>
+				<p class="text-neutral-500 text-sm">Immigrant Petition for Alien Workers volume statistics.</p>
+			</a>
+
+			<!-- Citizenship Card -->
+			<a href="/uscis-processing-times/n-400" class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:border-neutral-800 hover:shadow-md transition-all group">
+				<div class="w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center mb-5 group-hover:bg-neutral-900 transition-colors">
+					<svg class="w-5 h-5 text-neutral-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg>
+				</div>
+				<h3 class="text-lg font-semibold text-neutral-900 mb-1 tracking-tight">Citizenship</h3>
+				<p class="text-neutral-500 text-sm">N-400 Application for Naturalization statistics.</p>
+			</a>
+
+			<!-- Appointment Wait Times Card -->
+			<a href="/us-visa-appointment-wait-times" class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:border-neutral-800 hover:shadow-md transition-all group">
+				<div class="w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center mb-5 group-hover:bg-neutral-900 transition-colors">
+					<svg class="w-5 h-5 text-neutral-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+				</div>
+				<h3 class="text-lg font-semibold text-neutral-900 mb-1 tracking-tight">Appointment Wait Times</h3>
+				<p class="text-neutral-500 text-sm">Visa interview wait times by country and consulate.</p>
+			</a>
+
+			<!-- Community Trackers Card -->
+			<a href="/uscis-trackers" class="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:border-neutral-800 hover:shadow-md transition-all group">
+				<div class="w-10 h-10 bg-neutral-100 rounded-md flex items-center justify-center mb-5 group-hover:bg-neutral-900 transition-colors">
+					<svg class="w-5 h-5 text-neutral-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4"></path></svg>
+				</div>
+				<h3 class="text-lg font-semibold text-neutral-900 mb-1 tracking-tight flex items-center gap-2">Community Trackers <span class="bg-emerald-100 text-emerald-800 text-[10px] uppercase font-bold px-1.5 py-0.5 rounded">New</span></h3>
+				<p class="text-neutral-500 text-sm">Submit your case, compare timelines with other applicants.</p>
+			</a>
+		</div>
+
+		<!-- Comprehensive SEO Text Section -->
+		<div class="mt-24">
+			<h2 class="text-3xl font-extrabold tracking-tight text-neutral-900 mb-6">Comprehensive Guide to US Visa Processing Times</h2>
+			<div class="prose prose-neutral max-w-none text-neutral-600 space-y-6">
+				<p>
+					Navigating the US immigration system can be an incredibly stressful and uncertain experience. Whether you are a skilled professional applying for an H-1B visa, an applicant anxiously awaiting your Green Card through the I-485 Adjustment of Status, or a permanent resident ready to apply for US Citizenship with the N-400 form, understanding <strong>USCIS processing times</strong> is vital to planning your future.
+				</p>
+				<p>
+					At US Visa Tracker, we aggregate the latest, most accurate data directly from official US government sources, including the Department of Homeland Security (DHS) and the US State Department. Our goal is to provide a clean, fast, and reliable platform where immigrants, expats, and legal professionals can view both current wait times and historical trends without wading through dense bureaucratic websites.
+				</p>
+				<h3 class="text-xl font-bold text-gray-800 mt-8 mb-4">Tracking the Visa Bulletin</h3>
+				<p>
+					For individuals in the employment-based (EB) and family-sponsored immigration queues, the monthly <strong>Visa Bulletin</strong> is the most important document published by the State Department. It determines priority dates—the place in line—for applicants from backlogged countries like India, China, Mexico, and the Philippines.
+				</p>
+				<p>
+					The bulletin features two critical charts: the <em>Final Action Dates</em> chart, which dictates when a Green Card can legally be issued, and the <em>Dates for Filing</em> chart, which indicates when applicants residing in the United States can submit their I-485 applications to USCIS and secure benefits like the Employment Authorization Document (EAD) and Advance Parole (AP). Our Visa Bulletin tracker simplifies these charts, highlighting the movement of priority dates so you can anticipate when your priority date will become current.
+				</p>
+				<h3 class="text-xl font-bold text-gray-800 mt-8 mb-4">Understanding USCIS Form Processing</h3>
+				<p>
+					USCIS processing times fluctuate significantly based on application volume, changes in immigration policy, and the specific Service Center (such as the California Service Center, Texas Service Center, or the National Benefits Center) handling your case.
+				</p>
+				<p>
+					For example, the <strong>Form I-140 (Immigrant Petition for Alien Worker)</strong> is the foundational step for employment-based green cards. While Premium Processing guarantees action within 15 days for a steep fee, regular processing can take anywhere from a few months to over a year. Once the I-140 is approved and your priority date is current, the final step is the <strong>I-485 Adjustment of Status</strong>. Wait times for the I-485 have varied wildly in recent years, heavily influenced by the requirement for in-person interviews and background checks.
+				</p>
+				<h3 class="text-xl font-bold text-gray-800 mt-8 mb-4">Why Historical Trends Matter</h3>
+				<p>
+					Looking at a single snapshot of current processing times often paints an incomplete picture. By reviewing historical trends, applicants can gauge whether USCIS is speeding up or slowing down operations at specific service centers. Our historic trends analysis provides dynamic charts that plot the high and low estimates over the past 12 to 24 months. This transparency helps manage expectations, alerting you to sudden spikes in wait times and preventing unnecessary panic when a case takes longer than it did a year ago.
+				</p>
+				<p>
+					We built this tool strictly using publicly available government data. There are no hidden fees, no required accounts, and no need to hand over sensitive receipt numbers. Just transparent, easy-to-read data to help you navigate your US immigration journey with confidence.
+				</p>
+			</div>
+		</div>
+
+		<!-- FAQ Section -->
+		<div class="mt-24">
+			<h2 class="text-2xl font-bold tracking-tight text-neutral-900 mb-8">Frequently Asked Questions</h2>
+			<div class="space-y-4">
+				{faqs.map((faq) => (
+					<div class="bg-white border border-neutral-200 rounded-xl p-6 shadow-sm">
+						<h3 class="text-base font-semibold text-neutral-900 mb-2">{faq.question}</h3>
+						<p class="text-sm text-neutral-500">{faq.answer}</p>
+					</div>
+				))}
+			</div>
+		</div>
+
+	</div>
+</Layout>
+
+<script type="application/json" id="search-index-data" set:html={JSON.stringify(searchIndex)} />
+<script>
+  const data = JSON.parse(document.getElementById('search-index-data')?.textContent || '[]');
+  const input = document.getElementById('hero-search-input') as HTMLInputElement;
+  const results = document.getElementById('hero-search-results') as HTMLElement;
+  const form = document.getElementById('hero-search-form') as HTMLFormElement;
+
+  function render(query: string) {
+    if (!query.trim()) {
+      results.classList.add('hidden');
+      return;
+    }
+    const q = query.toLowerCase();
+    const matches = data.filter((d: any) => d.label.toLowerCase().includes(q)).slice(0, 8);
+    if (!matches.length) {
+      results.innerHTML = `<div class="px-4 py-3 text-sm text-neutral-400">No matches — try "H1B", "I-485", or a country name.</div>`;
+    } else {
+      results.innerHTML = matches.map((m: any) => `
+        <a href="${m.href}" class="flex items-center justify-between px-4 py-3 hover:bg-neutral-50 border-b border-neutral-100 last:border-0">
+          <span class="text-sm text-neutral-800 font-medium">${m.label}</span>
+          <span class="text-[10px] uppercase tracking-wide text-neutral-400 font-semibold">${m.type}</span>
+        </a>
+      `).join('');
+    }
+    results.classList.remove('hidden');
+  }
+
+  input?.addEventListener('input', () => render(input.value));
+  input?.addEventListener('focus', () => render(input.value));
+  document.addEventListener('click', (e) => {
+    if (!form.contains(e.target as Node)) results.classList.add('hidden');
+  });
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const first = results.querySelector('a');
+    if (first) window.location.href = (first as HTMLAnchorElement).href;
+  });
+</script>
+

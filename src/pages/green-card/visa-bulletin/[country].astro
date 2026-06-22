@@ -1,0 +1,147 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import VisaBulletinChart from '../../../components/VisaBulletinChart.astro';
+import FAQAccordion from '../../../components/FAQAccordion.astro';
+import { BULLETIN_COUNTRIES, BULLETIN_CATEGORIES } from '../../../../scripts/lib/formsConfig.mjs';
+
+export async function getStaticPaths() {
+  return BULLETIN_COUNTRIES.map((c) => ({
+    params: { country: c.slug },
+    props: { countryMeta: c },
+  }));
+}
+
+const { countryMeta } = Astro.props;
+const allData = await getCollection('visaBulletin');
+const countryData = allData.filter((d) => d.data.country === countryMeta.name);
+
+const months = [...new Set(countryData.map((d) => d.data.month))].sort();
+const latestMonth = months[months.length - 1];
+const prevMonth = months[months.length - 2];
+
+const categories = BULLETIN_CATEGORIES.map((cat) => {
+  const history = countryData
+    .filter((d) => d.data.category === cat)
+    .sort((a, b) => a.data.month.localeCompare(b.data.month))
+    .map((d) => d.data);
+  const latest = history.find((h) => h.month === latestMonth);
+  const prev = history.find((h) => h.month === prevMonth);
+
+  let movementDays: number | null = null;
+  if (latest && prev && latest.finalActionDate !== 'C' && prev.finalActionDate !== 'C' && latest.finalActionDate && prev.finalActionDate) {
+    movementDays = Math.round((new Date(latest.finalActionDate).getTime() - new Date(prev.finalActionDate).getTime()) / 86400000);
+  }
+
+  return { cat, history, latest, movementDays };
+}).filter((c) => c.history.length > 0);
+
+const formattedMonth = latestMonth
+  ? new Date(`${latestMonth}-01T00:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+  : '';
+
+const faqs = [
+  {
+    q: `Why is the green card backlog for ${countryMeta.name} so long?`,
+    a: 'US immigration law caps any single country of birth at no more than 7% of total annual employment-based green cards. When demand from one country far exceeds that 7% share, a backlog accumulates for applicants born there, regardless of when their employer filed the petition.',
+  },
+  {
+    q: 'What is the difference between Final Action Date and Date for Filing?',
+    a: 'Final Action Date is the cutoff USCIS uses to actually approve a green card. Date for Filing is an earlier, more lenient cutoff that determines when applicants already in the US can submit Form I-485. USCIS announces each month which chart to use for filing.',
+  },
+  {
+    q: `How is the wait time for ${countryMeta.name} estimated?`,
+    a: 'The estimate on this page extrapolates the recent average pace ("velocity") at which the Final Action Date has moved forward, then projects how long it would take to reach your specific priority date at that same pace. Visa Bulletin movement is not linear and can stall or retrogress.',
+  },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  name: `Visa Bulletin — ${countryMeta.name}`,
+  description: `Employment-based Visa Bulletin Final Action Dates and Dates for Filing history for applicants born in ${countryMeta.name}.`,
+  creator: { "@type": "Organization", name: "U.S. Department of State" },
+};
+---
+
+<Layout title={`Green Card Visa Bulletin — ${countryMeta.name} [${formattedMonth}]`} description={`Track Visa Bulletin Final Action Dates and Dates for Filing for ${countryMeta.name}-born applicants across EB-1 through EB-5, with 24-month movement charts.`}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'Visa Bulletin', href: '/green-card/visa-bulletin' },
+      { label: countryMeta.name },
+    ]} />
+
+    <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-2">Green Card Visa Bulletin — {countryMeta.name}</h1>
+    <p class="text-lg text-neutral-500 mb-10">{formattedMonth} Final Action Dates and Dates for Filing, by employment-based category.</p>
+
+    <!-- Current month summary table -->
+    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden mb-6">
+      <table class="min-w-full divide-y divide-neutral-200 text-sm">
+        <thead class="bg-neutral-50">
+          <tr>
+            <th class="px-6 py-3 text-left font-semibold text-neutral-900 uppercase tracking-wider text-xs">Category</th>
+            <th class="px-6 py-3 text-left font-semibold text-neutral-900 uppercase tracking-wider text-xs">Final Action Date</th>
+            <th class="px-6 py-3 text-left font-semibold text-neutral-900 uppercase tracking-wider text-xs">Date for Filing</th>
+            <th class="px-6 py-3 text-left font-semibold text-neutral-900 uppercase tracking-wider text-xs">Monthly Movement</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-neutral-100">
+          {categories.map(({ cat, latest, movementDays }) => (
+            <tr class="hover:bg-neutral-50/50 transition-colors">
+              <td class="px-6 py-4 font-medium text-neutral-900">{cat}</td>
+              <td class="px-6 py-4">
+                <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${latest?.finalActionDate === 'C' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
+                  {latest?.finalActionDate === 'C' ? 'Current' : latest?.finalActionDate || '—'}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${latest?.dateForFiling === 'C' ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-800'}`}>
+                  {latest?.dateForFiling === 'C' ? 'Current' : latest?.dateForFiling || '—'}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                {movementDays === null ? (
+                  <span class="text-neutral-400">—</span>
+                ) : movementDays > 0 ? (
+                  <span class="text-green-700 font-medium">+{movementDays} days</span>
+                ) : movementDays < 0 ? (
+                  <span class="text-red-700 font-medium">{movementDays} days (retrogressed)</span>
+                ) : (
+                  <span class="text-neutral-500">No change</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <a href={`/green-card/priority-date-calculator?country=${countryMeta.slug}`} class="block bg-emerald-50 border border-emerald-200 rounded-xl p-5 mb-12 hover:bg-emerald-100 transition-all">
+      <p class="text-sm text-emerald-800"><strong>Have a priority date?</strong> Use the Priority Date Estimator to project when your category may become current. <span class="font-medium underline">Open calculator &rarr;</span></p>
+    </a>
+
+    <!-- Per-category charts -->
+    <div class="space-y-8 mb-12">
+      {categories.filter((c) => c.history.length > 1).map(({ cat, history }) => (
+        <VisaBulletinChart title={`${cat} — ${countryMeta.name} (24-month trend)`} history={history} />
+      ))}
+    </div>
+
+    <div class="prose prose-neutral max-w-none text-neutral-600 bg-neutral-50 p-8 rounded-2xl border border-neutral-200 mb-4">
+      <h3 class="text-lg font-bold text-neutral-900 mt-0">About {countryMeta.name}'s Visa Bulletin Backlog</h3>
+      <p class="text-sm leading-relaxed">
+        This page tracks Final Action Dates and Dates for Filing published monthly by the U.S. Department of State for applicants
+        born in {countryMeta.name}. Per-country annual caps mean high-demand countries like India and China see significantly
+        longer waits in the employment-based categories than the rest of the world. The charts above show how each category's
+        cutoff date has moved over the trailing 24 months — useful for judging whether your category is moving forward, stalled,
+        or retrogressing.
+      </p>
+    </div>
+
+    <FAQAccordion faqs={faqs} title={`${countryMeta.name} Visa Bulletin FAQs`} />
+  </div>
+</Layout>

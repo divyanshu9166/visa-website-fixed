@@ -1,0 +1,67 @@
+{
+  "country": "Jamaica",
+  "slug": "jamaica",
+  "countryCode": "JM",
+  "lastUpdated": "2026-06-22",
+  "dataSource": "seed",
+  "consulates": [
+    {
+      "name": "Kingston",
+      "waitTimeB1B2": 72,
+      "waitTimeStudent": 25,
+      "waitTimeOther": 40,
+      "hasEmergencyAppointments": false,
+      "notes": "",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 52
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 50
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 48
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 48
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 49
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 50
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 69
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 72
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 73
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 74
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 73
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 72
+        }
+      ]
+    }
+  ]
+}

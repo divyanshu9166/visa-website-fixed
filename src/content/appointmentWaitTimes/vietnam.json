@@ -1,0 +1,125 @@
+{
+  "country": "Vietnam",
+  "slug": "vietnam",
+  "countryCode": "VN",
+  "lastUpdated": "2026-06-22",
+  "dataSource": "seed",
+  "consulates": [
+    {
+      "name": "Ho Chi Minh City",
+      "waitTimeB1B2": 86,
+      "waitTimeStudent": 30,
+      "waitTimeOther": 47,
+      "hasEmergencyAppointments": false,
+      "notes": "",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 90
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 86
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 83
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 83
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 84
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 87
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 83
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 86
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 89
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 90
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 89
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 86
+        }
+      ]
+    },
+    {
+      "name": "Hanoi",
+      "waitTimeB1B2": 86,
+      "waitTimeStudent": 30,
+      "waitTimeOther": 47,
+      "hasEmergencyAppointments": false,
+      "notes": "",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 89
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 86
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 83
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 83
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 84
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 86
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 82
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 86
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 88
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 89
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 88
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 86
+        }
+      ]
+    }
+  ]
+}

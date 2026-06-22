@@ -1,0 +1,257 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+// Fetch the static visa bulletin data
+const bulletinData = await getCollection('visaBulletin');
+
+// Process data for the client
+// Sort by month ascending so the latest is last
+bulletinData.sort((a, b) => a.data.month.localeCompare(b.data.month));
+
+// Get unique categories and countries for the dropdowns
+const categories = [...new Set(bulletinData.map(b => b.data.category))].sort();
+const countries = [...new Set(bulletinData.map(b => b.data.country))].sort();
+
+// Serialize the data for client-side JS
+const historicalData = bulletinData.map(b => ({
+  month: b.data.month,
+  category: b.data.category,
+  country: b.data.country,
+  finalActionDate: b.data.finalActionDate
+}));
+---
+
+<Layout title="Priority Date Calculator & Estimator" description="Estimate when your US Green Card priority date may become current based on historical Visa Bulletin movement.">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="mb-10 text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-4">Priority Date Estimator</h1>
+      <p class="text-lg text-neutral-500">Calculate an estimated wait time for your green card based on the latest Visa Bulletin movement trends.</p>
+    </div>
+
+    <!-- Calculator Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-8 mb-12">
+      <form id="calculator-form" class="space-y-6">
+        <div>
+          <label for="priorityDate" class="block text-sm font-semibold text-neutral-900 mb-2">1. Your Priority Date</label>
+          <input type="date" id="priorityDate" required class="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 transition-colors bg-neutral-50" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label for="category" class="block text-sm font-semibold text-neutral-900 mb-2">2. Visa Category</label>
+            <select id="category" required class="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 transition-colors bg-neutral-50 appearance-none">
+              <option value="" disabled selected>Select Category...</option>
+              {categories.map(cat => (
+                <option value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label for="country" class="block text-sm font-semibold text-neutral-900 mb-2">3. Country of Birth</label>
+            <select id="country" required class="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 transition-colors bg-neutral-50 appearance-none">
+              <option value="" disabled selected>Select Country...</option>
+              {countries.map(country => (
+                <option value={country}>{country}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <button type="submit" class="w-full bg-neutral-900 text-white font-bold py-4 rounded-xl shadow-md hover:-translate-y-0.5 hover:shadow-lg transition-all focus:outline-none focus:ring-4 focus:ring-neutral-200">
+            Calculate Estimate
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section" class="hidden transform transition-all duration-500 opacity-0 translate-y-4">
+      <div class="bg-neutral-900 rounded-2xl p-8 text-white text-center shadow-xl mb-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neutral-800 via-neutral-900 to-black -z-10"></div>
+        <h2 class="text-xl font-medium text-neutral-300 mb-2">Estimated Time Remaining</h2>
+        <div id="wait-time" class="text-5xl font-black tracking-tighter mb-4 text-emerald-400">
+          Calculating...
+        </div>
+        <p id="target-date" class="text-lg text-neutral-400">
+          Projected to be current around <strong>--</strong>
+        </p>
+      </div>
+
+      <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 text-sm text-blue-900">
+        <strong class="font-semibold text-blue-950 flex items-center gap-2 mb-2">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          How we calculate this
+        </strong>
+        <p class="leading-relaxed">
+          We look at the <strong>Final Action Date</strong> for your selected category and country over the last few months. We calculate the average "velocity" (how many days the cutoff date moves forward per calendar month) and extrapolate that pace to estimate when the cutoff will surpass your Priority Date.
+        </p>
+      </div>
+    </div>
+    
+    <div class="mt-12 text-center text-xs text-neutral-400 max-w-2xl mx-auto">
+      <strong>Disclaimer:</strong> This tool provides estimates based on historical mathematical averages. The Visa Bulletin is subject to retrogression, demand fluctuations, and congressional policy changes. Do not use this for legal decisions. We are not affiliated with the State Department or USCIS.
+    </div>
+
+  </div>
+</Layout>
+
+<!-- Serialize the data safely for client-side use -->
+<script id="bulletin-data" type="application/json" set:html={JSON.stringify(historicalData)}></script>
+
+<script>
+  const form = document.getElementById('calculator-form') as HTMLFormElement;
+  const resultsSection = document.getElementById('results-section') as HTMLElement;
+  const waitTimeEl = document.getElementById('wait-time') as HTMLElement;
+  const targetDateEl = document.getElementById('target-date') as HTMLElement;
+
+  // Preselect country if linked from a Visa Bulletin country page (?country=india)
+  const params = new URLSearchParams(window.location.search);
+  const countryParam = params.get('country');
+  if (countryParam) {
+    const countrySelect = document.getElementById('country') as HTMLSelectElement;
+    const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    for (const opt of Array.from(countrySelect.options)) {
+      if (slugify(opt.value) === countryParam || slugify(opt.value).includes(countryParam)) {
+        countrySelect.value = opt.value;
+        break;
+      }
+    }
+  }
+  
+  // Parse injected JSON data
+  const rawData = document.getElementById('bulletin-data')?.textContent || "[]";
+  const history = JSON.parse(rawData);
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const priorityDateInput = document.getElementById('priorityDate') as HTMLInputElement;
+      const categorySelect = document.getElementById('category') as HTMLSelectElement;
+      const countrySelect = document.getElementById('country') as HTMLSelectElement;
+
+      const priorityDateStr = priorityDateInput.value;
+      const category = categorySelect.value;
+      const country = countrySelect.value;
+      
+      if (!priorityDateStr || !category || !country) return;
+      
+      const pd = new Date(priorityDateStr);
+      
+      // Filter history for the selected category and country
+      const targetHistory = history.filter((h: any) => h.category === category && h.country === country);
+      
+      if (targetHistory.length < 2) {
+        showError("Not enough historical data to calculate velocity for this category.");
+        return;
+      }
+
+      // Get latest FAD
+      const latestRecord = targetHistory[targetHistory.length - 1];
+      const oldestRecord = targetHistory[0]; // To calculate velocity over the available dataset
+      
+      // If it's "C" (Current), wait time is 0
+      if (latestRecord.finalActionDate === 'C' || latestRecord.finalActionDate === 'Current') {
+        showResult("Current!", "Your priority date is already current.");
+        return;
+      }
+      
+      if (!latestRecord.finalActionDate) {
+        showError("Data unavailable for the latest month.");
+        return;
+      }
+
+      const latestFAD = new Date(latestRecord.finalActionDate);
+      const oldestFAD = new Date(oldestRecord.finalActionDate);
+      
+      // If user's PD is older than the latest FAD, it's current!
+      if (pd <= latestFAD) {
+        showResult("Current!", "Your priority date is already current according to the latest bulletin.");
+        return;
+      }
+      
+      // Calculate velocity (FAD days moved per calendar days elapsed)
+      // We look at the difference between the oldest record's FAD and latest record's FAD
+      const fadDiffMs = latestFAD.getTime() - oldestFAD.getTime();
+      
+      const latestMonthDate = new Date(latestRecord.month + '-01');
+      const oldestMonthDate = new Date(oldestRecord.month + '-01');
+      const calendarDiffMs = latestMonthDate.getTime() - oldestMonthDate.getTime();
+      
+      if (calendarDiffMs <= 0 || fadDiffMs <= 0) {
+        // Retrogression or stagnant
+        showError("Cutoff dates are stagnant or retrogressing. Cannot estimate a reliable timeline right now.");
+        return;
+      }
+      
+      // Velocity: For every 1 calendar day, FAD moves by `velocity` days
+      const velocity = fadDiffMs / calendarDiffMs;
+      
+      // Gap between user's PD and latest FAD
+      const gapMs = pd.getTime() - latestFAD.getTime();
+      
+      // Estimated calendar days required to close the gap
+      const estimatedWaitMs = gapMs / velocity;
+      const estimatedWaitDays = Math.ceil(estimatedWaitMs / (1000 * 60 * 60 * 24));
+      
+      if (estimatedWaitDays < 0) {
+        showResult("Current!", "Your priority date is already current.");
+        return;
+      }
+
+      // Calculate years and months
+      const years = Math.floor(estimatedWaitDays / 365);
+      const months = Math.floor((estimatedWaitDays % 365) / 30);
+      
+      let timeString = "";
+      if (years > 0) timeString += `${years} Year${years > 1 ? 's' : ''} `;
+      if (months > 0 || years === 0) timeString += `${months} Month${months !== 1 ? 's' : ''}`;
+      
+      // Calculate target date
+      const targetDateObj = new Date();
+      targetDateObj.setDate(targetDateObj.getDate() + estimatedWaitDays);
+      const targetMonthYear = targetDateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      showResult(`~ ${timeString.trim()}`, `Projected to be current around <strong>${targetMonthYear}</strong>`);
+    });
+  }
+  
+  function showResult(waitText: string, dateTextHtml: string) {
+    if (waitTimeEl) {
+      waitTimeEl.textContent = waitText;
+      waitTimeEl.className = "text-5xl font-black tracking-tighter mb-4 text-emerald-400";
+    }
+    if (targetDateEl) {
+      targetDateEl.innerHTML = dateTextHtml;
+    }
+    
+    if (resultsSection) {
+      resultsSection.classList.remove('hidden');
+      // small timeout to allow display:block to apply before animating opacity
+      setTimeout(() => {
+        resultsSection.classList.remove('opacity-0', 'translate-y-4');
+        resultsSection.classList.add('opacity-100', 'translate-y-0');
+      }, 10);
+    }
+  }
+  
+  function showError(msg: string) {
+    if (waitTimeEl) {
+      waitTimeEl.textContent = "Unpredictable";
+      waitTimeEl.className = "text-4xl font-black tracking-tighter mb-4 text-amber-400";
+    }
+    if (targetDateEl) {
+      targetDateEl.innerHTML = msg;
+    }
+    
+    if (resultsSection) {
+      resultsSection.classList.remove('hidden');
+      setTimeout(() => {
+        resultsSection.classList.remove('opacity-0', 'translate-y-4');
+        resultsSection.classList.add('opacity-100', 'translate-y-0');
+      }, 10);
+    }
+  }
+</script>

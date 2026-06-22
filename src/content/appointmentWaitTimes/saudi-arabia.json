@@ -1,0 +1,125 @@
+{
+  "country": "Saudi Arabia",
+  "slug": "saudi-arabia",
+  "countryCode": "SA",
+  "lastUpdated": "2026-06-22",
+  "dataSource": "seed",
+  "consulates": [
+    {
+      "name": "Riyadh",
+      "waitTimeB1B2": 64,
+      "waitTimeStudent": 22,
+      "waitTimeOther": 35,
+      "hasEmergencyAppointments": false,
+      "notes": "",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 67
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 64
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 62
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 62
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 63
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 65
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 62
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 64
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 66
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 67
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 66
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 64
+        }
+      ]
+    },
+    {
+      "name": "Jeddah",
+      "waitTimeB1B2": 79,
+      "waitTimeStudent": 28,
+      "waitTimeOther": 43,
+      "hasEmergencyAppointments": false,
+      "notes": "",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 81
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 78
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 76
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 76
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 77
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 79
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 76
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 78
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 80
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 81
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 81
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 79
+        }
+      ]
+    }
+  ]
+}

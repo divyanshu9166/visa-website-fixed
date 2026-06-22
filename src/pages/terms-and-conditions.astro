@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Terms and Conditions" description="Terms and Conditions for using US Visa Tracker.">
+	<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+		<h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-8">Terms and Conditions</h1>
+		<div class="prose prose-neutral max-w-none text-neutral-600">
+			<p><strong>Effective Date:</strong> {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+			
+			<h2>1. Acceptance of Terms</h2>
+			<p>By accessing and using US Visa Tracker ("we", "our", or "us"), you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.</p>
+
+			<h2>2. Description of Service</h2>
+			<p>US Visa Tracker provides aggregated data and historical processing trends based on public information from the United States Citizenship and Immigration Services (USCIS) and the US Department of State. We are not a law firm, nor are we affiliated with the US government.</p>
+
+			<h2>3. Disclaimer of Liability</h2>
+			<p>The information provided on this website does not, and is not intended to, constitute legal advice. All information, content, and materials available on this site are for general informational purposes only. Information on this website may not constitute the most up-to-date legal or other information. We disclaim any liability for errors or omissions.</p>
+
+			<h2>4. External Links</h2>
+			<p>This website contains links to other third-party websites. Such links are only for the convenience of the reader, user, or browser. US Visa Tracker does not recommend or endorse the contents of the third-party sites.</p>
+
+			<h2>5. Modifications</h2>
+			<p>We reserve the right to modify these Terms and Conditions at any time. Your continued use of the website following any changes signifies your acceptance of those changes.</p>
+		</div>
+	</div>
+</Layout>

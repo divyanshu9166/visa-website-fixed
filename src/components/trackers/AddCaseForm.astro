@@ -1,0 +1,123 @@
+---
+interface FieldMeta {
+  key: string;
+  label: string;
+  type: string;
+  options?: string[];
+  required?: boolean;
+}
+
+interface Props {
+  instanceId: string;
+  table: string;
+  fields: FieldMeta[];
+}
+
+const { instanceId, table, fields } = Astro.props;
+---
+
+<div class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 md:p-8" data-addcase-root={instanceId} data-table={table}>
+  <div data-state="loading" class="text-sm text-neutral-400">Checking sign-in status…</div>
+
+  <div data-state="signed-out" class="hidden text-center py-4">
+    <h3 class="font-bold text-neutral-900 mb-2">Have a case to share?</h3>
+    <p class="text-sm text-neutral-500 mb-5">Sign in to submit your case and help other applicants benchmark their timeline.</p>
+    <a href="/login" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-neutral-900 text-white text-sm font-semibold hover:bg-neutral-700 transition-colors">Sign In to Add Your Case</a>
+  </div>
+
+  <div data-state="not-configured" class="hidden text-center py-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-5">
+    Community submissions aren't connected to a database yet on this deployment. Add a <code class="bg-white px-1 py-0.5 rounded border border-amber-200">DATABASE_URL</code> (see <code class="bg-white px-1 py-0.5 rounded border border-amber-200">prisma/schema.prisma</code> and the README) to enable it. The charts and table above are running on demo data in the meantime.
+  </div>
+
+  <form data-state="signed-in" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <h3 class="font-bold text-neutral-900 sm:col-span-2 mb-1">Add Your Case</h3>
+    {fields.map((f) => (
+      <div class={f.type === 'boolean' ? 'flex items-center gap-2 pt-6' : ''}>
+        {f.type !== 'boolean' && <label class="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wide">{f.label}{f.required && ' *'}</label>}
+        {f.type === 'select' && (
+          <select name={f.key} required={f.required} class="w-full px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm focus:ring-2 focus:ring-neutral-900">
+            <option value="">Select…</option>
+            {f.options?.map((opt) => <option value={opt}>{opt}</option>)}
+          </select>
+        )}
+        {f.type === 'date' && <input type="date" name={f.key} required={f.required} class="w-full px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm focus:ring-2 focus:ring-neutral-900" />}
+        {f.type === 'number' && <input type="number" name={f.key} required={f.required} class="w-full px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm focus:ring-2 focus:ring-neutral-900" />}
+        {f.type === 'text' && <input type="text" name={f.key} required={f.required} class="w-full px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm focus:ring-2 focus:ring-neutral-900" />}
+        {f.type === 'boolean' && (
+          <label class="flex items-center gap-2 text-sm text-neutral-700">
+            <input type="checkbox" name={f.key} class="w-4 h-4 rounded border-neutral-300" /> {f.label}
+          </label>
+        )}
+      </div>
+    ))}
+    <button type="submit" class="sm:col-span-2 mt-2 bg-neutral-900 text-white font-semibold py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-md transition-all">Submit Case</button>
+    <p data-form-msg class="sm:col-span-2 text-sm hidden"></p>
+  </form>
+</div>
+
+<script define:vars={{ instanceId, fieldKeys: fields.map((f) => f.key) }}>
+  window[`__addcase_${instanceId}_fields`] = fieldKeys;
+</script>
+
+<script>
+  import { getSession } from '../../lib/auth';
+
+  document.querySelectorAll<HTMLElement>('[data-addcase-root]').forEach(async (root) => {
+    const instanceId = root.getAttribute('data-addcase-root')!;
+    const table = root.getAttribute('data-table')!;
+    const loading = root.querySelector('[data-state="loading"]') as HTMLElement;
+    const signedOut = root.querySelector('[data-state="signed-out"]') as HTMLElement;
+    const notConfigured = root.querySelector('[data-state="not-configured"]') as HTMLElement;
+    const form = root.querySelector('[data-state="signed-in"]') as HTMLFormElement;
+
+    const show = (el: HTMLElement | null) => {
+      [loading, signedOut, notConfigured, form].forEach((e) => e?.classList.add('hidden'));
+      el?.classList.remove('hidden');
+    };
+
+    let user;
+    try {
+      user = await getSession();
+    } catch {
+      show(notConfigured);
+      return;
+    }
+
+    if (!user) {
+      show(signedOut);
+      return;
+    }
+    show(form);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = form.querySelector('[data-form-msg]') as HTMLElement;
+      const fieldKeys: string[] = (window as any)[`__addcase_${instanceId}_fields`] || [];
+      const formData = new FormData(form);
+      const payload: Record<string, any> = {};
+      for (const key of fieldKeys) {
+        const el = form.elements.namedItem(key) as HTMLInputElement | null;
+        if (!el) continue;
+        payload[key] = el.type === 'checkbox' ? el.checked : (formData.get(key) || null);
+      }
+
+      msg.classList.remove('hidden');
+      try {
+        const res = await fetch(`/api/trackers/${table}`, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+        msg.className = 'sm:col-span-2 text-sm text-green-600';
+        msg.textContent = 'Case submitted! Refresh the page to see it in the table above.';
+        form.reset();
+      } catch (err: any) {
+        msg.className = 'sm:col-span-2 text-sm text-red-600';
+        msg.textContent = `Couldn't save your case: ${err.message}`;
+      }
+    });
+  });
+</script>

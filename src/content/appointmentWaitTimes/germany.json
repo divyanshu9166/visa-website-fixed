@@ -1,0 +1,125 @@
+{
+  "country": "Germany",
+  "slug": "germany",
+  "countryCode": "DE",
+  "lastUpdated": "2026-06-22",
+  "dataSource": "seed",
+  "consulates": [
+    {
+      "name": "Frankfurt",
+      "waitTimeB1B2": 37,
+      "waitTimeStudent": 13,
+      "waitTimeOther": 20,
+      "hasEmergencyAppointments": false,
+      "notes": "",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 39
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 37
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 36
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 36
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 36
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 37
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 35
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 37
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 38
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 39
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 38
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 37
+        }
+      ]
+    },
+    {
+      "name": "Berlin",
+      "waitTimeB1B2": 41,
+      "waitTimeStudent": 14,
+      "waitTimeOther": 23,
+      "hasEmergencyAppointments": false,
+      "notes": "",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 42
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 41
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 39
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 39
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 40
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 41
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 39
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 41
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 42
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 42
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 42
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 41
+        }
+      ]
+    }
+  ]
+}

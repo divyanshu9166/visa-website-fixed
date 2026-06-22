@@ -1,0 +1,152 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = "Track US Visa & Immigration Processing Times." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		
+		<!-- Open Graph / Social Meta Tags -->
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://usvisatracker.example.com/" />
+		
+		<!-- Google Analytics Placeholder -->
+		<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', 'G-XXXXXXXXXX');
+		</script> -->
+	</head>
+	<body class="bg-[#fafafa] text-neutral-900 font-sans antialiased min-h-screen flex flex-col selection:bg-neutral-200 selection:text-neutral-900">
+		<header class="bg-white/80 backdrop-blur-md border-b border-neutral-200 sticky top-0 z-10 transition-colors">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="flex justify-between items-center h-16">
+					<div class="flex-shrink-0 flex items-center">
+						<a href="/" class="text-xl font-bold tracking-tighter text-neutral-900 hover:text-neutral-600 transition-colors">US Visa Tracker</a>
+					</div>
+					<nav class="hidden md:flex space-x-5 items-center">
+						<a href="/uscis-processing-times" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Processing Times</a>
+						<a href="/green-card/visa-bulletin" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Visa Bulletin</a>
+						<a href="/us-visa-appointment-wait-times" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Wait Times</a>
+						<a href="/uscis-trackers" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Trackers</a>
+						<a href="/green-card/priority-date-calculator" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">PD Calculator</a>
+						<span class="text-neutral-300">|</span>
+						<a href="/login" id="nav-auth-link" class="text-neutral-900 px-3 py-1.5 rounded-lg text-sm font-semibold border border-neutral-200 hover:bg-neutral-50 transition-colors">Sign In</a>
+					</nav>
+					<button id="mobile-menu-btn" class="md:hidden p-2 text-neutral-700" aria-label="Open menu" aria-expanded="false">
+						<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+					</button>
+				</div>
+			</div>
+			<nav id="mobile-menu" class="hidden md:hidden border-t border-neutral-200 bg-white">
+				<div class="px-4 py-3 flex flex-col space-y-1">
+					<a href="/uscis-processing-times" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Processing Times</a>
+					<a href="/green-card/visa-bulletin" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Visa Bulletin</a>
+					<a href="/us-visa-appointment-wait-times" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Appointment Wait Times</a>
+					<a href="/uscis-trackers" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Community Trackers</a>
+					<a href="/green-card/priority-date-calculator" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">PD Calculator</a>
+					<a href="/uscis-stats/historic-trends" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Historic Trends</a>
+					<a href="/login" class="text-neutral-900 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-semibold">Sign In</a>
+					<a href="/about-us" class="text-neutral-400 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">About</a>
+					<a href="/contact-us" class="text-neutral-400 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Contact</a>
+				</div>
+			</nav>
+		</header>
+
+		<script>
+			const btn = document.getElementById('mobile-menu-btn');
+			const menu = document.getElementById('mobile-menu');
+			btn?.addEventListener('click', () => {
+				const isHidden = menu?.classList.contains('hidden');
+				menu?.classList.toggle('hidden');
+				btn.setAttribute('aria-expanded', String(!!isHidden));
+			});
+		</script>
+
+		<script>
+			import { getSession } from '../lib/auth';
+			const navAuthLink = document.getElementById('nav-auth-link') as HTMLAnchorElement | null;
+			if (navAuthLink) {
+				getSession().then((user) => {
+					if (user) {
+						navAuthLink.textContent = 'Dashboard';
+						navAuthLink.href = '/dashboard';
+					}
+				}).catch(() => {});
+			}
+		</script>
+
+		<main class="flex-grow">
+			<slot />
+		</main>
+
+		<footer class="bg-[#fafafa] mt-12 py-12 border-t border-neutral-200">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+				<div>
+					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">Processing Times</h4>
+					<ul class="space-y-2 text-sm text-neutral-500">
+						<li><a href="/uscis-processing-times/h1b-visa" class="hover:text-neutral-900">H-1B Visa</a></li>
+						<li><a href="/uscis-processing-times/i-140" class="hover:text-neutral-900">I-140</a></li>
+						<li><a href="/uscis-processing-times/i-485-eb" class="hover:text-neutral-900">I-485 (EB)</a></li>
+						<li><a href="/uscis-processing-times/n-400" class="hover:text-neutral-900">N-400 Citizenship</a></li>
+						<li><a href="/uscis-processing-times" class="hover:text-neutral-900">View all forms &rarr;</a></li>
+					</ul>
+				</div>
+				<div>
+					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">Green Card</h4>
+					<ul class="space-y-2 text-sm text-neutral-500">
+						<li><a href="/green-card/visa-bulletin/india" class="hover:text-neutral-900">Visa Bulletin — India</a></li>
+						<li><a href="/green-card/visa-bulletin/china" class="hover:text-neutral-900">Visa Bulletin — China</a></li>
+						<li><a href="/green-card/visa-bulletin" class="hover:text-neutral-900">All Countries</a></li>
+						<li><a href="/green-card/priority-date-calculator" class="hover:text-neutral-900">Priority Date Calculator</a></li>
+					</ul>
+				</div>
+				<div>
+					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">Appointments</h4>
+					<ul class="space-y-2 text-sm text-neutral-500">
+						<li><a href="/us-visa-appointment-wait-times/india" class="hover:text-neutral-900">India Wait Times</a></li>
+						<li><a href="/us-visa-appointment-wait-times/mexico" class="hover:text-neutral-900">Mexico Wait Times</a></li>
+						<li><a href="/us-visa-appointment-wait-times" class="hover:text-neutral-900">All Countries</a></li>
+						<li><a href="/uscis-trackers" class="hover:text-neutral-900">Community Trackers</a></li>
+					</ul>
+				</div>
+				<div>
+					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">Site</h4>
+					<ul class="space-y-2 text-sm text-neutral-500">
+						<li><a href="/login" class="hover:text-neutral-900">Sign In</a></li>
+						<li><a href="/about-us" class="hover:text-neutral-900">About Us</a></li>
+						<li><a href="/contact-us" class="hover:text-neutral-900">Contact Us</a></li>
+						<li><a href="/privacy-policy" class="hover:text-neutral-900">Privacy Policy</a></li>
+						<li><a href="/terms-and-conditions" class="hover:text-neutral-900">Terms &amp; Conditions</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-sm border-t border-neutral-200 pt-8">
+				<div class="mb-4 md:mb-0 text-center md:text-left">
+					<p class="mb-2 font-medium text-neutral-800">Not affiliated with USCIS, DHS, or the US State Department.</p>
+					<p class="text-neutral-500 max-w-md">Data is sourced from public government publications and updated regularly. For official information, always refer to uscis.gov and travel.state.gov.</p>
+				</div>
+			</div>
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-8 border-t border-neutral-200 text-center text-neutral-400 text-xs">
+				&copy; {new Date().getFullYear()} US Visa Tracker. All Rights Reserved.
+			</div>
+		</footer>
+	</body>
+</html>

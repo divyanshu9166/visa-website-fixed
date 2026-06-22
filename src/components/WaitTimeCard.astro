@@ -1,0 +1,44 @@
+---
+interface Props {
+  country: string;
+  slug: string;
+  countryCode: string;
+  fastest: number | null;
+  slowest: number | null;
+}
+
+const { country, slug, countryCode, fastest, slowest } = Astro.props;
+
+function badge(days: number | null) {
+  if (days === null) return { cls: 'bg-neutral-100 text-neutral-700', label: 'N/A' };
+  if (days < 60) return { cls: 'bg-green-100 text-green-800', label: `${days}d` };
+  if (days < 180) return { cls: 'bg-amber-100 text-amber-800', label: `${days}d` };
+  return { cls: 'bg-red-100 text-red-800', label: `${days}d` };
+}
+
+const b = badge(fastest);
+
+function flagEmoji(cc: string) {
+  if (!cc || cc.length !== 2) return '🌐';
+  return String.fromCodePoint(...[...cc.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)));
+}
+---
+
+<a href={`/us-visa-appointment-wait-times/${slug}`} class="block bg-white border border-neutral-200 rounded-xl p-5 hover:border-neutral-900 hover:shadow-md transition-all group">
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-2">
+      <span class="text-xl" aria-hidden="true">{flagEmoji(countryCode)}</span>
+      <h3 class="font-semibold text-neutral-900 group-hover:underline">{country}</h3>
+    </div>
+  </div>
+  <div class="flex items-center justify-between text-sm">
+    <span class="text-neutral-500">Fastest visitor visa wait</span>
+    <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${b.cls}`}>{b.label}</span>
+  </div>
+  {slowest !== null && slowest !== fastest && (
+    <div class="flex items-center justify-between text-sm mt-1.5">
+      <span class="text-neutral-500">Slowest post</span>
+      <span class="text-neutral-700 font-medium">{slowest}d</span>
+    </div>
+  )}
+</a>

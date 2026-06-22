@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import { SERVICE_CENTERS } from '../../../../scripts/lib/formsConfig.mjs';
+
+export async function getStaticPaths() {
+  return SERVICE_CENTERS.map((sc) => ({
+    params: { centerSlug: sc.slug },
+    props: { center: sc },
+  }));
+}
+
+const { center } = Astro.props;
+const forms = await getCollection('processingTimes');
+const formsAtCenter = forms.filter((f) => f.data.servicecenters.some((sc) => sc.slug === center.slug));
+---
+
+<Layout title={`${center.name} (${center.code}) — USCIS Processing Times`} description={`Every visa and green card form currently processed at the ${center.name}, with current USCIS processing time ranges.`}>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <Breadcrumb items={[
+      { label: 'Home', href: '/' },
+      { label: 'USCIS Processing Times', href: '/uscis-processing-times' },
+      { label: center.name },
+    ]} />
+
+    <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-2">{center.name}</h1>
+    <p class="text-lg text-neutral-500 mb-12">Service center code: <span class="font-semibold text-neutral-700">{center.code}</span> &middot; {formsAtCenter.length} form type{formsAtCenter.length === 1 ? '' : 's'} tracked</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {formsAtCenter.map((f) => {
+        const sc = f.data.servicecenters.find((s) => s.slug === center.slug)!;
+        const minOfMin = Math.min(...sc.cases.map((c) => c.minMonths));
+        const maxOfMax = Math.max(...sc.cases.map((c) => c.maxMonths));
+        return (
+          <a href={`/uscis-processing-times/${f.data.visaSlug}`} class="block bg-white border border-neutral-200 rounded-2xl p-6 hover:border-neutral-900 hover:shadow-md transition-all group">
+            <h3 class="text-lg font-bold text-neutral-900 group-hover:underline mb-1">{f.data.visaLabel}</h3>
+            <p class="text-sm text-neutral-500 mb-4">{f.data.formType}</p>
+            <p class="text-xl font-black tracking-tight text-neutral-900">{minOfMin}–{maxOfMax} <span class="text-sm font-medium text-neutral-500">months</span></p>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</Layout>

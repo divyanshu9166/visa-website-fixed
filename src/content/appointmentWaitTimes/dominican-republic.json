@@ -1,0 +1,67 @@
+{
+  "country": "Dominican Republic",
+  "slug": "dominican-republic",
+  "countryCode": "DO",
+  "lastUpdated": "2026-06-22",
+  "dataSource": "seed",
+  "consulates": [
+    {
+      "name": "Santo Domingo",
+      "waitTimeB1B2": 92,
+      "waitTimeStudent": 32,
+      "waitTimeOther": 51,
+      "hasEmergencyAppointments": false,
+      "notes": "",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 95
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 92
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 89
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 89
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 90
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 92
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 88
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 92
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 94
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 95
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 94
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 92
+        }
+      ]
+    }
+  ]
+}

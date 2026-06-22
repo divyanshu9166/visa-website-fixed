@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import WaitTimeCard from '../../components/WaitTimeCard.astro';
+
+const countries = await getCollection('appointmentWaitTimes');
+
+const rows = countries.map((c) => {
+  const waits = c.data.consulates.map((co) => co.waitTimeB1B2).filter((n): n is number => n !== null);
+  return {
+    country: c.data.country,
+    slug: c.data.slug,
+    countryCode: c.data.countryCode,
+    fastest: waits.length ? Math.min(...waits) : null,
+    slowest: waits.length ? Math.max(...waits) : null,
+  };
+}).sort((a, b) => a.country.localeCompare(b.country));
+
+const lastUpdated = countries.length ? countries[0].data.lastUpdated : null;
+---
+
+<Layout title="US Visa Appointment Wait Times by Country [2026]" description="Compare current US nonimmigrant visa interview appointment wait times by country and consulate, updated regularly from State Department data.">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Appointment Wait Times' }]} />
+
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-neutral-200 pb-6 mb-10">
+      <div>
+        <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-2">US Visa Appointment Wait Times</h1>
+        <p class="text-lg text-neutral-500">Visitor visa (B1/B2) interview wait times by country and consulate.</p>
+      </div>
+      {lastUpdated && (
+        <span class="inline-flex items-center gap-2 text-xs font-medium text-neutral-500 bg-neutral-100 px-3 py-1.5 rounded-full self-start">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          Updated {new Date(lastUpdated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+        </span>
+      )}
+    </div>
+
+    <div class="flex flex-wrap gap-3 mb-8 text-xs font-medium">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-100 text-green-800"><span class="w-2 h-2 rounded-full bg-green-500"></span> Under 60 days</span>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 text-amber-800"><span class="w-2 h-2 rounded-full bg-amber-500"></span> 60–180 days</span>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-100 text-red-800"><span class="w-2 h-2 rounded-full bg-red-500"></span> 180+ days</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {rows.map((r) => (
+        <WaitTimeCard country={r.country} slug={r.slug} countryCode={r.countryCode} fastest={r.fastest} slowest={r.slowest} />
+      ))}
+    </div>
+
+    <div class="mt-16 bg-neutral-50 rounded-2xl p-6 md:p-8 border border-neutral-200">
+      <h3 class="text-lg font-bold tracking-tight text-neutral-900 mb-2">About this data</h3>
+      <p class="text-sm text-neutral-600 leading-relaxed max-w-3xl">
+        Wait times reflect the typical number of days between scheduling and the next available visitor visa (B1/B2) interview
+        appointment at each post, as published by the U.S. Department of State. Wait times change frequently due to staffing,
+        seasonal demand, and local conditions — always confirm current availability on the embassy or consulate's own website
+        before making travel plans.
+      </p>
+    </div>
+  </div>
+</Layout>

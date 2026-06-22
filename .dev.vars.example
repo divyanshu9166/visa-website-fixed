@@ -1,0 +1,8 @@
+# Copy this file to .dev.vars (NOT .env — Cloudflare Pages Functions read
+# .dev.vars for local secrets, not .env) for local `wrangler pages dev` /
+# `npm run dev:full`. Paste the same value into Cloudflare Pages dashboard
+# (Settings > Environment Variables) for production.
+#
+# Get this from console.prisma.io after creating a Prisma Postgres database —
+# see the "Connect Prisma Postgres" section in README.md for the full guide.
+DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=YOUR_API_KEY_HERE"

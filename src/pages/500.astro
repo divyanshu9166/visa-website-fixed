@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface Props {
+  error?: unknown;
+}
+
+const { error } = Astro.props;
+---
+
+<Layout title="500: Server Error" description="An unexpected error has occurred on the server.">
+	<div class="min-h-[60vh] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 text-center">
+		<h1 class="text-9xl font-extrabold text-red-600 mb-4">500</h1>
+		<h2 class="text-3xl font-bold text-gray-900 mb-4">Internal Server Error</h2>
+		<p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+			Sorry, something went wrong on our end. We're actively looking into the issue. Please try again later.
+		</p>
+		<a href="/" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+			Return Home
+		</a>
+	</div>
+</Layout>

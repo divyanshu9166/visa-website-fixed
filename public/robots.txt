@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://usvisatracker.example.com/sitemap-index.xml

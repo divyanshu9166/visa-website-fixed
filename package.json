@@ -1,0 +1,42 @@
+{
+  "name": "visa-website",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "deploy": "npm run build && npx wrangler pages deploy dist",
+    "data:fetch": "node scripts/fetch-data.mjs",
+    "db:generate": "prisma generate --no-engine",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "dev:full": "wrangler pages dev --proxy 4321 -- npm run dev"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@astrojs/sitemap": "^3.7.3",
+    "@prisma/client": "^6.0.0",
+    "@prisma/extension-accelerate": "^3.0.1",
+    "@tailwindcss/vite": "^4.3.1",
+    "astro": "^6.4.7",
+    "chart.js": "^4.5.1",
+    "cheerio": "^1.2.0",
+    "sitemap": "^9.0.1",
+    "tailwindcss": "^4.3.1",
+    "typescript": "^6.0.3",
+    "xlsx": "^0.18.5",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260621.1",
+    "prisma": "^6.0.0",
+    "wrangler": "^4.103.0"
+  }
+}

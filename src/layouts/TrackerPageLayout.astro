@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import CommunityStats from '../components/trackers/CommunityStats.astro';
+import CommunityTrackerTable from '../components/trackers/CommunityTrackerTable.astro';
+import AddCaseForm from '../components/trackers/AddCaseForm.astro';
+import LiveDataSync from '../components/trackers/LiveDataSync.astro';
+import { TRACKERS, generateDemoRows } from '../lib/trackers';
+
+interface Props {
+  trackerKey: keyof typeof TRACKERS;
+}
+
+const { trackerKey } = Astro.props;
+const config = TRACKERS[trackerKey as string];
+const demoRows = generateDemoRows(config);
+
+const chartFieldMeta = config.chartFields.map((key) => ({
+  key,
+  label: config.fields.find((f) => f.key === key)?.label || key,
+}));
+
+const tableColumns = config.fields.slice(0, 6).map((f) => ({ key: f.key, label: f.label }));
+---
+
+<Layout title={`${config.label} [2026] — Community Submitted`} description={config.description}>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Community Trackers', href: '/uscis-trackers' }, { label: config.label }]} />
+
+    <div class="flex items-center gap-3 mb-3">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900">{config.label}</h1>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-emerald-100 text-emerald-800">Community</span>
+    </div>
+    <p class="text-lg text-neutral-500 mb-3 max-w-2xl">{config.description}</p>
+    <p class="text-xs text-neutral-400 mb-10">Showing {demoRows.length}+ submitted cases. Sign in to add your own.</p>
+
+    <div class="mb-10">
+      <CommunityStats instanceId={trackerKey as string} rows={demoRows} chartFields={chartFieldMeta} />
+    </div>
+
+    <div class="mb-10">
+      <AddCaseForm instanceId={trackerKey as string} table={config.table} fields={config.fields} />
+    </div>
+
+    <h2 class="text-lg font-bold text-neutral-900 mb-4">All Submitted Cases</h2>
+    <CommunityTrackerTable instanceId={trackerKey as string} rows={demoRows} columns={tableColumns} />
+
+    <LiveDataSync instanceId={trackerKey as string} table={config.table} />
+
+    <p class="text-xs text-neutral-400 mt-6 text-center">
+      Community-submitted data is self-reported and not verified against USCIS or State Department records.
+    </p>
+  </div>
+</Layout>

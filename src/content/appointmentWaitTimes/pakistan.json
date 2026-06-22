@@ -1,0 +1,183 @@
+{
+  "country": "Pakistan",
+  "slug": "pakistan",
+  "countryCode": "PK",
+  "lastUpdated": "2026-06-22",
+  "dataSource": "seed",
+  "consulates": [
+    {
+      "name": "Islamabad",
+      "waitTimeB1B2": 243,
+      "waitTimeStudent": 85,
+      "waitTimeOther": 134,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 178
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 171
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 165
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 164
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 166
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 172
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 235
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 243
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 249
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 251
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 249
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 243
+        }
+      ]
+    },
+    {
+      "name": "Karachi",
+      "waitTimeB1B2": 239,
+      "waitTimeStudent": 84,
+      "waitTimeOther": 131,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 247
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 238
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 232
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 231
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 234
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 240
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 230
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 239
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 245
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 248
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 245
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 239
+        }
+      ]
+    },
+    {
+      "name": "Lahore",
+      "waitTimeB1B2": 212,
+      "waitTimeStudent": 74,
+      "waitTimeOther": 117,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 220
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 212
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 205
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 205
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 207
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 213
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 204
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 212
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 218
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 221
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 218
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 212
+        }
+      ]
+    }
+  ]
+}

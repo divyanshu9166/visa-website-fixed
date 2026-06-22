@@ -1,0 +1,125 @@
+{
+  "country": "Nigeria",
+  "slug": "nigeria",
+  "countryCode": "NG",
+  "lastUpdated": "2026-06-22",
+  "dataSource": "seed",
+  "consulates": [
+    {
+      "name": "Lagos",
+      "waitTimeB1B2": 448,
+      "waitTimeStudent": 157,
+      "waitTimeOther": 246,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 462
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 446
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 434
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 433
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 437
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 450
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 430
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 447
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 459
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 464
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 460
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 448
+        }
+      ]
+    },
+    {
+      "name": "Abuja",
+      "waitTimeB1B2": 410,
+      "waitTimeStudent": 144,
+      "waitTimeOther": 226,
+      "hasEmergencyAppointments": true,
+      "notes": "High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.",
+      "history": [
+        {
+          "period": "2025-07",
+          "waitTimeB1B2": 424
+        },
+        {
+          "period": "2025-08",
+          "waitTimeB1B2": 408
+        },
+        {
+          "period": "2025-09",
+          "waitTimeB1B2": 397
+        },
+        {
+          "period": "2025-10",
+          "waitTimeB1B2": 396
+        },
+        {
+          "period": "2025-11",
+          "waitTimeB1B2": 401
+        },
+        {
+          "period": "2025-12",
+          "waitTimeB1B2": 412
+        },
+        {
+          "period": "2026-01",
+          "waitTimeB1B2": 394
+        },
+        {
+          "period": "2026-02",
+          "waitTimeB1B2": 409
+        },
+        {
+          "period": "2026-03",
+          "waitTimeB1B2": 421
+        },
+        {
+          "period": "2026-04",
+          "waitTimeB1B2": 425
+        },
+        {
+          "period": "2026-05",
+          "waitTimeB1B2": 421
+        },
+        {
+          "period": "2026-06",
+          "waitTimeB1B2": 410
+        }
+      ]
+    }
+  ]
+}

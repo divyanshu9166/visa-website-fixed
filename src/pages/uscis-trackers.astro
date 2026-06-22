@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { TRACKERS } from '../lib/trackers';
+
+const list = Object.values(TRACKERS);
+---
+
+<Layout title="Community Case Trackers — H-1B, I-485, 221(g) & More" description="Browse community-submitted case trackers for H-1B, I-485, drop box interview waivers, 221(g), reschedules, and emergency appointments.">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Community Trackers' }]} />
+
+    <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">Community Case Trackers</h1>
+    <p class="text-lg text-neutral-500 mb-12 max-w-2xl">
+      Submit your own case and see how your timeline compares to other applicants. Data is self-reported by the community.
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {list.map((t) => (
+        <a href={t.urlPath} class="block bg-white border border-neutral-200 rounded-2xl p-6 hover:border-neutral-900 hover:shadow-md transition-all group">
+          <h3 class="text-lg font-bold text-neutral-900 group-hover:underline mb-1">{t.label}</h3>
+          <p class="text-sm text-neutral-500 mb-4">{t.description}</p>
+          <span class="text-sm font-medium text-neutral-400 group-hover:text-neutral-900 transition-colors">View tracker &rarr;</span>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-12 bg-neutral-50 border border-neutral-200 rounded-2xl p-6 text-sm text-neutral-600">
+      Have a case? <a href="/login" class="font-medium text-neutral-900 hover:underline">Sign in</a> from any tracker page to submit it.
+    </div>
+  </div>
+</Layout>

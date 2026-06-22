@@ -1,0 +1,177 @@
+// ============================================================================
+// US Visa Tracker — Prisma schema (Phase 2 community trackers + auth)
+// ============================================================================
+// Uses Prisma Postgres (https://www.prisma.io/postgres) — a managed Postgres
+// with built-in connection pooling and native edge-runtime support, so this
+// works directly from Cloudflare Pages Functions with no separate driver
+// adapter and no "cold database" wake-up delay. See README.md for the full
+// setup guide.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Auth (custom — no third-party auth provider, just this app + Postgres)
+// ---------------------------------------------------------------------------
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  sessions         Session[]
+  h1bCases         H1bCase[]
+  i485Cases        I485Case[]
+  dropboxCases     DropboxCase[]
+  rescheduleCases  RescheduleCase[]
+  cases221g        Case221g[]
+  emergencyCases   EmergencyCase[]
+
+  @@map("users")
+}
+
+// Opaque-token, database-backed sessions (no JWT secret to manage/rotate).
+model Session {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ---------------------------------------------------------------------------
+// H-1B cases
+// ---------------------------------------------------------------------------
+model H1bCase {
+  id                 String    @id @default(uuid())
+  userId             String    @map("user_id")
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fiscalYear         Int       @map("fiscal_year")
+  petitionType       String    @map("petition_type")
+  quotaType          String?   @map("quota_type")
+  registrationStatus String?   @map("registration_status")
+  registrationDate   DateTime? @map("registration_date")
+  receiptNumber      String?   @map("receipt_number")
+  caseStatus         String    @default("Pending") @map("case_status")
+  caseStatusDate     DateTime? @map("case_status_date")
+  serviceCenter      String?   @map("service_center")
+  premiumProcessing  Boolean   @default(false) @map("premium_processing")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([fiscalYear])
+  @@map("h1b_cases")
+}
+
+// ---------------------------------------------------------------------------
+// I-485 cases
+// ---------------------------------------------------------------------------
+model I485Case {
+  id                String    @id @default(uuid())
+  userId            String    @map("user_id")
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category          String
+  countryOfBirth    String?   @map("country_of_birth")
+  priorityDate      DateTime? @map("priority_date")
+  filingDate        DateTime? @map("filing_date")
+  serviceCenter     String?   @map("service_center")
+  caseStatus        String    @default("Filed") @map("case_status")
+  caseStatusDate    DateTime? @map("case_status_date")
+  eadReceived       Boolean   @default(false) @map("ead_received")
+  travelDocReceived Boolean   @default(false) @map("travel_doc_received")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("i485_cases")
+}
+
+// ---------------------------------------------------------------------------
+// Drop box / interview waiver cases
+// ---------------------------------------------------------------------------
+model DropboxCase {
+  id                       String    @id @default(uuid())
+  userId                   String    @map("user_id")
+  user                     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visaType                 String    @map("visa_type")
+  consulate                String
+  eligibilitySubmittedDate DateTime? @map("eligibility_submitted_date")
+  dropboxDate              DateTime? @map("dropbox_date")
+  outcome                  String    @default("Pending")
+  daysWaited               Int?      @map("days_waited")
+  createdAt                DateTime  @default(now()) @map("created_at")
+  updatedAt                DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("dropbox_cases")
+}
+
+// ---------------------------------------------------------------------------
+// Consulate reschedule cases
+// ---------------------------------------------------------------------------
+model RescheduleCase {
+  id                      String    @id @default(uuid())
+  userId                  String    @map("user_id")
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consulate               String
+  originalAppointmentDate DateTime? @map("original_appointment_date")
+  rescheduledDate         DateTime? @map("rescheduled_date")
+  reason                  String?
+  success                 Boolean   @default(false)
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("consulate_reschedule_cases")
+}
+
+// ---------------------------------------------------------------------------
+// 221(g) administrative processing cases
+// ---------------------------------------------------------------------------
+model Case221g {
+  id                   String    @id @default(uuid())
+  userId               String    @map("user_id")
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visaType             String    @map("visa_type")
+  consulate            String
+  dateIssued           DateTime? @map("date_issued")
+  documentsRequested   String?   @map("documents_requested")
+  resolutionStatus     String    @default("Pending") @map("resolution_status")
+  daysToResolve        Int?      @map("days_to_resolve")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("cases_221g")
+}
+
+// ---------------------------------------------------------------------------
+// Emergency appointment requests
+// ---------------------------------------------------------------------------
+model EmergencyCase {
+  id                      String    @id @default(uuid())
+  userId                  String    @map("user_id")
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visaType                String    @map("visa_type")
+  consulate               String
+  requestReason           String?   @map("request_reason")
+  requestDate             DateTime? @map("request_date")
+  outcome                 String    @default("Pending")
+  appointmentGrantedDate  DateTime? @map("appointment_granted_date")
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("emergency_appointment_cases")
+}

@@ -1,0 +1,93 @@
+---
+interface HistoryItem {
+  date: string;
+  rangeLowMonths: number;
+  rangeHighMonths: number;
+}
+
+interface Props {
+  history: HistoryItem[];
+  title?: string;
+}
+
+const { history, title = "Historic Processing Time Trend" } = Astro.props;
+
+// Sort history chronologically
+const sortedHistory = [...history].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+const chartData = {
+  labels: sortedHistory.map(h => new Date(h.date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })),
+  lows: sortedHistory.map(h => h.rangeLowMonths),
+  highs: sortedHistory.map(h => h.rangeHighMonths)
+};
+---
+
+<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+  <h3 class="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
+  <div class="relative h-64 w-full">
+    <canvas id="trendChart" data-chart={JSON.stringify(chartData)}></canvas>
+  </div>
+</div>
+
+<script>
+  import Chart from 'chart.js/auto';
+
+  // Astro scripts execute once per page load.
+  // Using querySelector to find the canvas element.
+  const initChart = () => {
+    const canvas = document.getElementById('trendChart') as HTMLCanvasElement;
+    if (!canvas) return;
+
+    const dataAttr = canvas.getAttribute('data-chart');
+    if (!dataAttr) return;
+
+    const chartData = JSON.parse(dataAttr);
+
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: chartData.labels,
+        datasets: [
+          {
+            label: 'Low Estimate (Months)',
+            data: chartData.lows,
+            borderColor: '#a3a3a3', // neutral-400
+            backgroundColor: 'rgba(163, 163, 163, 0.1)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2,
+          },
+          {
+            label: 'High Estimate (Months)',
+            data: chartData.highs,
+            borderColor: '#171717', // neutral-900
+            backgroundColor: 'rgba(23, 23, 23, 0.05)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'Months'
+            },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  };
+
+  // Run on mount
+  initChart();
+</script>

@@ -1,0 +1,12 @@
+# Cloudflare Pages config. The Pages dashboard (Git-connected deploys) reads
+# build settings from its own UI, not this file — this file matters for:
+#   - `npx wrangler pages dev dist`      (local full-stack dev, see README)
+#   - `npx wrangler pages deploy dist`   (manual/CI deploy, see package.json "deploy")
+name = "visa-website"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-06-01"
+
+# Prisma's generated client checks a couple of Node globals (e.g. `process`)
+# even in its workerd-targeted build path. nodejs_compat is free on Cloudflare
+# and avoids that class of runtime error entirely.
+compatibility_flags = ["nodejs_compat"]

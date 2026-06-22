@@ -1,0 +1,102 @@
+---
+interface Props {
+  history: { month: string; finalActionDate: string | null; dateForFiling: string | null }[];
+  title?: string;
+}
+
+const { history, title = "Priority Date Movement" } = Astro.props;
+const sorted = [...history].sort((a, b) => a.month.localeCompare(b.month));
+
+function toTimestamp(d: string | null) {
+  if (!d) return null;
+  if (d === 'C') return Date.now(); // plot "Current" at today's date as a visual ceiling
+  const t = new Date(d).getTime();
+  return Number.isNaN(t) ? null : t;
+}
+
+const chartData = {
+  labels: sorted.map((h) => new Date(h.month + '-01T00:00:00Z').toLocaleDateString('en-US', { month: 'short', year: '2-digit', timeZone: 'UTC' })),
+  fad: sorted.map((h) => toTimestamp(h.finalActionDate)),
+  dff: sorted.map((h) => toTimestamp(h.dateForFiling)),
+  fadLabel: sorted.map((h) => h.finalActionDate === 'C' ? 'Current' : h.finalActionDate),
+  dffLabel: sorted.map((h) => h.dateForFiling === 'C' ? 'Current' : h.dateForFiling),
+};
+---
+
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+  <h3 class="text-lg font-bold text-neutral-900 mb-4">{title}</h3>
+  <div class="relative h-72 w-full">
+    <canvas class="vb-chart" data-chart={JSON.stringify(chartData)}></canvas>
+  </div>
+  <div class="mt-4 flex gap-4 text-xs font-medium text-neutral-500 justify-center">
+    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-neutral-900"></span> Final Action Date</div>
+    <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Date for Filing</div>
+  </div>
+</div>
+
+<script>
+  import Chart from 'chart.js/auto';
+
+  function initCharts() {
+    document.querySelectorAll<HTMLCanvasElement>('canvas.vb-chart').forEach((canvas) => {
+      if ((canvas as any)._initialized) return;
+      (canvas as any)._initialized = true;
+      const raw = canvas.getAttribute('data-chart');
+      if (!raw) return;
+      const d = JSON.parse(raw);
+
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: d.labels,
+          datasets: [
+            {
+              label: 'Final Action Date',
+              data: d.fad,
+              borderColor: '#171717',
+              backgroundColor: 'rgba(23,23,23,0.06)',
+              fill: true,
+              tension: 0.3,
+              spanGaps: true,
+            },
+            {
+              label: 'Date for Filing',
+              data: d.dff,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16,185,129,0.06)',
+              fill: true,
+              tension: 0.3,
+              spanGaps: true,
+              borderDash: [4, 3],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const labels = ctx.datasetIndex === 0 ? d.fadLabel : d.dffLabel;
+                  return `${ctx.dataset.label}: ${labels[ctx.dataIndex] ?? '—'}`;
+                },
+              },
+            },
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: (value: any) => new Date(value).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+              },
+            },
+          },
+        },
+      });
+    });
+  }
+
+  initCharts();
+  document.addEventListener('astro:page-load', initCharts);
+</script>

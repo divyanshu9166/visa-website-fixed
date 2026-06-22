@@ -1,0 +1,100 @@
+---
+interface CaseTypeEntry {
+  caseType: string;
+  minMonths: number;
+  maxMonths: number;
+}
+interface CenterEntry {
+  name: string;
+  slug: string;
+  cases: CaseTypeEntry[];
+}
+
+interface Props {
+  servicecenters: CenterEntry[];
+}
+
+const { servicecenters } = Astro.props;
+const serialized = JSON.stringify(servicecenters);
+---
+
+<div class="bg-white rounded-2xl shadow-sm border border-neutral-200 p-6 md:p-8">
+  <h2 class="text-xl font-bold tracking-tight text-neutral-900 mb-1">Is your case within processing time?</h2>
+  <p class="text-sm text-neutral-500 mb-6">Enter your receipt (filing) date to see whether your case is on track, approaching the edge of the posted range, or already eligible for an e-Request.</p>
+
+  <form id="predictor-form" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="sm:col-span-1">
+      <label for="pt-center" class="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wide">Service Center</label>
+      <select id="pt-center" class="w-full px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"></select>
+    </div>
+    <div class="sm:col-span-1">
+      <label for="pt-case" class="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wide">Case Type</label>
+      <select id="pt-case" class="w-full px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900"></select>
+    </div>
+    <div class="sm:col-span-1">
+      <label for="pt-date" class="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wide">Receipt Date</label>
+      <input id="pt-date" type="date" required class="w-full px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900" />
+    </div>
+    <button type="submit" class="sm:col-span-3 mt-1 bg-neutral-900 text-white font-semibold py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-md transition-all">
+      Check My Status
+    </button>
+  </form>
+
+  <div id="pt-result" class="hidden mt-6 rounded-xl p-5 border text-sm">
+    <p id="pt-result-text" class="font-medium"></p>
+  </div>
+
+  <p class="text-xs text-neutral-400 mt-4">We don't store the date you enter — the calculation runs entirely in your browser.</p>
+</div>
+
+<script type="application/json" id="pt-data" set:html={serialized}></script>
+<script>
+  const data = JSON.parse(document.getElementById('pt-data')?.textContent || '[]');
+  const centerSelect = document.getElementById('pt-center') as HTMLSelectElement;
+  const caseSelect = document.getElementById('pt-case') as HTMLSelectElement;
+  const form = document.getElementById('predictor-form') as HTMLFormElement;
+  const resultBox = document.getElementById('pt-result') as HTMLElement;
+  const resultText = document.getElementById('pt-result-text') as HTMLElement;
+
+  function populateCenters() {
+    centerSelect.innerHTML = data.map((c: any) => `<option value="${c.slug}">${c.name}</option>`).join('');
+    populateCases();
+  }
+
+  function populateCases() {
+    const center = data.find((c: any) => c.slug === centerSelect.value) || data[0];
+    caseSelect.innerHTML = (center?.cases || []).map((ct: any, i: number) => `<option value="${i}">${ct.caseType}</option>`).join('');
+  }
+
+  centerSelect?.addEventListener('change', populateCases);
+  populateCenters();
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const center = data.find((c: any) => c.slug === centerSelect.value) || data[0];
+    const caseType = center?.cases?.[Number(caseSelect.value)];
+    const dateInput = document.getElementById('pt-date') as HTMLInputElement;
+    if (!caseType || !dateInput.value) return;
+
+    const receiptDate = new Date(dateInput.value);
+    const today = new Date();
+    const monthsPending = (today.getTime() - receiptDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44);
+
+    let cls = '';
+    let msg = '';
+    if (monthsPending < 0) {
+      cls = 'bg-amber-50 border-amber-200 text-amber-900';
+      msg = `That receipt date is in the future — double check the date you entered.`;
+    } else if (monthsPending <= caseType.maxMonths) {
+      cls = 'bg-green-50 border-green-200 text-green-900';
+      msg = `Your case has been pending ~${monthsPending.toFixed(1)} months, which is within the posted range of ${caseType.minMonths}–${caseType.maxMonths} months for this case type and center. No action needed yet.`;
+    } else {
+      cls = 'bg-red-50 border-red-200 text-red-900';
+      msg = `Your case has been pending ~${monthsPending.toFixed(1)} months, which is past the posted maximum of ${caseType.maxMonths} months. You may be eligible to submit an e-Request to USCIS asking for a status update.`;
+    }
+
+    resultBox.className = `mt-6 rounded-xl p-5 border text-sm ${cls}`;
+    resultText.textContent = msg;
+    resultBox.classList.remove('hidden');
+  });
+</script>
