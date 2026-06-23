@@ -3,10 +3,10 @@
   "formName": "Immigrant Petition for Alien Worker",
   "fiscalYear": 2026,
   "quarter": 2,
-  "receipts": 105193,
-  "completions": 105235,
+  "receipts": 110047,
+  "completions": 102762,
   "pending": 216000,
-  "rfeRate": 24,
+  "rfeRate": 19,
   "sourceUrl": "https://www.uscis.gov/tools/reports-and-studies/immigration-and-citizenship-data",
-  "lastUpdated": "2026-06-23T06:03:44.640Z"
+  "lastUpdated": "2026-06-23T06:30:25.776Z"
 }

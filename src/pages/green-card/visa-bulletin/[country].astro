@@ -41,6 +41,8 @@ const formattedMonth = latestMonth
   ? new Date(`${latestMonth}-01T00:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
   : '';
 
+const isLiveMonth = categories.length > 0 && categories.every((c) => c.latest?.dataSource === 'live');
+
 const faqs = [
   {
     q: `Why is the green card backlog for ${countryMeta.name} so long?`,
@@ -76,7 +78,14 @@ const jsonLd = {
     ]} />
 
     <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-2">Green Card Visa Bulletin — {countryMeta.name}</h1>
-    <p class="text-lg text-neutral-500 mb-10">{formattedMonth} Final Action Dates and Dates for Filing, by employment-based category.</p>
+    <p class="text-lg text-neutral-500 mb-3">{formattedMonth} Final Action Dates and Dates for Filing, by employment-based category.</p>
+    <p class="mb-10">
+      {isLiveMonth ? (
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Confirmed from the live State Dept. bulletin</span>
+      ) : (
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Placeholder estimate — not yet confirmed live</span>
+      )}
+    </p>
 
     <!-- Current month summary table -->
     <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden mb-6">

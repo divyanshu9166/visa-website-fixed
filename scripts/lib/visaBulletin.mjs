@@ -122,7 +122,7 @@ function buildSeedBulletin() {
           dateForFiling = dff.toISOString().slice(0, 10);
         }
 
-        records.push({ month: period, category, country: country.name, countrySlug: country.slug, finalActionDate, dateForFiling });
+        records.push({ month: period, category, country: country.name, countrySlug: country.slug, finalActionDate, dateForFiling, dataSource: 'seed' });
       }
     }
   }
@@ -176,6 +176,7 @@ export async function fetchVisaBulletin({ seedOnly = false } = {}) {
             countrySlug: country.slug,
             finalActionDate,
             dateForFiling,
+            dataSource: 'live',
           });
         }
       }

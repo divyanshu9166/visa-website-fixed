@@ -18,7 +18,8 @@ const historicalData = bulletinData.map(b => ({
   month: b.data.month,
   category: b.data.category,
   country: b.data.country,
-  finalActionDate: b.data.finalActionDate
+  finalActionDate: b.data.finalActionDate,
+  dataSource: b.data.dataSource
 }));
 ---
 
@@ -85,8 +86,12 @@ const historicalData = bulletinData.map(b => ({
           How we calculate this
         </strong>
         <p class="leading-relaxed">
-          We look at the <strong>Final Action Date</strong> for your selected category and country over the last few months. We calculate the average "velocity" (how many days the cutoff date moves forward per calendar month) and extrapolate that pace to estimate when the cutoff will surpass your Priority Date.
+          We look at the <strong>Final Action Date</strong> for your selected category and country over the trailing 12 months and
+          average the month-to-month movement into a single "pace" (the same rolling-average approach immigration attorneys and
+          community trackers commonly use, rather than just comparing two endpoints). We then extrapolate that pace forward to
+          estimate when the cutoff will reach your Priority Date.
         </p>
+        <p id="data-confidence-note" class="leading-relaxed mt-2 hidden"></p>
       </div>
     </div>
     
@@ -137,61 +142,87 @@ const historicalData = bulletinData.map(b => ({
       const country = countrySelect.value;
       
       if (!priorityDateStr || !category || !country) return;
-      
+
+      const noteEl = document.getElementById('data-confidence-note');
+      if (noteEl) noteEl.classList.add('hidden');
+
       const pd = new Date(priorityDateStr);
-      
+
       // Filter history for the selected category and country
       const targetHistory = history.filter((h: any) => h.category === category && h.country === country);
-      
+
       if (targetHistory.length < 2) {
+        showError("Not enough historical data to calculate velocity for this category.");
+        return;
+      }
+
+      // Filter to records with an actual parseable date (skip "C"/Current and
+      // null months) — those can't contribute to a velocity calculation.
+      const usableHistory = targetHistory.filter((h: any) => h.finalActionDate && h.finalActionDate !== 'C' && h.finalActionDate !== 'Current');
+
+      if (usableHistory.length < 2) {
         showError("Not enough historical data to calculate velocity for this category.");
         return;
       }
 
       // Get latest FAD
       const latestRecord = targetHistory[targetHistory.length - 1];
-      const oldestRecord = targetHistory[0]; // To calculate velocity over the available dataset
-      
+
       // If it's "C" (Current), wait time is 0
       if (latestRecord.finalActionDate === 'C' || latestRecord.finalActionDate === 'Current') {
         showResult("Current!", "Your priority date is already current.");
         return;
       }
-      
+
       if (!latestRecord.finalActionDate) {
         showError("Data unavailable for the latest month.");
         return;
       }
 
       const latestFAD = new Date(latestRecord.finalActionDate);
-      const oldestFAD = new Date(oldestRecord.finalActionDate);
-      
+
       // If user's PD is older than the latest FAD, it's current!
       if (pd <= latestFAD) {
         showResult("Current!", "Your priority date is already current according to the latest bulletin.");
         return;
       }
-      
-      // Calculate velocity (FAD days moved per calendar days elapsed)
-      // We look at the difference between the oldest record's FAD and latest record's FAD
-      const fadDiffMs = latestFAD.getTime() - oldestFAD.getTime();
-      
-      const latestMonthDate = new Date(latestRecord.month + '-01');
-      const oldestMonthDate = new Date(oldestRecord.month + '-01');
-      const calendarDiffMs = latestMonthDate.getTime() - oldestMonthDate.getTime();
-      
-      if (calendarDiffMs <= 0 || fadDiffMs <= 0) {
-        // Retrogression or stagnant
-        showError("Cutoff dates are stagnant or retrogressing. Cannot estimate a reliable timeline right now.");
+
+      // Rolling-average pace (Oppenheim Pace method): average the
+      // month-to-month FAD movement over the trailing window (up to 12
+      // transitions / 13 months) instead of a single oldest-to-newest slope.
+      // A 2-point slope can be skewed badly by one noisy endpoint; averaging
+      // several recent transitions is the same smoothing real community
+      // trackers and immigration attorneys use.
+      const WINDOW_MONTHS = 13; // 13 data points = 12 month-over-month transitions
+      const windowHistory = usableHistory.slice(-WINDOW_MONTHS);
+
+      const velocities: number[] = [];
+      for (let i = 1; i < windowHistory.length; i++) {
+        const prev = windowHistory[i - 1];
+        const curr = windowHistory[i];
+        const fadDiffMs = new Date(curr.finalActionDate).getTime() - new Date(prev.finalActionDate).getTime();
+        const calendarDiffMs = new Date(curr.month + '-01').getTime() - new Date(prev.month + '-01').getTime();
+        if (calendarDiffMs <= 0) continue; // guard against duplicate/out-of-order months
+        velocities.push(fadDiffMs / calendarDiffMs);
+      }
+
+      if (velocities.length === 0) {
+        showError("Not enough historical data to calculate a reliable pace.");
         return;
       }
-      
-      // Velocity: For every 1 calendar day, FAD moves by `velocity` days
-      const velocity = fadDiffMs / calendarDiffMs;
-      
+
+      // Velocity: average days the FAD moves per calendar day, over the window
+      const velocity = velocities.reduce((sum, v) => sum + v, 0) / velocities.length;
+
+      if (velocity <= 0) {
+        // Retrogression or stagnant over the trailing window
+        showError("Cutoff dates are stagnant or retrogressing over the trailing 12 months. Cannot estimate a reliable timeline right now.");
+        return;
+      }
+
       // Gap between user's PD and latest FAD
       const gapMs = pd.getTime() - latestFAD.getTime();
-      
+
       // Estimated calendar days required to close the gap
       const estimatedWaitMs = gapMs / velocity;
       const estimatedWaitDays = Math.ceil(estimatedWaitMs / (1000 * 60 * 60 * 24));
@@ -215,6 +246,15 @@ const historicalData = bulletinData.map(b => ({
       const targetMonthYear = targetDateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
       showResult(`~ ${timeString.trim()}`, `Projected to be current around <strong>${targetMonthYear}</strong>`);
+
+      if (noteEl) {
+        if (latestRecord.dataSource === 'seed') {
+          noteEl.textContent = "Note: this month's cutoff is a placeholder estimate, not yet confirmed against the live Visa Bulletin — treat this projection as a rough sketch.";
+          noteEl.classList.remove('hidden');
+        } else {
+          noteEl.classList.add('hidden');
+        }
+      }
     });
   }
   

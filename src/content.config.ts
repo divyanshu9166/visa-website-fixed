@@ -25,6 +25,7 @@ const visaBulletin = defineCollection({
     country: z.string(),
     finalActionDate: z.string().nullable(),
     dateForFiling: z.string().nullable(),
+    dataSource: z.enum(['live', 'seed']).default('seed'),
   }),
 });
 
