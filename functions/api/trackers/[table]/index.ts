@@ -22,7 +22,26 @@ export const onRequestGet = safeHandler<PagesContext>(async ({ env, params }: Pa
     omit: { userId: true },
   });
 
-  return jsonResponse(rows);
+  // Batch-fetch confirmation counts for all returned case IDs
+  const caseIds = rows.map((r: any) => r.id);
+  let confirmCounts: Map<string, number> = new Map();
+  if (caseIds.length > 0) {
+    const counts = await prisma.caseConfirmation.groupBy({
+      by: ['caseId'],
+      where: { caseTable: table, caseId: { in: caseIds } },
+      _count: { caseId: true },
+    });
+    for (const c of counts) {
+      confirmCounts.set(c.caseId, c._count.caseId);
+    }
+  }
+
+  const enriched = rows.map((r: any) => ({
+    ...r,
+    confirmationCount: confirmCounts.get(r.id) || 0,
+  }));
+
+  return jsonResponse(enriched);
 });
 
 // Create — requires a signed-in user; the row is always attributed to the

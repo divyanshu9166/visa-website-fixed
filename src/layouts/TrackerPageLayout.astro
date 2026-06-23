@@ -32,7 +32,17 @@ const tableColumns = config.fields.slice(0, 6).map((f) => ({ key: f.key, label: 
       <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-emerald-100 text-emerald-800">Community</span>
     </div>
     <p class="text-lg text-neutral-500 mb-3 max-w-2xl">{config.description}</p>
-    <p class="text-xs text-neutral-400 mb-10">Showing {demoRows.length}+ submitted cases. Sign in to add your own.</p>
+
+    <!-- Case count + demo badge: updated dynamically by LiveDataSync when real data loads -->
+    <div class="flex items-center gap-2 mb-10" data-case-meta={trackerKey}>
+      <span data-demo-badge={trackerKey} class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide bg-amber-100 text-amber-700 border border-amber-200">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+        Example Data
+      </span>
+      <p class="text-xs text-neutral-400" data-case-count={trackerKey}>
+        Preview with example data — <a href="/login" class="underline hover:text-neutral-600">sign in</a> to add the first real submission.
+      </p>
+    </div>
 
     <div class="mb-10">
       <CommunityStats instanceId={trackerKey as string} rows={demoRows} chartFields={chartFieldMeta} />
@@ -43,7 +53,7 @@ const tableColumns = config.fields.slice(0, 6).map((f) => ({ key: f.key, label: 
     </div>
 
     <h2 class="text-lg font-bold text-neutral-900 mb-4">All Submitted Cases</h2>
-    <CommunityTrackerTable instanceId={trackerKey as string} rows={demoRows} columns={tableColumns} />
+    <CommunityTrackerTable instanceId={trackerKey as string} table={config.table} rows={demoRows} columns={tableColumns} />
 
     <LiveDataSync instanceId={trackerKey as string} table={config.table} />
 

@@ -19,9 +19,33 @@ const { instanceId, table } = Astro.props;
         const res = await fetch(`/api/trackers/${table}`, { credentials: 'same-origin' });
         if (!res.ok) continue;   // DB not configured yet — demo data stays
         const data = await res.json();
-        if (!Array.isArray(data) || data.length === 0) continue;
-        (window as any)[`__stats_${instanceId}`]?.update?.(data);
-        (window as any)[`__table_${instanceId}`]?.update?.(data);
+        if (!Array.isArray(data)) continue;
+
+        // Update chart and table components with real data
+        if (data.length > 0) {
+          (window as any)[`__stats_${instanceId}`]?.update?.(data);
+          (window as any)[`__table_${instanceId}`]?.update?.(data);
+        }
+
+        // Update case count text and hide demo badge
+        const countEl = document.querySelector(`[data-case-count="${instanceId}"]`) as HTMLElement;
+        const badgeEl = document.querySelector(`[data-demo-badge="${instanceId}"]`) as HTMLElement;
+
+        if (data.length > 0) {
+          // Real submissions exist — show real count, hide demo badge
+          if (countEl) {
+            countEl.textContent = `Showing ${data.length} community submission${data.length === 1 ? '' : 's'}.`;
+            countEl.classList.remove('text-neutral-400');
+            countEl.classList.add('text-emerald-600');
+          }
+          if (badgeEl) badgeEl.style.display = 'none';
+        } else {
+          // DB connected but no submissions yet
+          if (countEl) {
+            countEl.innerHTML = 'No submissions yet — be the first to <a href="/login" class="underline hover:text-neutral-600">share your timeline</a>.';
+          }
+          if (badgeEl) badgeEl.style.display = 'none';
+        }
       } catch {
         // Network error or undeployed Function — silently keep demo data
       }

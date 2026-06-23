@@ -1,0 +1,39 @@
+name: Daily data refresh
+
+on:
+  schedule:
+    - cron: '0 10 * * *'   # 10:00 UTC daily
+  workflow_dispatch: {}      # lets you trigger it manually from the Actions tab
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Fetch latest USCIS / State Dept data
+        run: npm run data:fetch
+
+      - name: Commit updated data if changed
+        run: |
+          git config user.name "data-refresh-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/content
+          if git diff --cached --quiet; then
+            echo "No data changes — skipping commit."
+          else
+            git commit -m "chore: daily data refresh $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Trigger Cloudflare Pages deploy (optional backup)
+        if: ${{ env.CF_DEPLOY_HOOK != '' }}
+        env:
+          CF_DEPLOY_HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: curl -X POST "$CF_DEPLOY_HOOK"

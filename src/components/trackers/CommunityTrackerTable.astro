@@ -6,12 +6,13 @@ interface ColumnMeta {
 
 interface Props {
   instanceId: string;
+  table: string;
   rows: Record<string, any>[];
   columns: ColumnMeta[];
   pageSize?: number;
 }
 
-const { instanceId, rows, columns, pageSize = 25 } = Astro.props;
+const { instanceId, table, rows, columns, pageSize = 25 } = Astro.props;
 ---
 
 <div class="bg-white rounded-2xl shadow-sm border border-neutral-200 overflow-hidden">
@@ -24,6 +25,7 @@ const { instanceId, rows, columns, pageSize = 25 } = Astro.props;
               {c.label} <span class="sort-arrow opacity-30">↕</span>
             </th>
           ))}
+          <th class="px-4 py-3 text-right font-semibold text-neutral-500 uppercase tracking-wider text-xs">Similar</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-neutral-100" data-table-body={instanceId}></tbody>
@@ -40,9 +42,10 @@ const { instanceId, rows, columns, pageSize = 25 } = Astro.props;
 
 <script type="application/json" data-table-rows={instanceId} set:html={JSON.stringify(rows)} />
 <script type="application/json" data-table-cols={instanceId} set:html={JSON.stringify(columns)} />
-<script define:vars={{ instanceId, pageSize }}>
+<script define:vars={{ instanceId, table, pageSize }}>
   window[`__table_${instanceId}`] = { update: null };
   window[`__pageSize_${instanceId}`] = pageSize;
+  window[`__tableName_${instanceId}`] = table;
 </script>
 
 <script>
@@ -82,15 +85,60 @@ const { instanceId, rows, columns, pageSize = 25 } = Astro.props;
       page = Math.min(page, totalPages - 1);
       const slice = sorted.slice(page * pageSize, (page + 1) * pageSize);
 
-      body.innerHTML = slice.map((row) => `
+      body.innerHTML = slice.map((row) => {
+        const isDemo = row.id && row.id.startsWith('demo-');
+        const demoBadge = isDemo ? `<span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-amber-100 text-amber-700">Example</span>` : '';
+        const count = row.confirmationCount || 0;
+        const confirmed = row.confirmedByMe ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-white text-neutral-500 border-neutral-200 hover:bg-neutral-50';
+        
+        return `
         <tr class="hover:bg-neutral-50/50 transition-colors">
-          ${cols.map((c) => `<td class="px-4 py-3 whitespace-nowrap text-neutral-700">${fmtVal(row[c.key])}</td>`).join('')}
+          ${cols.map((c, i) => `<td class="px-4 py-3 whitespace-nowrap text-neutral-700">${fmtVal(row[c.key])}${i === 0 ? demoBadge : ''}</td>`).join('')}
+          <td class="px-4 py-3 whitespace-nowrap text-right">
+            ${isDemo ? `<span class="text-xs text-neutral-400">Demo</span>` : `
+              <button data-confirm-btn="${row.id}" data-confirmed="${row.confirmedByMe ? 'true' : 'false'}" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded border ${confirmed} transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg>
+                ${count}
+              </button>
+            `}
+          </td>
         </tr>
-      `).join('') || `<tr><td colspan="${cols.length}" class="px-4 py-6 text-center text-neutral-400">No cases yet — be the first to submit one.</td></tr>`;
+      `}).join('') || `<tr><td colspan="${cols.length + 1}" class="px-4 py-6 text-center text-neutral-400">No cases yet — be the first to submit one.</td></tr>`;
 
       if (pageInfo) pageInfo.textContent = `${sorted.length} case${sorted.length === 1 ? '' : 's'} · page ${page + 1} of ${totalPages}`;
       if (prevBtn) prevBtn.disabled = page === 0;
       if (nextBtn) nextBtn.disabled = page >= totalPages - 1;
+
+      body.querySelectorAll('button[data-confirm-btn]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const id = btn.getAttribute('data-confirm-btn');
+          const isConfirmed = btn.getAttribute('data-confirmed') === 'true';
+          const method = isConfirmed ? 'DELETE' : 'POST';
+          
+          btn.classList.add('opacity-50', 'pointer-events-none');
+          
+          try {
+            const table = (window as any)[`__tableName_${instanceId}`];
+            const res = await fetch(`/api/trackers/${table}/${id}/confirm`, {
+              method,
+              headers: { 'Content-Type': 'application/json' },
+            });
+            
+            if (res.ok) {
+              const row = rows.find(r => r.id === id);
+              if (row) {
+                row.confirmedByMe = !isConfirmed;
+                row.confirmationCount = (row.confirmationCount || 0) + (isConfirmed ? -1 : 1);
+                render();
+              }
+            } else if (res.status === 401) {
+              window.location.href = '/login';
+            }
+          } finally {
+            btn.classList.remove('opacity-50', 'pointer-events-none');
+          }
+        });
+      });
     }
 
     document.querySelectorAll(`th[data-sort-col][data-instance="${instanceId}"]`).forEach((th) => {

@@ -84,7 +84,7 @@ const BASELINES = {
 const FILING_OFFSET_DAYS = { 'EB-1': 30, 'EB-2': 45, 'EB-3': 30, 'EB-4': 20, 'EB-5': 30 };
 
 function buildSeedMonths(monthsBack = 24) {
-  const now = new Date(2026, 5, 1); // June 2026 to match existing repo content
+  const now = new Date();
   const months = [];
   for (let i = 0; i < monthsBack; i++) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -132,37 +132,100 @@ function buildSeedBulletin() {
 export async function fetchVisaBulletin({ seedOnly = false } = {}) {
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
-  let records = [];
-  let liveOk = false;
+  let liveRecords = null;
 
   if (!seedOnly) {
     try {
-      const now = new Date(2026, 5, 19);
+      const now = new Date();
       const live = await fetchLiveMonth(now.getFullYear(), now.getMonth());
-      // live[] is { category, countrySlug, value } pairs — needs pairing logic specific
-      // to the live table layout, which varies; if we got here, merge into seed history
-      // for continuity rather than guessing at table semantics.
-      const seedRecords = buildSeedBulletin();
-      records = seedRecords;
-      liveOk = true;
-      console.warn('[visaBulletin] live table fetched but using seed-blended history for safety; review scripts/lib/visaBulletin.mjs parser before trusting raw values.');
+      const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+      // Build records for the current month from live data
+      liveRecords = [];
+      for (const country of BULLETIN_COUNTRIES) {
+        for (const category of BULLETIN_CATEGORIES) {
+          const liveItem = live.find(l => l.category === category && l.countrySlug === country.slug);
+          if (!liveItem) continue;
+
+          let finalActionDate;
+          const val = liveItem.value;
+          if (val.toUpperCase() === 'C' || val.toLowerCase() === 'current') {
+            finalActionDate = 'C';
+          } else {
+            const parsed = new Date(val);
+            if (!isNaN(parsed.getTime())) {
+              finalActionDate = parsed.toISOString().slice(0, 10);
+            } else {
+              continue; // unparseable — skip
+            }
+          }
+
+          let dateForFiling;
+          if (finalActionDate === 'C') {
+            dateForFiling = 'C';
+          } else {
+            const dff = new Date(finalActionDate);
+            dff.setDate(dff.getDate() + (FILING_OFFSET_DAYS[category] || 30));
+            dateForFiling = dff.toISOString().slice(0, 10);
+          }
+
+          liveRecords.push({
+            month: currentPeriod,
+            category,
+            country: country.name,
+            countrySlug: country.slug,
+            finalActionDate,
+            dateForFiling,
+          });
+        }
+      }
+      console.log(`[visaBulletin] live scrape succeeded — ${liveRecords.length} records for ${currentPeriod}.`);
     } catch (err) {
       console.warn(`  [visaBulletin] live fetch failed (${err.message}); using seed data.`);
+      liveRecords = null;
     }
   }
 
-  if (!records.length) records = buildSeedBulletin();
+  // If live succeeded, merge live current-month records with existing historical files.
+  // If live failed (or seedOnly), generate full seed history.
+  let records;
+  if (liveRecords && liveRecords.length > 0) {
+    // Read existing files to preserve historical records
+    const existingFiles = fs.existsSync(OUT_DIR)
+      ? fs.readdirSync(OUT_DIR).filter(f => f.endsWith('.json'))
+      : [];
+    const existingRecords = existingFiles.map(f => {
+      const data = JSON.parse(fs.readFileSync(path.join(OUT_DIR, f), 'utf-8'));
+      return data;
+    });
+
+    // Remove existing records for the current month (we're replacing them with live)
+    const currentPeriod = liveRecords[0]?.month;
+    const historicalRecords = existingRecords.filter(r => r.month !== currentPeriod);
+
+    // Keep only the last 23 months of history (to make room for the new month)
+    const cutoffDate = new Date();
+    cutoffDate.setMonth(cutoffDate.getMonth() - 23);
+    const cutoffPeriod = `${cutoffDate.getFullYear()}-${String(cutoffDate.getMonth() + 1).padStart(2, '0')}`;
+    const trimmedHistory = historicalRecords.filter(r => r.month >= cutoffPeriod);
+
+    records = [...trimmedHistory, ...liveRecords];
+  } else {
+    records = buildSeedBulletin();
+  }
 
   // Clear old files so renamed/removed categories don't linger
   for (const f of fs.readdirSync(OUT_DIR)) {
     if (f.endsWith('.json')) fs.unlinkSync(path.join(OUT_DIR, f));
   }
 
+  // Write all records
   for (const entry of records) {
     const filename = `${entry.month}-${entry.category}-${entry.countrySlug}.json`.toLowerCase();
     const { countrySlug, ...rest } = entry;
     fs.writeFileSync(path.join(OUT_DIR, filename), JSON.stringify(rest, null, 2));
   }
 
-  console.log(`[visaBulletin] wrote ${records.length} records across ${BULLETIN_COUNTRIES.length} countries (${liveOk ? 'live-assisted' : 'seed'}).`);
+  const isLive = liveRecords && liveRecords.length > 0;
+  console.log(`[visaBulletin] wrote ${records.length} records across ${BULLETIN_COUNTRIES.length} countries (${isLive ? 'live' : 'seed'}).`);
 }

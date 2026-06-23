@@ -76,7 +76,7 @@ const POST_BASE_WAIT = {
 function buildSeedWaitTimes() {
   const records = [];
   const months = 12;
-  const now = new Date(2026, 5, 1);
+  const now = new Date();
 
   for (const country of WAIT_TIME_COUNTRIES) {
     const consulates = country.consulates.map((name) => {
@@ -116,23 +116,151 @@ function buildSeedWaitTimes() {
   return records;
 }
 
+function normalizeName(name) {
+  return name.toLowerCase().trim()
+    .replace(/['']/g, "'")
+    .replace(/^u\.?s\.?\s*(embassy|consulate|mission)\s*/i, '')
+    .replace(/\s+/g, ' ');
+}
+
 export async function fetchWaitTimes({ seedOnly = false } = {}) {
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
-  let liveOk = false;
+  let livePosts = null;
   if (!seedOnly) {
     try {
-      await fetchLiveXml();
-      liveOk = true;
-      console.warn('[waitTimes] live XML reachable, but per-post -> per-country mapping needs review before trusting values; using seed data this run. See scripts/lib/waitTimes.mjs.');
+      livePosts = await fetchLiveXml();
+      console.log(`[waitTimes] live XML fetched — ${livePosts.length} consular posts parsed.`);
     } catch (err) {
       console.warn(`  [waitTimes] live fetch failed (${err.message}); using seed data.`);
     }
   }
 
-  const records = buildSeedWaitTimes();
-  for (const record of records) {
-    fs.writeFileSync(path.join(OUT_DIR, `${record.slug}.json`), JSON.stringify(record, null, 2));
+  // Index live posts by normalized name for fuzzy matching
+  const liveByPost = new Map();
+  if (livePosts) {
+    for (const p of livePosts) {
+      liveByPost.set(normalizeName(p.post), p);
+    }
   }
-  console.log(`[waitTimes] wrote ${records.length} countries (${liveOk ? 'live reachable, seed values' : 'seed'}).`);
+
+  let liveCount = 0;
+  let seedCount = 0;
+  const currentPeriod = new Date().toISOString().slice(0, 7);
+
+  for (const country of WAIT_TIME_COUNTRIES) {
+    const outPath = path.join(OUT_DIR, `${country.slug}.json`);
+    const previousRecord = fs.existsSync(outPath) ? JSON.parse(fs.readFileSync(outPath, 'utf-8')) : null;
+
+    let record = null;
+
+    if (livePosts) {
+      // Try to build record from live data
+      const consulates = [];
+      let matchedAny = false;
+
+      for (const consulateName of country.consulates) {
+        const normalized = normalizeName(consulateName);
+        // Try exact match first, then substring match
+        let live = liveByPost.get(normalized);
+        if (!live) {
+          // Fuzzy: find a live post whose normalized name contains our name or vice versa
+          for (const [key, val] of liveByPost) {
+            if (key.includes(normalized) || normalized.includes(key)) {
+              live = val;
+              break;
+            }
+          }
+        }
+
+        // Get previous consulate data for history accumulation
+        const prevConsulate = previousRecord?.consulates?.find(c => c.name === consulateName);
+
+        if (live) {
+          matchedAny = true;
+          const b1b2 = parseInt(live.waitTimeB1B2, 10);
+          const student = parseInt(live.waitTimeStudent, 10);
+          const waitB1B2 = !isNaN(b1b2) && b1b2 >= 0 ? b1b2 : (prevConsulate?.waitTimeB1B2 ?? POST_BASE_WAIT[consulateName] ?? 90);
+          const waitStudent = !isNaN(student) && student >= 0 ? student : Math.max(3, Math.round(waitB1B2 * 0.35));
+
+          // Accumulate history from previous record
+          const history = prevConsulate?.history ? [...prevConsulate.history] : [];
+          if (history.length > 0 && history[history.length - 1].period === currentPeriod) {
+            history[history.length - 1] = { period: currentPeriod, waitTimeB1B2: waitB1B2 };
+          } else {
+            history.push({ period: currentPeriod, waitTimeB1B2: waitB1B2 });
+          }
+          // Keep at most 24 months
+          while (history.length > 24) history.shift();
+
+          consulates.push({
+            name: consulateName,
+            waitTimeB1B2: waitB1B2,
+            waitTimeStudent: waitStudent,
+            waitTimeOther: Math.max(5, Math.round(waitB1B2 * 0.55)),
+            hasEmergencyAppointments: waitB1B2 > 120,
+            notes: waitB1B2 > 200
+              ? 'High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.'
+              : '',
+            history,
+          });
+        } else {
+          // No live match for this consulate — carry forward previous data or use seed
+          if (prevConsulate) {
+            consulates.push(prevConsulate);
+          } else {
+            // Generate seed for just this consulate
+            const base = POST_BASE_WAIT[consulateName] ?? 90;
+            const history = [];
+            const now = new Date();
+            for (let i = 11; i >= 0; i--) {
+              const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+              const period = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+              const jitter = seededJitter(`${consulateName}|${period}`, base * 0.18);
+              const seasonal = Math.sin((d.getMonth() / 12) * Math.PI * 2) * base * 0.08;
+              const wait = Math.max(7, Math.round(base + jitter + seasonal));
+              history.push({ period, waitTimeB1B2: wait });
+            }
+            const current = history[history.length - 1].waitTimeB1B2;
+            consulates.push({
+              name: consulateName,
+              waitTimeB1B2: current,
+              waitTimeStudent: Math.max(3, Math.round(current * 0.35)),
+              waitTimeOther: Math.max(5, Math.round(current * 0.55)),
+              hasEmergencyAppointments: current > 120,
+              notes: current > 200
+                ? 'High demand post — emergency/expedite appointment requests are common; check the embassy site for current criteria.'
+                : '',
+              history,
+            });
+            console.log(`  [waitTimes] no live match for ${consulateName} — using seed/previous data.`);
+          }
+        }
+      }
+
+      if (matchedAny) {
+        record = {
+          country: country.name,
+          slug: country.slug,
+          countryCode: country.countryCode,
+          lastUpdated: new Date().toISOString().slice(0, 10),
+          dataSource: 'live',
+          consulates,
+        };
+        liveCount++;
+      }
+    }
+
+    if (!record) {
+      // Fall back to seed for this country
+      // Use buildSeedWaitTimes() but only for this country
+      const seedAll = buildSeedWaitTimes();
+      record = seedAll.find(r => r.slug === country.slug);
+      seedCount++;
+    }
+
+    fs.writeFileSync(outPath, JSON.stringify(record, null, 2));
+  }
+
+  console.log(`[waitTimes] wrote ${WAIT_TIME_COUNTRIES.length} countries (${liveCount} live, ${seedCount} seed).`);
 }

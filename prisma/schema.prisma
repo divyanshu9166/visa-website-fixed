@@ -176,3 +176,18 @@ model EmergencyCase {
   @@index([userId])
   @@map("emergency_appointment_cases")
 }
+
+// ---------------------------------------------------------------------------
+// Case confirmations ("similar to mine" community endorsements)
+// ---------------------------------------------------------------------------
+model CaseConfirmation {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  caseTable String   @map("case_table")   // e.g. "h1b_cases"
+  caseId    String   @map("case_id")       // the case row's id
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, caseTable, caseId])    // one confirmation per user per case
+  @@index([caseTable, caseId])
+  @@map("case_confirmations")
+}
