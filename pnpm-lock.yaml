@@ -15,7 +15,7 @@ importers:
         specifier: ^3.7.3
         version: 3.7.3
       '@prisma/client':
-        specifier: ^6.0.0
+        specifier: ^6.4.1
         version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
       '@prisma/extension-accelerate':
         specifier: ^3.0.1
@@ -52,7 +52,7 @@ importers:
         specifier: ^4.20260621.1
         version: 4.20260621.1
       prisma:
-        specifier: ^6.0.0
+        specifier: ^6.4.1
         version: 6.19.3(typescript@6.0.3)
       wrangler:
         specifier: ^4.103.0
