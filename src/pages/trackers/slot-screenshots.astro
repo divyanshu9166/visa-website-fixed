@@ -1,0 +1,188 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import EmailCapture from '../../components/EmailCapture.astro';
+
+const consulates = [
+  'Hyderabad', 'Chennai', 'Mumbai', 'New Delhi', 'Kolkata',
+  'London', 'Frankfurt', 'Toronto', 'Vancouver', 'Mexico City',
+  'Manila', 'Seoul', 'Tokyo', 'Sydney', 'Dublin',
+];
+const visaTypes = ['B1/B2', 'F-1', 'H-1B', 'L-1', 'O-1', 'J-1', 'H-4', 'Other'];
+---
+
+<Layout
+  title="US Visa Slot Screenshots — Community Shared Appointment Availability"
+  description="Community-submitted screenshots of US visa appointment slots. See real slot availability at consulates worldwide. Share your own slot screenshots."
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Trackers', href: '/uscis-trackers' }, { label: 'Slot Screenshots' }]} />
+
+    <div class="mt-8 mb-6">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">Visa Slot Screenshots</h1>
+      <p class="text-lg text-neutral-500 max-w-2xl">Community-shared screenshots of appointment slot availability from US embassies and consulates worldwide. Help others by sharing what you see.</p>
+    </div>
+
+    <!-- How it works -->
+    <div class="grid grid-cols-3 gap-4 mb-8">
+      {[
+        { icon: '📸', title: 'Submit', desc: 'Upload a screenshot of available slots you see on the appointment portal' },
+        { icon: '👥', title: 'Share', desc: 'Community verifies and upvotes accurate screenshots in real time' },
+        { icon: '🔔', title: 'Get Alerted', desc: 'Subscribe to email alerts when slots appear at your consulate' },
+      ].map(s => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-3xl mb-2">{s.icon}</div>
+          <div class="font-bold text-neutral-900 text-sm mb-1">{s.title}</div>
+          <p class="text-xs text-neutral-500">{s.desc}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Submit form -->
+    <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-8">
+      <h2 class="text-base font-bold text-neutral-900 mb-5">Submit a Screenshot</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-semibold text-neutral-600 mb-1.5">Consulate / Embassy</label>
+          <select id="submitConsulate" class="w-full px-3 py-2.5 rounded-xl border border-neutral-200 text-sm bg-white focus:ring-2 focus:ring-neutral-900">
+            <option value="">Select consulate...</option>
+            {consulates.map(c => <option value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-neutral-600 mb-1.5">Visa Type</label>
+          <select id="submitVisaType" class="w-full px-3 py-2.5 rounded-xl border border-neutral-200 text-sm bg-white focus:ring-2 focus:ring-neutral-900">
+            <option value="">Select visa type...</option>
+            {visaTypes.map(v => <option value={v}>{v}</option>)}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-neutral-600 mb-1.5">Slot Date Visible (if any)</label>
+          <input type="date" id="submitSlotDate" class="w-full px-3 py-2.5 rounded-xl border border-neutral-200 text-sm focus:ring-2 focus:ring-neutral-900" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-neutral-600 mb-1.5">Screenshot URL (paste link from Imgur/CloudImg)</label>
+          <input type="url" id="submitImageUrl" placeholder="https://i.imgur.com/..." class="w-full px-3 py-2.5 rounded-xl border border-neutral-200 text-sm focus:ring-2 focus:ring-neutral-900" />
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block text-xs font-semibold text-neutral-600 mb-1.5">Notes (optional)</label>
+        <textarea id="submitNotes" rows="2" placeholder="e.g. Saw these on June 27 at 9AM IST. Slots went fast. Only student visa types showing." class="w-full px-3 py-2.5 rounded-xl border border-neutral-200 text-sm focus:ring-2 focus:ring-neutral-900 resize-none"></textarea>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="submitBtn" class="px-6 py-2.5 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-colors text-sm">Submit Screenshot</button>
+        <p class="text-xs text-neutral-400">Screenshots are moderated. No personal info needed.</p>
+      </div>
+      <div id="submitSuccess" class="hidden mt-3 text-sm text-emerald-600 font-semibold">✅ Submitted! Thank you for helping the community.</div>
+      <div id="submitError" class="hidden mt-3 text-sm text-red-600"></div>
+    </div>
+
+    <!-- Filter + Live feed -->
+    <div class="mb-5 flex flex-wrap gap-3">
+      <select id="filterConsulate" class="px-3 py-2 rounded-xl border border-neutral-200 text-sm bg-white focus:ring-2 focus:ring-neutral-900">
+        <option value="">All Consulates</option>
+        {consulates.map(c => <option value={c}>{c}</option>)}
+      </select>
+      <select id="filterVisa" class="px-3 py-2 rounded-xl border border-neutral-200 text-sm bg-white focus:ring-2 focus:ring-neutral-900">
+        <option value="">All Visa Types</option>
+        {visaTypes.map(v => <option value={v}>{v}</option>)}
+      </select>
+      <button id="loadScreenshots" class="px-4 py-2 bg-neutral-100 text-neutral-700 font-semibold rounded-xl hover:bg-neutral-200 text-sm">Refresh</button>
+    </div>
+
+    <div id="screenshotsContainer" class="space-y-4 mb-8">
+      <div class="text-center py-12 text-neutral-400 text-sm border border-dashed border-neutral-200 rounded-2xl">
+        <div class="text-4xl mb-3">📸</div>
+        <p>No screenshots yet. Be the first to share slot availability!</p>
+      </div>
+    </div>
+
+    <!-- Email alert for slots -->
+    <EmailCapture
+      alertType="slot_alert"
+      label="🔔 Get Slot Availability Alerts"
+      sublabel="We'll email you when community members report new slots at popular consulates."
+    />
+  </div>
+</Layout>
+
+<script>
+  async function loadScreenshots() {
+    const consulate = (document.getElementById('filterConsulate') as HTMLSelectElement).value;
+    const visaType = (document.getElementById('filterVisa') as HTMLSelectElement).value;
+    const container = document.getElementById('screenshotsContainer')!;
+
+    try {
+      const params = new URLSearchParams();
+      if (consulate) params.set('consulate', consulate);
+      if (visaType) params.set('visaType', visaType);
+
+      const res = await fetch(`/api/slot-screenshots?${params}`);
+      const data = await res.json();
+
+      if (!data.data || data.data.length === 0) {
+        container.innerHTML = `<div class="text-center py-12 text-neutral-400 text-sm border border-dashed border-neutral-200 rounded-2xl"><div class="text-4xl mb-3">📸</div><p>No screenshots yet for this filter. Be the first to share!</p></div>`;
+        return;
+      }
+
+      container.innerHTML = data.data.map((s: any) => `
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <span class="text-xs font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">${s.consulate}</span>
+              <span class="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded ml-2">${s.visaType}</span>
+              ${s.slotDate ? `<span class="text-xs text-neutral-400 ml-2">Slot: ${new Date(s.slotDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>` : ''}
+            </div>
+            <span class="text-xs text-neutral-400">${new Date(s.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+          </div>
+          ${s.notes ? `<p class="text-sm text-neutral-600 mb-3">${s.notes}</p>` : ''}
+          ${s.imageUrl ? `<a href="${s.imageUrl}" target="_blank" rel="noopener noreferrer" class="block"><img src="${s.imageUrl}" alt="Visa slot screenshot" class="rounded-lg border border-neutral-200 max-h-64 object-contain w-full" loading="lazy" /></a>` : ''}
+        </div>
+      `).join('');
+    } catch {
+      container.innerHTML = `<div class="text-center py-8 text-neutral-400 text-sm">Failed to load screenshots. <button onclick="loadScreenshots()" class="underline">Retry</button></div>`;
+    }
+  }
+
+  document.getElementById('loadScreenshots')?.addEventListener('click', loadScreenshots);
+  document.getElementById('filterConsulate')?.addEventListener('change', loadScreenshots);
+  document.getElementById('filterVisa')?.addEventListener('change', loadScreenshots);
+
+  document.getElementById('submitBtn')?.addEventListener('click', async () => {
+    const consulate = (document.getElementById('submitConsulate') as HTMLSelectElement).value;
+    const visaType = (document.getElementById('submitVisaType') as HTMLSelectElement).value;
+    const slotDate = (document.getElementById('submitSlotDate') as HTMLInputElement).value;
+    const imageUrl = (document.getElementById('submitImageUrl') as HTMLInputElement).value.trim();
+    const notes = (document.getElementById('submitNotes') as HTMLTextAreaElement).value.trim();
+    const errEl = document.getElementById('submitError')!;
+    const okEl = document.getElementById('submitSuccess')!;
+
+    errEl.classList.add('hidden');
+    if (!consulate || !visaType || !imageUrl) {
+      errEl.textContent = 'Please fill in consulate, visa type, and image URL.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/slot-screenshots', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consulate, visaType, slotDate: slotDate || undefined, imageUrl, notes: notes || undefined }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        okEl.classList.remove('hidden');
+        loadScreenshots();
+      } else {
+        errEl.textContent = data.error || 'Submission failed.';
+        errEl.classList.remove('hidden');
+      }
+    } catch {
+      errEl.textContent = 'Network error. Please try again.';
+      errEl.classList.remove('hidden');
+    }
+  });
+
+  loadScreenshots();
+</script>

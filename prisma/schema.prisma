@@ -191,3 +191,40 @@ model CaseConfirmation {
   @@index([caseTable, caseId])
   @@map("case_confirmations")
 }
+
+// ---------------------------------------------------------------------------
+// Email alert subscriptions
+// ---------------------------------------------------------------------------
+model EmailSubscription {
+  id        String   @id @default(uuid())
+  email     String
+  alertType String   @map("alert_type")   // "visa_bulletin" | "slot_alert" | "newsletter"
+  metadata  String?                        // JSON: { category, country, consulate, visaType }
+  confirmed Boolean  @default(false)
+  token     String   @unique @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([email, alertType])
+  @@index([alertType])
+  @@map("email_subscriptions")
+}
+
+// ---------------------------------------------------------------------------
+// Slot screenshots (crowdsourced)
+// ---------------------------------------------------------------------------
+model SlotScreenshot {
+  id          String   @id @default(uuid())
+  consulate   String
+  visaType    String   @map("visa_type")
+  slotDate    DateTime? @map("slot_date")
+  imageUrl    String   @map("image_url")
+  notes       String?
+  upvotes     Int      @default(0)
+  submittedBy String?  @map("submitted_by")   // anonymous or email
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([consulate])
+  @@index([visaType])
+  @@map("slot_screenshots")
+}

@@ -1,0 +1,96 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+<Layout title="PERM Labor Certification Guide 2026 — Process, Timeline & Requirements" description="Complete PERM labor certification guide: ETA-9089, prevailing wage, recruitment steps, DOL audits, timeline, and how it connects to your I-140 and priority date.">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Resources', href: '/resources' }, { label: 'PERM Guide' }]} />
+    <div class="mt-8 mb-8">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">PERM Labor Certification — Complete Guide</h1>
+      <p class="text-lg text-neutral-500">PERM (Program Electronic Review Management) is the first step in the EB-2 and EB-3 green card process. Your employer must prove no qualified US worker is available for the role.</p>
+    </div>
+
+    <div class="space-y-6">
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">What is PERM?</h2>
+        <p class="text-sm text-neutral-600 leading-relaxed">PERM is a process managed by the Department of Labor (DOL) in which an employer files Form ETA-9089 to certify that: (1) they tried to recruit US workers, (2) no qualified US worker applied or was available, and (3) the offered wage meets or exceeds the prevailing wage for that occupation in that location. PERM certification is required for EB-2 (unless NIW) and EB-3 green cards.</p>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-4">PERM Process — Step by Step</h2>
+        <div class="space-y-4">
+          {[
+            { n: 1, title: 'Prevailing Wage Determination (PWD)', time: '3–6 months', desc: 'Employer submits Form ETA-9141 to DOL requesting the prevailing wage for the specific job title, SOC code, and work location. DOL assigns a wage Level I–IV. This wage becomes the floor for the job offer.' },
+            { n: 2, title: 'Recruitment Campaign', time: '30–180 days', desc: 'Employer advertises the job through mandatory channels: 2 Sunday newspaper ads in the area of intended employment, posting on DOL job order system (30 days), and 3 additional recruitment methods (e.g., job fairs, college recruitment, company website). Recruitment must be completed before filing.' },
+            { n: 3, title: 'Recruitment Review & Documentation', time: '30–60 days', desc: 'After recruitment closes, employer reviews all US worker applicants and documents lawful rejection reasons (e.g., lacking required education, experience, skills stated in the job description). All rejections must be defensible.' },
+            { n: 4, title: 'File ETA-9089 with DOL', time: '0 days (electronic)', desc: 'Employer files the PERM application electronically via FLAG system (flag.dol.gov). The priority date is established on this date. DOL issues a case number.' },
+            { n: 5, title: 'DOL Processing', time: '6–12 months current', desc: 'DOL reviews the application. Cases may be selected for Audit (random or supervised). If audited, employer must provide detailed recruitment documentation. Non-audit cases are approved or denied.' },
+            { n: 6, title: 'PERM Certified', time: '', desc: 'DOL issues a certified ETA-9089. The employer now files the I-140 with USCIS. The PERM certification date is not the priority date — the PERM filing date is.' },
+          ].map(s => (
+            <div class="flex gap-4 p-4 bg-neutral-50 rounded-xl border border-neutral-100">
+              <div class="w-8 h-8 bg-neutral-900 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">{s.n}</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-bold text-neutral-900 text-sm">{s.title}</span>
+                  {s.time && <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-semibold">{s.time}</span>}
+                </div>
+                <p class="text-xs text-neutral-600">{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">Common PERM Audit Triggers</h2>
+        <ul class="space-y-2 text-sm text-neutral-600">
+          {[
+            'Job requirements that appear tailored to the foreign worker (e.g., very specific software version experience)',
+            'Wages significantly above or below prevailing wage for the SOC code',
+            'Previous PERM applications for the same worker at same employer',
+            'Business type or location inconsistencies',
+            'Random selection (DOL audits a percentage of all filings regardless of content)',
+          ].map(item => (
+            <li class="flex items-start gap-2"><span class="text-amber-500 mt-0.5">⚠</span><span>{item}</span></li>
+          ))}
+        </ul>
+        <p class="text-xs text-neutral-400 mt-3">Audit response must be submitted within 30 days. DOL may deny and allow reconsideration, or deny and require Board of Alien Labor Certification Appeals (BALCA) review.</p>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">PERM vs NIW — Which Path?</h2>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div class="p-4 bg-neutral-50 rounded-xl">
+            <div class="font-bold text-neutral-800 mb-2">Standard PERM (EB-2/EB-3)</div>
+            <ul class="space-y-1 text-xs text-neutral-600">
+              <li>✓ Employer-sponsored only</li>
+              <li>✓ No minimum achievement level needed</li>
+              <li>✗ Takes 1–2+ years before I-140</li>
+              <li>✗ Employer controls the process</li>
+              <li>✗ Job tied to employer until I-485 + 180d</li>
+            </ul>
+          </div>
+          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <div class="font-bold text-emerald-800 mb-2">EB-2 NIW (National Interest Waiver)</div>
+            <ul class="space-y-1 text-xs text-emerald-700">
+              <li>✓ Self-petition — no employer needed</li>
+              <li>✓ Skips PERM entirely</li>
+              <li>✓ Job flexibility from day one</li>
+              <li>✗ Must prove national interest in your work</li>
+              <li>✗ Higher bar for STEM/research fields</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 p-4 bg-neutral-50 rounded-xl border border-neutral-200 text-xs text-neutral-500">
+      <strong>Disclaimer:</strong> General information only. PERM requirements are highly fact-specific. Work with an experienced immigration attorney for your PERM filing.
+    </div>
+
+    <div class="mt-8 flex gap-3">
+      <a href="/resources/immigration-roadmap" class="px-5 py-2.5 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 text-sm">Full Roadmap →</a>
+      <a href="/green-card/queue-calculator" class="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-xl hover:border-neutral-800 text-sm">Queue Calculator →</a>
+    </div>
+  </div>
+</Layout>

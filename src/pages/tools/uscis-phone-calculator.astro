@@ -1,0 +1,168 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<Layout
+  title="USCIS Phone Navigator & N-400 Early Filing Calculator — Free Tools"
+  description="Navigate the USCIS call center menu to reach a live agent fast. Plus: calculate your exact N-400 earliest filing date based on your green card or continuous residence date."
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Tools', href: '/tools' }, { label: 'USCIS Phone & N-400 Calculator' }]} />
+
+    <div class="mt-8 mb-10">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">USCIS Phone Navigator + N-400 Calculator</h1>
+      <p class="text-lg text-neutral-500 max-w-2xl">Two tools in one: navigate USCIS phone menus to a live agent, and calculate your earliest N-400 filing date.</p>
+    </div>
+
+    <!-- Phone Navigator -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-8 mb-8">
+      <h2 class="text-xl font-bold text-neutral-900 mb-2">📞 USCIS Phone Menu Navigator</h2>
+      <p class="text-sm text-neutral-500 mb-6">Call <a href="tel:18008753676" class="font-semibold text-neutral-900 hover:underline">1-800-375-5283</a> (TTY: 1-800-767-1833). Available Mon–Fri 8AM–8PM EST.</p>
+
+      <div class="space-y-3 mb-8">
+        {[
+          { step: 1, press: '1', label: 'English', note: 'For English — press 1 at the language menu' },
+          { step: 2, press: '1', label: 'Case Status', note: 'For case status questions — press 1' },
+          { step: 3, press: '1', label: 'Has Receipt Number', note: 'If you have a receipt number — press 1' },
+          { step: 4, press: null, label: 'Enter Receipt #', note: 'Enter your receipt number (13-14 digits) using keypad' },
+          { step: 5, press: '3', label: 'Speak to Officer', note: 'To speak with a USCIS officer — press 3 (after hearing case info)' },
+          { step: 6, press: '2', label: 'Confirm Transfer', note: 'To confirm transfer to live agent — press 2' },
+        ].map(s => (
+          <div class="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl border border-neutral-200">
+            <div class="flex-shrink-0 w-8 h-8 bg-neutral-900 text-white rounded-full flex items-center justify-center text-sm font-bold">{s.step}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                {s.press ? (
+                  <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-700 font-bold text-lg rounded-lg border border-blue-200">
+                    {s.press}
+                  </span>
+                ) : (
+                  <span class="inline-flex items-center justify-center px-3 h-8 bg-amber-100 text-amber-700 font-bold text-xs rounded-lg border border-amber-200">
+                    ENTER
+                  </span>
+                )}
+                <span class="font-semibold text-sm text-neutral-900">{s.label}</span>
+              </div>
+              <p class="text-xs text-neutral-500">{s.note}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm">
+          <strong class="text-amber-800">⚠️ No Receipt Number?</strong>
+          <p class="text-amber-700 mt-1">At Step 3, press <strong>2</strong> instead. Then follow menus for general inquiry, naturalization, or work authorization depending on your case type.</p>
+        </div>
+        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-sm">
+          <strong class="text-emerald-800">✅ Best Call Times</strong>
+          <p class="text-emerald-700 mt-1">Tuesday–Thursday 8–10AM EST has shortest hold times. Avoid Monday mornings and Friday afternoons. Average hold: 15–45 min.</p>
+        </div>
+      </div>
+
+      <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800">
+        <strong>Tier 2 Escalation:</strong> If the Tier 1 officer cannot help (e.g., case outside normal processing time), ask to be transferred to a <em>Tier 2 supervisor</em>. This triggers a Service Request and gets documented in your file.
+      </div>
+    </div>
+
+    <!-- N-400 Calculator -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-8 mb-8">
+      <h2 class="text-xl font-bold text-neutral-900 mb-2">🗓️ N-400 Early Filing Date Calculator</h2>
+      <p class="text-sm text-neutral-500 mb-6">Most green card holders can file N-400 up to <strong>90 days before</strong> their 5-year (or 3-year for spouses of US citizens) eligibility date. Calculate yours instantly.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <label class="block text-sm font-semibold text-neutral-700 mb-2">Green Card Received Date (I-551 Issue Date)</label>
+          <input type="date" id="gcDate" class="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm focus:ring-2 focus:ring-neutral-900" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-neutral-700 mb-2">Eligibility Path</label>
+          <select id="eligPath" class="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm focus:ring-2 focus:ring-neutral-900 bg-white">
+            <option value="5">5-Year Rule (Standard — EB or most FB)</option>
+            <option value="3">3-Year Rule (Spouse of US Citizen — must remain married)</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="calcN400" class="px-8 py-3 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-colors">
+        Calculate Filing Date
+      </button>
+
+      <div id="n400Result" class="hidden mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+          <div class="text-xs font-bold uppercase text-emerald-600 mb-1">Earliest N-400 Filing Date</div>
+          <div id="n400Earliest" class="text-lg font-extrabold text-emerald-800">—</div>
+          <div class="text-xs text-emerald-600 mt-1">(90 days before eligibility)</div>
+        </div>
+        <div class="p-4 bg-neutral-50 border border-neutral-200 rounded-xl text-center">
+          <div class="text-xs font-bold uppercase text-neutral-500 mb-1">Eligibility Date</div>
+          <div id="n400Eligible" class="text-lg font-extrabold text-neutral-800">—</div>
+        </div>
+        <div class="p-4 bg-neutral-50 border border-neutral-200 rounded-xl text-center">
+          <div class="text-xs font-bold uppercase text-neutral-500 mb-1">Days Until You Can File</div>
+          <div id="n400Days" class="text-lg font-extrabold text-neutral-800">—</div>
+        </div>
+      </div>
+
+      <div id="n400Notes" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 space-y-1">
+        <p><strong>Important:</strong> The 90-day early filing window uses your eligibility date, not your green card date. Continuous Residence and Physical Presence requirements must also be met at time of filing.</p>
+        <p>Physical Presence requirement: 30 months out of 60 months for 5-year path. 18 months out of 36 months for 3-year path.</p>
+        <p>Trips abroad over 6 months may break continuous residence. Consult an immigration attorney if you have extended travel.</p>
+      </div>
+    </div>
+
+    <!-- Additional Phone Numbers -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-6 mb-8">
+      <h2 class="text-base font-bold text-neutral-900 mb-4">Other USCIS & Immigration Phone Numbers</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+        {[
+          { label: 'USCIS Contact Center', number: '1-800-375-5283', note: 'Case inquiries, general' },
+          { label: 'USCIS TTY (hearing impaired)', number: '1-800-767-1833', note: 'Accessibility line' },
+          { label: 'E-Verify Employer Hotline', number: '1-888-464-4218', note: 'Employer use only' },
+          { label: 'National Visa Center (NVC)', number: '1-603-334-0700', note: 'Immigrant visa processing' },
+          { label: 'State Dept Visa Info', number: '1-202-663-1225', note: 'Non-immigrant visa info' },
+          { label: 'CBP Traveler Inquiries', number: '1-877-227-5511', note: 'Port of entry questions' },
+          { label: 'EOIR Immigration Court', number: '1-800-898-7180', note: 'Hearing info hotline' },
+          { label: 'DOL Wage & Hour Division', number: '1-866-487-9243', note: 'LCA/H1B wage complaints' },
+        ].map(p => (
+          <div class="flex justify-between items-start p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+            <div>
+              <div class="font-medium text-neutral-800">{p.label}</div>
+              <div class="text-xs text-neutral-400">{p.note}</div>
+            </div>
+            <a href={`tel:${p.number.replace(/-/g,'')}`} class="font-mono font-bold text-neutral-900 hover:text-blue-600 hover:underline">{p.number}</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.getElementById('calcN400')?.addEventListener('click', () => {
+    const gcDateVal = (document.getElementById('gcDate') as HTMLInputElement).value;
+    const years = parseInt((document.getElementById('eligPath') as HTMLSelectElement).value);
+
+    if (!gcDateVal) return alert('Please enter your green card received date.');
+
+    const gcDate = new Date(gcDateVal + 'T00:00:00Z');
+    const eligDate = new Date(gcDate);
+    eligDate.setUTCFullYear(eligDate.getUTCFullYear() + years);
+
+    const earliestDate = new Date(eligDate);
+    earliestDate.setUTCDate(earliestDate.getUTCDate() - 90);
+
+    const today = new Date();
+    const daysUntil = Math.ceil((earliestDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+    const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+
+    document.getElementById('n400Earliest')!.textContent = fmt(earliestDate);
+    document.getElementById('n400Eligible')!.textContent = fmt(eligDate);
+    document.getElementById('n400Days')!.textContent = daysUntil <= 0 ? '✅ You can file now!' : `${daysUntil.toLocaleString()} days`;
+
+    document.getElementById('n400Result')!.classList.remove('hidden');
+    document.getElementById('n400Notes')!.classList.remove('hidden');
+  });
+</script>

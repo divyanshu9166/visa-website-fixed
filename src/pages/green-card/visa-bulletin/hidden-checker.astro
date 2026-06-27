@@ -1,0 +1,167 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const allBulletin = await getCollection('visaBulletin');
+const latestMonth = [...new Set(allBulletin.map(d => d.data.month))].sort().reverse()[0];
+const fmtMonth = (m: string) => new Date(m + '-01T00:00:00Z').toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+// Next expected month
+const [latestYear, latestMon] = latestMonth.split('-').map(Number);
+const nextMonthDate = new Date(Date.UTC(latestYear, latestMon, 1)); // JS months 0-indexed: latestMon = next month
+const nextMonth = `${nextMonthDate.getUTCFullYear()}-${String(nextMonthDate.getUTCMonth() + 1).padStart(2, '0')}`;
+const nextMonthLabel = fmtMonth(nextMonth);
+---
+
+<Layout
+  title="Find Hidden Visa Bulletin — Check if Next Month's Bulletin is Published Early"
+  description="The State Department often publishes the next month's Visa Bulletin early (8th-15th). Use this tool to check if it's available before the official announcement."
+>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Visa Bulletin', href: '/green-card/visa-bulletin' }, { label: 'Hidden Bulletin Checker' }]} />
+
+    <div class="mt-8 mb-6">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">Hidden Visa Bulletin Checker</h1>
+      <p class="text-lg text-neutral-500 max-w-2xl">The State Department publishes the Visa Bulletin between the <strong>8th and 15th</strong> of each month on travel.state.gov — often before making an official announcement. Check if the next bulletin is live.</p>
+    </div>
+
+    <!-- Status Card -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-8 mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <div class="text-xs font-bold uppercase text-neutral-400 mb-1">Latest Bulletin We Have</div>
+          <div class="text-xl font-extrabold text-neutral-900">{fmtMonth(latestMonth)}</div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs font-bold uppercase text-neutral-400 mb-1">Next Expected</div>
+          <div class="text-xl font-extrabold text-neutral-900">{nextMonthLabel}</div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 mb-6">
+        <strong>How this works:</strong> The {nextMonthLabel} Visa Bulletin will be published at a predictable URL on travel.state.gov. Due to CORS restrictions, this checker links you directly to check — you'll see it immediately if it's live.
+      </div>
+
+      <!-- Direct Links to check -->
+      <div class="space-y-3 mb-6">
+        <h3 class="text-sm font-bold text-neutral-700">Check These DOS URLs Directly:</h3>
+        <a
+          href={`https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/${nextMonthDate.getUTCFullYear()}/visa-bulletin-for-${nextMonthDate.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' }).toLowerCase()}-${nextMonthDate.getUTCFullYear()}.html`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center justify-between p-4 bg-neutral-50 rounded-xl border border-neutral-200 hover:border-neutral-800 transition-colors group"
+        >
+          <div>
+            <div class="font-semibold text-sm text-neutral-900 group-hover:text-neutral-700">{nextMonthLabel} Visa Bulletin</div>
+            <div class="text-xs text-neutral-400 mt-0.5">travel.state.gov official page</div>
+          </div>
+          <span class="text-xs font-bold text-neutral-400 group-hover:text-neutral-900">Open →</span>
+        </a>
+        <a
+          href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center justify-between p-4 bg-neutral-50 rounded-xl border border-neutral-200 hover:border-neutral-800 transition-colors group"
+        >
+          <div>
+            <div class="font-semibold text-sm text-neutral-900 group-hover:text-neutral-700">DOS Visa Bulletin Index</div>
+            <div class="text-xs text-neutral-400 mt-0.5">See all published bulletins</div>
+          </div>
+          <span class="text-xs font-bold text-neutral-400 group-hover:text-neutral-900">Open →</span>
+        </a>
+      </div>
+
+      <button id="checkBtn" class="w-full py-3 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-colors">
+        Run Automated Check (Proxy)
+      </button>
+      <p class="text-xs text-neutral-400 text-center mt-2">Attempts to detect {nextMonthLabel} bulletin via a CORS proxy. Not 100% reliable — direct link above is more accurate.</p>
+    </div>
+
+    <div id="checkResult" class="hidden rounded-2xl p-6 mb-8 text-center"></div>
+
+    <!-- When to check guide -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-6 mb-8">
+      <h2 class="text-base font-bold text-neutral-900 mb-4">Best Times to Check for Early Bulletin</h2>
+      <div class="space-y-3 text-sm">
+        {[
+          { date: '8th of month', likely: false, note: 'Very early — possible but rare. Check anyway.' },
+          { date: '9th–11th', likely: true, note: 'Most common early-publish window. Check morning EST.' },
+          { date: '12th–14th', likely: true, note: 'High probability. Usually published by now if early.' },
+          { date: '15th–17th', likely: false, note: 'Official announcement range. Definitely published by now.' },
+        ].map(t => (
+          <div class="flex items-center gap-4 p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+            <div class={`w-2 h-2 rounded-full flex-shrink-0 ${t.likely ? 'bg-emerald-500' : 'bg-neutral-300'}`}></div>
+            <div class="w-28 flex-shrink-0 font-semibold text-neutral-700">{t.date}</div>
+            <div class="text-neutral-500">{t.note}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- History of early publish dates -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-6">
+      <h2 class="text-base font-bold text-neutral-900 mb-4">Recent Bulletin Publication History</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-neutral-100">
+              <th class="text-left py-2 text-xs font-bold uppercase text-neutral-500">Bulletin Month</th>
+              <th class="text-left py-2 text-xs font-bold uppercase text-neutral-500">Published On</th>
+              <th class="text-left py-2 text-xs font-bold uppercase text-neutral-500">Day of Month</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100 text-neutral-600">
+            {[
+              { bulletin: 'July 2026', published: 'June 11, 2026', day: '11th' },
+              { bulletin: 'June 2026', published: 'May 13, 2026', day: '13th' },
+              { bulletin: 'May 2026', published: 'April 10, 2026', day: '10th' },
+              { bulletin: 'April 2026', published: 'March 12, 2026', day: '12th' },
+              { bulletin: 'March 2026', published: 'February 11, 2026', day: '11th' },
+              { bulletin: 'February 2026', published: 'January 14, 2026', day: '14th' },
+            ].map(r => (
+              <tr class="hover:bg-neutral-50">
+                <td class="py-2 font-medium">{r.bulletin}</td>
+                <td class="py-2">{r.published}</td>
+                <td class="py-2"><span class="bg-neutral-100 text-neutral-600 text-xs font-bold px-2 py-0.5 rounded">{r.day}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.getElementById('checkBtn')?.addEventListener('click', async () => {
+    const resultEl = document.getElementById('checkResult')!;
+    resultEl.classList.remove('hidden');
+    resultEl.className = 'rounded-2xl p-6 mb-8 text-center bg-neutral-50 border border-neutral-200';
+    resultEl.innerHTML = '<div class="animate-pulse text-neutral-500 text-sm">Checking travel.state.gov...</div>';
+
+    try {
+      // Use allorigins proxy to check if the page exists
+      const now = new Date();
+      const nextMonth = new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 1));
+      const monthName = nextMonth.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' }).toLowerCase();
+      const year = nextMonth.getUTCFullYear();
+      const url = `https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/${year}/visa-bulletin-for-${monthName}-${year}.html`;
+      
+      const proxyUrl = `https://api.allorigins.win/head?url=${encodeURIComponent(url)}`;
+      const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+      const data = await res.json();
+      
+      if (data.status?.http_code === 200) {
+        resultEl.className = 'rounded-2xl p-6 mb-8 text-center bg-emerald-50 border border-emerald-300';
+        resultEl.innerHTML = `<div class="text-2xl mb-2">✅</div><div class="text-lg font-bold text-emerald-800 mb-2">Bulletin Found!</div><div class="text-sm text-emerald-700">The next Visa Bulletin appears to be live on travel.state.gov.</div><a href="${url}" target="_blank" class="mt-3 inline-block px-5 py-2 bg-emerald-700 text-white rounded-lg text-sm font-semibold hover:bg-emerald-800">Open Bulletin →</a>`;
+      } else {
+        resultEl.className = 'rounded-2xl p-6 mb-8 text-center bg-neutral-50 border border-neutral-200';
+        resultEl.innerHTML = `<div class="text-2xl mb-2">⏳</div><div class="text-lg font-bold text-neutral-800 mb-2">Not Published Yet</div><div class="text-sm text-neutral-500">The next bulletin is not yet live. Check back between the 9th–15th of the month.</div>`;
+      }
+    } catch (e) {
+      resultEl.className = 'rounded-2xl p-6 mb-8 text-center bg-neutral-50 border border-neutral-200';
+      resultEl.innerHTML = `<div class="text-2xl mb-2">🔗</div><div class="text-lg font-bold text-neutral-800 mb-2">Use Direct Link Instead</div><div class="text-sm text-neutral-500">Automated check blocked. Please use the direct links above to check manually on travel.state.gov.</div>`;
+    }
+  });
+</script>

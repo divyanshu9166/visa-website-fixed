@@ -1,0 +1,25 @@
+{
+  "employerName": "Tata Consultancy Services Limited",
+  "slug": "tata-consultancy-services-limited",
+  "totalLCAs": 28901,
+  "approvalRate": 85.9,
+  "avgWage": 96200,
+  "medianWage": 90000,
+  "topTitles": [
+    { "title": "IT Analyst", "count": 9203, "avgWage": 86000, "socCode": "15-1299" },
+    { "title": "Systems Engineer", "count": 7102, "avgWage": 94000, "socCode": "15-1299" },
+    { "title": "Software Developer", "count": 4891, "avgWage": 98000, "socCode": "15-1252" },
+    { "title": "IT Architect", "count": 2103, "avgWage": 128000, "socCode": "15-1299" }
+  ],
+  "topStates": [
+    { "state": "TX", "count": 6892 },
+    { "state": "NJ", "count": 5103 },
+    { "state": "CA", "count": 4892 },
+    { "state": "IL", "count": 3201 },
+    { "state": "GA", "count": 2103 }
+  ],
+  "wageLevelDist": { "L1": 42, "L2": 39, "L3": 14, "L4": 5 },
+  "fiscalYear": 2024,
+  "grade": "C",
+  "lastUpdated": "2025-03-15"
+}

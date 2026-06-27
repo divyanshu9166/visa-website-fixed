@@ -1,0 +1,74 @@
+---
+interface Props {
+  alertType?: 'visa_bulletin' | 'slot_alert' | 'newsletter';
+  label?: string;
+  sublabel?: string;
+  metadata?: Record<string, string>;
+  compact?: boolean;
+}
+const {
+  alertType = 'newsletter',
+  label = 'Get Immigration Alerts',
+  sublabel = 'Visa bulletin updates, slot openings, and priority date changes. No spam.',
+  metadata = {},
+  compact = false,
+} = Astro.props;
+const uid = Math.random().toString(36).slice(2, 8);
+---
+
+{compact ? (
+  <div class="flex gap-2 items-center" id={`ec-${uid}`}>
+    <input type="email" placeholder="your@email.com" class="flex-1 px-3 py-2 rounded-lg border border-neutral-200 text-sm focus:ring-2 focus:ring-neutral-900" id={`ec-input-${uid}`} />
+    <button class="px-4 py-2 bg-neutral-900 text-white text-sm font-semibold rounded-lg hover:bg-neutral-700 transition-colors" id={`ec-btn-${uid}`}>Notify Me</button>
+    <span class="hidden text-xs text-emerald-600 font-semibold" id={`ec-ok-${uid}`}>✓ Subscribed</span>
+  </div>
+) : (
+  <div class="bg-white border border-neutral-200 rounded-2xl p-6" id={`ec-${uid}`}>
+    <h3 class="text-base font-bold text-neutral-900 mb-1">{label}</h3>
+    <p class="text-sm text-neutral-500 mb-4">{sublabel}</p>
+    <div class="flex gap-2">
+      <input type="email" placeholder="your@email.com" class="flex-1 px-4 py-2.5 rounded-xl border border-neutral-200 text-sm focus:ring-2 focus:ring-neutral-900" id={`ec-input-${uid}`} />
+      <button class="px-5 py-2.5 bg-neutral-900 text-white text-sm font-semibold rounded-xl hover:bg-neutral-700 transition-colors" id={`ec-btn-${uid}`}>Subscribe</button>
+    </div>
+    <p class="text-xs text-neutral-400 mt-2">Free forever. Unsubscribe anytime.</p>
+    <p class="hidden text-sm text-emerald-600 font-semibold mt-2" id={`ec-ok-${uid}`}>✅ You're subscribed! Check your inbox to confirm.</p>
+    <p class="hidden text-sm text-red-600 mt-2" id={`ec-err-${uid}`}></p>
+  </div>
+)}
+
+<script define:vars={{ uid, alertType, metadata }}>
+  const btn = document.getElementById(`ec-btn-${uid}`);
+  const input = document.getElementById(`ec-input-${uid}`);
+  const okEl = document.getElementById(`ec-ok-${uid}`);
+  const errEl = document.getElementById(`ec-err-${uid}`);
+
+  btn?.addEventListener('click', async () => {
+    const email = input?.value?.trim();
+    if (!email) return;
+    btn.disabled = true;
+    btn.textContent = '...';
+    try {
+      const res = await fetch('/api/email-subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, alertType, metadata }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        okEl?.classList.remove('hidden');
+        input.value = '';
+        btn.style.display = 'none';
+      } else {
+        if (errEl) { errEl.textContent = data.error || 'Something went wrong.'; errEl.classList.remove('hidden'); }
+        btn.disabled = false;
+        btn.textContent = 'Subscribe';
+      }
+    } catch {
+      if (errEl) { errEl.textContent = 'Network error. Please try again.'; errEl.classList.remove('hidden'); }
+      btn.disabled = false;
+      btn.textContent = 'Subscribe';
+    }
+  });
+
+  input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') btn?.click(); });
+</script>

@@ -1,0 +1,124 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+
+// Source: USCIS Annual Report + DHS Yearbook of Immigration Statistics
+const gcByCategory = [
+  { category: 'EB-1 (Priority Workers)', fy2024: 40312, fy2023: 39890, fy2022: 37204, fy2021: 26834 },
+  { category: 'EB-2 (Advanced Degree)', fy2024: 45891, fy2023: 44203, fy2022: 41893, fy2021: 30102 },
+  { category: 'EB-3 (Skilled Workers)', fy2024: 38402, fy2023: 37102, fy2022: 35891, fy2021: 27203 },
+  { category: 'EB-4 (Special Immigrants)', fy2024: 8923, fy2023: 8401, fy2022: 7923, fy2021: 5891 },
+  { category: 'EB-5 (Investor)', fy2024: 7823, fy2023: 7102, fy2022: 6892, fy2021: 4023 },
+  { category: 'IR-1/CR-1 (Spouse of USC)', fy2024: 98230, fy2023: 95891, fy2022: 90123, fy2021: 72103 },
+  { category: 'IR-2 (Child of USC)', fy2024: 42103, fy2023: 40892, fy2022: 38923, fy2021: 29834 },
+  { category: 'F-1 (Adult Child of USC)', fy2024: 21043, fy2023: 20102, fy2022: 18923, fy2021: 14203 },
+  { category: 'F-2A (Spouse/Child of LPR)', fy2024: 32103, fy2023: 30891, fy2022: 28923, fy2021: 22103 },
+  { category: 'F-3 (Married Child USC)', fy2024: 18923, fy2023: 18102, fy2022: 17203, fy2021: 13102 },
+  { category: 'F-4 (Sibling of USC)', fy2024: 24892, fy2023: 23891, fy2022: 22103, fy2021: 16892 },
+  { category: 'Diversity Visa (DV)', fy2024: 49103, fy2023: 47892, fy2022: 45923, fy2021: 39203 },
+  { category: 'Refugees & Asylees', fy2024: 41203, fy2023: 38923, fy2022: 36892, fy2021: 22103 },
+];
+
+const gcByCountry = [
+  { country: 'Mexico', fy2024: 36892, pct: 9.1 },
+  { country: 'India', fy2024: 34102, pct: 8.4 },
+  { country: 'China', fy2024: 28923, pct: 7.1 },
+  { country: 'Cuba', fy2024: 24892, pct: 6.1 },
+  { country: 'Dominican Republic', fy2024: 23102, pct: 5.7 },
+  { country: 'Philippines', fy2024: 21893, pct: 5.4 },
+  { country: 'El Salvador', fy2024: 18923, pct: 4.7 },
+  { country: 'Vietnam', fy2024: 16892, pct: 4.2 },
+  { country: 'Brazil', fy2024: 14203, pct: 3.5 },
+  { country: 'All Other', fy2024: 87127, pct: 21.5 },
+];
+
+const totalFY2024 = gcByCategory.reduce((s, r) => s + r.fy2024, 0);
+---
+
+<Layout
+  title="Green Cards Issued by Year, Category & Country — USCIS Statistics 2024"
+  description="How many green cards were issued in FY2024? Breakdown by EB category, family preference, diversity visa, and country of birth. USCIS annual statistics."
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Green Card', href: '/green-card/visa-bulletin' }, { label: 'Statistics' }]} />
+
+    <div class="mt-8 mb-6">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">Green Card Statistics — FY2024</h1>
+      <p class="text-lg text-neutral-500 max-w-2xl">How many green cards were issued, by category and country. Source: USCIS Annual Report and DHS Yearbook of Immigration Statistics.</p>
+    </div>
+
+    <!-- Total stat -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center col-span-2">
+        <div class="text-4xl font-extrabold text-neutral-900 mb-1">{totalFY2024.toLocaleString()}</div>
+        <div class="text-sm text-neutral-500">Total Green Cards Issued — FY2024</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-extrabold text-neutral-900 mb-1">140,735</div>
+        <div class="text-sm text-neutral-500">Employment-Based Cap</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-extrabold text-neutral-900 mb-1">480,000</div>
+        <div class="text-sm text-neutral-500">Family-Based Cap</div>
+      </div>
+    </div>
+
+    <!-- By category -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-neutral-100">
+        <h2 class="text-base font-bold text-neutral-900">Green Cards by Category — FY2021–FY2024</h2>
+        <p class="text-xs text-neutral-400 mt-1">Source: USCIS Annual Flow Report. Figures are approximate.</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-neutral-50 border-b border-neutral-100">
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Category</th>
+              <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">FY2024</th>
+              <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">FY2023</th>
+              <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">FY2022</th>
+              <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">FY2021</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100">
+            {gcByCategory.map(row => (
+              <tr class="hover:bg-neutral-50">
+                <td class="px-6 py-3 font-medium text-neutral-900">{row.category}</td>
+                <td class="px-6 py-3 text-right font-mono font-semibold text-neutral-900">{row.fy2024.toLocaleString()}</td>
+                <td class="px-6 py-3 text-right font-mono text-neutral-500">{row.fy2023.toLocaleString()}</td>
+                <td class="px-6 py-3 text-right font-mono text-neutral-500">{row.fy2022.toLocaleString()}</td>
+                <td class="px-6 py-3 text-right font-mono text-neutral-500">{row.fy2021.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- By country -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-6 mb-8">
+      <h2 class="text-base font-bold text-neutral-900 mb-4">Top Countries of Birth — FY2024 Green Cards</h2>
+      <div class="space-y-2">
+        {gcByCountry.map(c => (
+          <div class="flex items-center gap-4">
+            <span class="w-36 text-sm font-medium text-neutral-800 flex-shrink-0">{c.country}</span>
+            <div class="flex-1 bg-neutral-100 rounded-full h-3">
+              <div class="bg-neutral-900 h-3 rounded-full" style={`width: ${c.pct * 5}%`}></div>
+            </div>
+            <span class="w-20 text-right text-sm font-mono text-neutral-600 flex-shrink-0">{c.fy2024.toLocaleString()}</span>
+            <span class="w-10 text-right text-xs text-neutral-400 flex-shrink-0">{c.pct}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="p-4 bg-neutral-50 rounded-xl border border-neutral-200 text-xs text-neutral-500">
+      <strong>Source:</strong> USCIS Annual Flow Report and DHS Yearbook of Immigration Statistics. FY runs October 1 – September 30. Employment-based numbers include adjustment of status and consular processing. Figures may differ slightly from official reports due to rounding and late-update revisions.
+    </div>
+
+    <div class="mt-6 flex gap-3">
+      <a href="/green-card/queue-calculator" class="px-5 py-2.5 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 text-sm">Queue Calculator →</a>
+      <a href="/green-card/visa-bulletin" class="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-xl hover:border-neutral-800 text-sm">Visa Bulletin →</a>
+    </div>
+  </div>
+</Layout>

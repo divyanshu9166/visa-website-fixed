@@ -1,0 +1,204 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+
+const centers = [
+  { code: 'EAC', name: 'Vermont Service Center', location: 'St. Albans, Vermont', handles: ['H-1B (cap-exempt)', 'I-140', 'I-485', 'I-765', 'I-131'] },
+  { code: 'WAC', name: 'California Service Center', location: 'Laguna Niguel, California', handles: ['H-1B', 'L-1', 'O-1', 'I-485 EB', 'I-765'] },
+  { code: 'LIN', name: 'Nebraska Service Center', location: 'Lincoln, Nebraska', handles: ['H-1B (cap)', 'H-4', 'I-485 FB', 'N-400'] },
+  { code: 'SRC', name: 'Texas Service Center', location: 'Irving, Texas', handles: ['H-1B', 'I-130', 'I-140', 'I-485', 'TN'] },
+  { code: 'NBC', name: 'National Benefits Center', location: 'Lee\'s Summit, Missouri', handles: ['N-400', 'I-485 (interview)'] },
+  { code: 'MSC', name: 'Missouri (legacy NBC)', location: 'Lee\'s Summit, Missouri', handles: ['Various legacy cases'] },
+  { code: 'IOE', name: 'USCIS Electronic Immigration System', location: 'Online Filing Only', handles: ['Online-filed petitions'] },
+  { code: 'YSC', name: 'Potomac Service Center', location: 'Arlington, Virginia', handles: ['DACA', 'T/U visa', 'Special programs'] },
+];
+---
+
+<Layout
+  title="USCIS Receipt Number Decoder — What Your Receipt Number Means"
+  description="Decode your USCIS receipt number instantly. Understand which service center processed your case, when it was filed, and what form type it is. Free tool."
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Tools', href: '/tools' }, { label: 'Receipt Number Decoder' }]} />
+
+    <div class="mt-8 mb-6">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">USCIS Receipt Number Decoder</h1>
+      <p class="text-lg text-neutral-500 max-w-2xl">Paste your USCIS receipt number to instantly decode which service center filed your case, what fiscal year, and which day of the year.</p>
+    </div>
+
+    <!-- Decoder Tool -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-8 mb-8">
+      <label class="block text-sm font-semibold text-neutral-700 mb-2">USCIS Receipt Number</label>
+      <div class="flex gap-3 mb-4">
+        <input
+          id="receiptInput"
+          type="text"
+          placeholder="e.g. EAC2590012345"
+          maxlength="14"
+          class="flex-1 px-4 py-3 rounded-xl border border-neutral-200 text-sm font-mono tracking-wider focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 uppercase"
+        />
+        <button id="decodeBtn" class="px-6 py-3 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-colors whitespace-nowrap">
+          Decode
+        </button>
+      </div>
+      <p class="text-xs text-neutral-400">Your receipt number is on your I-797 Notice of Action or in your USCIS online account. Format: 3 letters + 2 digits + 9 digits = 14 characters total.</p>
+    </div>
+
+    <!-- Result -->
+    <div id="decodeResult" class="hidden bg-white border border-emerald-200 rounded-2xl shadow-sm p-8 mb-8">
+      <h2 class="text-base font-bold text-neutral-900 mb-4">Decoded Information</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 bg-neutral-50 rounded-xl">
+          <div class="text-xs font-bold uppercase text-neutral-400 mb-1">Service Center</div>
+          <div id="resultCenter" class="text-base font-semibold text-neutral-900">—</div>
+          <div id="resultLocation" class="text-xs text-neutral-500 mt-1">—</div>
+        </div>
+        <div class="p-4 bg-neutral-50 rounded-xl">
+          <div class="text-xs font-bold uppercase text-neutral-400 mb-1">Fiscal Year Filed</div>
+          <div id="resultYear" class="text-base font-semibold text-neutral-900">—</div>
+        </div>
+        <div class="p-4 bg-neutral-50 rounded-xl">
+          <div class="text-xs font-bold uppercase text-neutral-400 mb-1">Day of Fiscal Year</div>
+          <div id="resultDay" class="text-base font-semibold text-neutral-900">—</div>
+          <div id="resultCalDate" class="text-xs text-neutral-500 mt-1">—</div>
+        </div>
+        <div class="p-4 bg-neutral-50 rounded-xl">
+          <div class="text-xs font-bold uppercase text-neutral-400 mb-1">Case Sequence</div>
+          <div id="resultSeq" class="text-base font-semibold text-neutral-900">—</div>
+        </div>
+      </div>
+      <div id="resultHandles" class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800"></div>
+    </div>
+
+    <div id="decodeError" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-8 text-sm text-red-700"></div>
+
+    <!-- Format Guide -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-neutral-100">
+        <h2 class="text-base font-bold text-neutral-900">Receipt Number Format Guide</h2>
+      </div>
+      <div class="p-6">
+        <div class="font-mono text-2xl text-center mb-6 tracking-widest">
+          <span class="text-blue-600 bg-blue-50 px-2 py-1 rounded">EAC</span>
+          <span class="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">25</span>
+          <span class="text-amber-600 bg-amber-50 px-2 py-1 rounded">090</span>
+          <span class="text-purple-600 bg-purple-50 px-2 py-1 rounded">012345</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div class="text-center p-3 bg-blue-50 rounded-xl">
+            <div class="font-bold text-blue-700 mb-1">EAC</div>
+            <div class="text-blue-600 text-xs">Service Center Code (3 letters)</div>
+          </div>
+          <div class="text-center p-3 bg-emerald-50 rounded-xl">
+            <div class="font-bold text-emerald-700 mb-1">25</div>
+            <div class="text-emerald-600 text-xs">Fiscal Year (FY2025)</div>
+          </div>
+          <div class="text-center p-3 bg-amber-50 rounded-xl">
+            <div class="font-bold text-amber-700 mb-1">090</div>
+            <div class="text-amber-600 text-xs">Day of Fiscal Year (Day 90)</div>
+          </div>
+          <div class="text-center p-3 bg-purple-50 rounded-xl">
+            <div class="font-bold text-purple-700 mb-1">012345</div>
+            <div class="text-purple-600 text-xs">Case Sequence Number</div>
+          </div>
+        </div>
+        <p class="text-xs text-neutral-400 mt-4 text-center">Note: USCIS Fiscal Year runs October 1 – September 30. Day 001 = October 1.</p>
+      </div>
+    </div>
+
+    <!-- Service Centers Table -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-neutral-100">
+        <h2 class="text-base font-bold text-neutral-900">All USCIS Service Center Codes</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-neutral-50 border-b border-neutral-100">
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Code</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Service Center</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Location</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Common Forms</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100">
+            {centers.map(c => (
+              <tr class="hover:bg-neutral-50">
+                <td class="px-6 py-3 font-mono font-bold text-neutral-900">{c.code}</td>
+                <td class="px-6 py-3 font-medium text-neutral-800">{c.name}</td>
+                <td class="px-6 py-3 text-neutral-500">{c.location}</td>
+                <td class="px-6 py-3 text-neutral-500 text-xs">{c.handles.join(', ')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const CENTERS: Record<string, { name: string; location: string; handles: string[] }> = {
+    EAC: { name: 'Vermont Service Center', location: 'St. Albans, Vermont', handles: ['H-1B (cap-exempt)', 'I-140', 'I-485', 'I-765', 'I-131'] },
+    WAC: { name: 'California Service Center', location: 'Laguna Niguel, California', handles: ['H-1B', 'L-1', 'O-1', 'I-485 EB', 'I-765'] },
+    LIN: { name: 'Nebraska Service Center', location: 'Lincoln, Nebraska', handles: ['H-1B (cap)', 'H-4', 'I-485 FB', 'N-400'] },
+    SRC: { name: 'Texas Service Center', location: 'Irving, Texas', handles: ['H-1B', 'I-130', 'I-140', 'I-485', 'TN'] },
+    NBC: { name: 'National Benefits Center', location: "Lee's Summit, Missouri", handles: ['N-400', 'I-485 (interview)'] },
+    MSC: { name: 'Missouri Legacy Center', location: "Lee's Summit, Missouri", handles: ['Various legacy cases'] },
+    IOE: { name: 'Electronic Immigration System', location: 'Online Filing Only', handles: ['Online-filed petitions'] },
+    YSC: { name: 'Potomac Service Center', location: 'Arlington, Virginia', handles: ['DACA', 'T/U visa', 'Special programs'] },
+    CSC: { name: 'California Service Center (alt)', location: 'Laguna Niguel, California', handles: ['H-1B', 'L-1'] },
+    NSC: { name: 'Nebraska Service Center (alt)', location: 'Lincoln, Nebraska', handles: ['Various'] },
+    TSC: { name: 'Texas Service Center (alt)', location: 'Irving, Texas', handles: ['Various'] },
+    VSC: { name: 'Vermont Service Center (alt)', location: 'St. Albans, Vermont', handles: ['Various'] },
+  };
+
+  function fiscalYearDayToDate(fy: number, day: number): string {
+    // FY starts Oct 1 of prior calendar year
+    const fyStart = new Date(Date.UTC(fy - 1, 9, 1)); // Oct 1, year-1
+    fyStart.setUTCDate(fyStart.getUTCDate() + day - 1);
+    return fyStart.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+  }
+
+  document.getElementById('decodeBtn')?.addEventListener('click', () => {
+    const raw = (document.getElementById('receiptInput') as HTMLInputElement).value.trim().toUpperCase().replace(/[\s-]/g, '');
+    const errEl = document.getElementById('decodeError')!;
+    const resEl = document.getElementById('decodeResult')!;
+
+    errEl.classList.add('hidden');
+    resEl.classList.add('hidden');
+
+    if (raw.length < 13) {
+      errEl.textContent = `Invalid receipt number. Expected 13-14 characters, got ${raw.length}. Example: EAC2590012345`;
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    const centerCode = raw.slice(0, 3);
+    const fyShort = parseInt(raw.slice(3, 5));
+    const day = parseInt(raw.slice(5, 8));
+    const seq = raw.slice(8);
+    const fy = 2000 + fyShort;
+
+    const center = CENTERS[centerCode];
+    if (!center) {
+      errEl.textContent = `Unknown service center code "${centerCode}". Valid codes: ${Object.keys(CENTERS).join(', ')}`;
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    document.getElementById('resultCenter')!.textContent = center.name;
+    document.getElementById('resultLocation')!.textContent = center.location;
+    document.getElementById('resultYear')!.textContent = `FY${fy} (Oct ${fy - 1} – Sep ${fy})`;
+    document.getElementById('resultDay')!.textContent = `Day ${day} of ${365}`;
+    document.getElementById('resultCalDate')!.textContent = `≈ ${fiscalYearDayToDate(fy, day)}`;
+    document.getElementById('resultSeq')!.textContent = `#${parseInt(seq).toLocaleString()} at this center on that day`;
+    document.getElementById('resultHandles')!.innerHTML = `<strong>${centerCode} commonly processes:</strong> ${center.handles.join(' · ')}`;
+
+    resEl.classList.remove('hidden');
+  });
+
+  document.getElementById('receiptInput')?.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Enter') document.getElementById('decodeBtn')?.click();
+  });
+</script>

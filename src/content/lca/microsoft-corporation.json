@@ -1,0 +1,27 @@
+{
+  "employerName": "Microsoft Corporation",
+  "slug": "microsoft-corporation",
+  "totalLCAs": 18934,
+  "approvalRate": 96.8,
+  "avgWage": 185200,
+  "medianWage": 177000,
+  "topTitles": [
+    { "title": "Software Engineer", "count": 5823, "avgWage": 182000, "socCode": "15-1252" },
+    { "title": "Senior Software Engineer", "count": 3901, "avgWage": 228000, "socCode": "15-1252" },
+    { "title": "Principal Software Engineer", "count": 1203, "avgWage": 290000, "socCode": "15-1252" },
+    { "title": "Program Manager", "count": 1102, "avgWage": 175000, "socCode": "11-2021" },
+    { "title": "Cloud Solution Architect", "count": 892, "avgWage": 195000, "socCode": "15-1299" },
+    { "title": "Data Scientist", "count": 712, "avgWage": 185000, "socCode": "15-2051" }
+  ],
+  "topStates": [
+    { "state": "WA", "count": 12043 },
+    { "state": "CA", "count": 2891 },
+    { "state": "TX", "count": 1203 },
+    { "state": "NY", "count": 892 },
+    { "state": "NC", "count": 612 }
+  ],
+  "wageLevelDist": { "L1": 3, "L2": 22, "L3": 45, "L4": 30 },
+  "fiscalYear": 2024,
+  "grade": "A",
+  "lastUpdated": "2025-03-15"
+}

@@ -1,0 +1,94 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import DisqusComments from '../../components/DisqusComments.astro';
+import EmailCapture from '../../components/EmailCapture.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const fmtDate = (d: string) => new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', {
+  month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
+});
+
+// All posts for related
+const allPosts = await getCollection('blog');
+const related = allPosts
+  .filter(p => p.id !== post.id && (p.data.category === post.data.category || p.data.tags.some(t => post.data.tags.includes(t))))
+  .slice(0, 3);
+---
+
+<Layout title={`${post.data.title} | US Visa Tracker`} description={post.data.description}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Blog', href: '/blog' }, { label: post.data.title }]} />
+
+    <div class="mt-8 mb-8">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-xs font-bold bg-neutral-100 text-neutral-600 px-2 py-1 rounded">{post.data.category}</span>
+        <span class="text-sm text-neutral-400">{fmtDate(post.data.publishDate)}</span>
+        <span class="text-neutral-200">·</span>
+        <span class="text-sm text-neutral-400">{post.data.author}</span>
+      </div>
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-4 leading-tight">{post.data.title}</h1>
+      <p class="text-lg text-neutral-500">{post.data.description}</p>
+    </div>
+
+    <div class="flex flex-wrap gap-1.5 mb-8">
+      {post.data.tags.map(tag => (
+        <span class="text-xs bg-neutral-100 text-neutral-500 px-2.5 py-1 rounded-full">{tag}</span>
+      ))}
+    </div>
+
+    <!-- Article content -->
+    <div class="prose prose-neutral max-w-none prose-headings:font-extrabold prose-headings:tracking-tight prose-a:text-neutral-900 prose-a:underline prose-table:text-sm">
+      <Content />
+    </div>
+
+    <!-- Email CTA -->
+    <div class="mt-10">
+      <EmailCapture
+        alertType="newsletter"
+        label="Stay Updated on Immigration News"
+        sublabel="Get Visa Bulletin alerts, H1B lottery updates, and priority date changes in your inbox."
+      />
+    </div>
+
+    <!-- Related posts -->
+    {related.length > 0 && (
+      <div class="mt-10">
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">Related Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {related.map(rp => (
+            <a href={`/blog/${rp.id}`} class="bg-white border border-neutral-200 rounded-xl p-4 hover:border-neutral-800 hover:shadow-sm transition-all group">
+              <span class="text-xs font-bold text-neutral-400 uppercase">{rp.data.category}</span>
+              <h3 class="text-sm font-bold text-neutral-900 mt-1 group-hover:text-neutral-700 leading-snug">{rp.data.title}</h3>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Disqus comments -->
+    <DisqusComments pageIdentifier={`blog-${post.id}`} title={post.data.title} />
+  </div>
+</Layout>
+
+<style is:global>
+  .prose h2 { margin-top: 2rem; margin-bottom: 0.75rem; }
+  .prose h3 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+  .prose p { margin-bottom: 1rem; color: #525252; line-height: 1.75; }
+  .prose ul { margin-bottom: 1rem; padding-left: 1.25rem; }
+  .prose li { margin-bottom: 0.375rem; color: #525252; }
+  .prose table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }
+  .prose th { background: #f5f5f5; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #737373; border-bottom: 1px solid #e5e5e5; }
+  .prose td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #f5f5f5; color: #525252; }
+  .prose strong { color: #171717; }
+  .prose blockquote { border-left: 3px solid #e5e5e5; padding-left: 1rem; color: #737373; font-style: italic; }
+  .prose code { background: #f5f5f5; padding: 0.125rem 0.375rem; border-radius: 4px; font-size: 0.875em; color: #171717; }
+</style>

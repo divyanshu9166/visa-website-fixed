@@ -1,0 +1,101 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+<Layout title="How to Read the Visa Bulletin — Complete Guide 2026" description="A plain-English guide to reading the monthly Visa Bulletin: Final Action Dates vs Dates for Filing, priority dates, EB categories, and what 'C' and 'U' mean.">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Resources' }, { label: 'How to Read the Visa Bulletin' }]} />
+    <div class="mt-8 mb-10">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">How to Read the Visa Bulletin</h1>
+      <p class="text-lg text-neutral-500">The Visa Bulletin is published monthly by the US State Department and determines who can receive a green card or file an I-485. Here's exactly what it means.</p>
+    </div>
+
+    <div class="prose prose-neutral max-w-none space-y-8">
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">What is the Visa Bulletin?</h2>
+        <p class="text-neutral-600 text-sm leading-relaxed">The Visa Bulletin is a monthly publication from the US Department of State that sets <strong>priority dates</strong> — essentially your place in line — for employment-based (EB) and family-sponsored (FB) green card categories. Every month, the bulletin either advances, holds, or retrogressses these dates. If your priority date is <em>earlier than or equal to</em> the date shown in the bulletin for your category and country, you are "current" and may proceed.</p>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">Two Charts: Final Action vs Dates for Filing</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <h3 class="font-bold text-blue-800 mb-2">Table A — Final Action Dates</h3>
+            <p class="text-sm text-blue-700">This is the date your green card can actually be <strong>approved and issued</strong>. If your priority date is current on this chart, USCIS can approve your I-485 and mail you a green card.</p>
+          </div>
+          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <h3 class="font-bold text-emerald-800 mb-2">Table B — Dates for Filing</h3>
+            <p class="text-sm text-emerald-700">This allows you to <strong>submit your I-485 application</strong> to USCIS (if you're in the US). You can start getting EAD and Advance Parole, but your green card won't be approved until Table A is also current. USCIS decides each month whether to allow Table B filings.</p>
+          </div>
+        </div>
+        <p class="text-xs text-neutral-500 mt-3"><strong>Key rule:</strong> If USCIS accepts Table B (Dates for Filing) filings, you can file your I-485 early. If not, you must wait for Table A (Final Action). USCIS announces this monthly on their website.</p>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">What Do "C" and "U" Mean?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+            <div class="text-4xl font-extrabold text-emerald-700 mb-2">C</div>
+            <div class="font-bold text-emerald-800 mb-1">Current</div>
+            <p class="text-xs text-emerald-700">All applicants in this category and country are current. No backlog. You can immediately proceed regardless of your priority date.</p>
+          </div>
+          <div class="p-4 bg-red-50 border border-red-200 rounded-xl text-center">
+            <div class="text-4xl font-extrabold text-red-700 mb-2">U</div>
+            <div class="font-bold text-red-800 mb-1">Unavailable</div>
+            <p class="text-xs text-red-700">No visas are available this month in this category/country. Nobody can proceed regardless of priority date. Temporary or permanent depending on backlog.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">Employment-Based (EB) Categories Explained</h2>
+        <div class="space-y-3 text-sm">
+          {[
+            { cat: 'EB-1', title: 'Priority Workers', desc: 'Extraordinary ability, outstanding professors/researchers, multinational managers. Usually no labor certification needed.', backlog: 'India/China: backlog. Rest of World: typically Current.' },
+            { cat: 'EB-2', title: 'Advanced Degree Professionals', desc: 'Master\'s degree or higher, or exceptional ability. Requires labor certification (PERM) unless National Interest Waiver (NIW).', backlog: 'India: decades-long backlog. China: multi-year. Others: often Current.' },
+            { cat: 'EB-3', title: 'Skilled Workers', desc: 'Bachelor\'s degree or 2+ years of training. Requires PERM labor certification.', backlog: 'India: very long. China: multi-year. Philippines/Mexico: some backlog.' },
+            { cat: 'EB-4', title: 'Special Immigrants', desc: 'Religious workers, certain broadcasters, Afghans, Iraqis. Niche category.', backlog: 'Some countries face backlog.' },
+            { cat: 'EB-5', title: 'Investor Immigrants', desc: '$800K–$1.05M investment creating 10 US jobs. No PERM required.', backlog: 'India and China face significant backlogs.' },
+          ].map(item => (
+            <div class="p-4 bg-neutral-50 rounded-xl border border-neutral-100">
+              <div class="flex items-start gap-3">
+                <span class="inline-block bg-neutral-900 text-white text-xs font-bold px-2 py-1 rounded flex-shrink-0">{item.cat}</span>
+                <div>
+                  <div class="font-semibold text-neutral-900">{item.title}</div>
+                  <div class="text-neutral-600 text-xs mt-1">{item.desc}</div>
+                  <div class="text-neutral-400 text-xs mt-1 italic">{item.backlog}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">Priority Date vs. Filing Date — Don't Confuse These</h2>
+        <div class="space-y-3 text-sm text-neutral-600">
+          <p><strong class="text-neutral-900">Priority Date:</strong> The date your labor certification (PERM) was filed with DOL, or your I-140 petition receipt date (whichever applies). This is your permanent place-in-line marker.</p>
+          <p><strong class="text-neutral-900">Filing Date (Dates for Filing chart):</strong> The date shown in Table B above which you can submit your I-485. May be later than Final Action date in some months.</p>
+          <p><strong class="text-neutral-900">Final Action Date:</strong> The date shown in Table A — when your green card can actually be approved.</p>
+          <p class="p-3 bg-amber-50 border border-amber-200 rounded-lg"><strong class="text-amber-800">Example:</strong> If your priority date is January 15, 2015, and the Visa Bulletin shows EB-2 India Final Action Date of February 1, 2015 — your date is current and your green card can be approved.</p>
+        </div>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">Quick Reference: Is My Priority Date Current?</h2>
+        <div class="font-mono text-sm space-y-2">
+          <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200 text-emerald-800">✅ Your PD: Jan 2010 | Bulletin shows: Mar 2010 → CURRENT (your date is before the cutoff)</div>
+          <div class="p-3 bg-red-50 rounded-lg border border-red-200 text-red-800">❌ Your PD: Jun 2015 | Bulletin shows: Mar 2012 → NOT CURRENT (your date is after the cutoff)</div>
+          <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-200 text-emerald-800">✅ Your PD: any | Bulletin shows: C → CURRENT (everyone is current)</div>
+          <div class="p-3 bg-red-50 rounded-lg border border-red-200 text-red-800">❌ Your PD: any | Bulletin shows: U → NOT AVAILABLE this month</div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 flex-wrap">
+        <a href="/green-card/visa-bulletin" class="px-5 py-2.5 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-colors text-sm">Check Current Visa Bulletin →</a>
+        <a href="/green-card/priority-date-calculator" class="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-xl hover:border-neutral-800 transition-colors text-sm">Priority Date Calculator →</a>
+      </div>
+    </div>
+  </div>
+</Layout>

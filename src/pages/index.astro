@@ -10,6 +10,23 @@ const searchIndex = [
   ...BULLETIN_COUNTRIES.map((c) => ({ label: `Visa Bulletin — ${c.name}`, href: `/green-card/visa-bulletin/${c.slug}`, type: 'Visa Bulletin' })),
   ...WAIT_TIME_COUNTRIES.map((c) => ({ label: `Appointment Wait Times — ${c.name}`, href: `/us-visa-appointment-wait-times/${c.slug}`, type: 'Wait Times' })),
   { label: 'Priority Date Calculator', href: '/green-card/priority-date-calculator', type: 'Tool' },
+  { label: 'H1B Lottery Odds Calculator (FY2027)', href: '/tools/h1b-lottery-calculator', type: 'Tool' },
+  { label: 'USCIS Receipt Number Decoder', href: '/tools/receipt-number-decoder', type: 'Tool' },
+  { label: 'USCIS Phone Navigator + N-400 Calculator', href: '/tools/uscis-phone-calculator', type: 'Tool' },
+  { label: 'Green Card Queue Calculator', href: '/green-card/queue-calculator', type: 'Tool' },
+  { label: 'Retrogression Tracker', href: '/green-card/retrogression-tracker', type: 'Green Card' },
+  { label: 'Hidden Visa Bulletin Checker', href: '/green-card/visa-bulletin/hidden-checker', type: 'Tool' },
+  { label: 'H1B Sponsor & Salary Database', href: '/h1b', type: 'H1B' },
+  { label: 'H1B Layoff Guide — 60-Day Grace Period', href: '/resources/h1b-layoff-guide', type: 'Resource' },
+  { label: 'AC21 Job Portability Guide', href: '/resources/ac21-portability', type: 'Resource' },
+  { label: 'How to Read the Visa Bulletin', href: '/resources/how-to-read-visa-bulletin', type: 'Resource' },
+  { label: 'NVC Processing Times', href: '/uscis-processing-times/nvc', type: 'Processing Time' },
+  { label: 'DOS Visa Bulletin Predictions', href: '/green-card/dos-predictions', type: 'Green Card' },
+  { label: 'Green Card Statistics', href: '/green-card/gc-stats', type: 'Green Card' },
+  { label: 'Nonimmigrant Visa Statistics (F1, B1B2)', href: '/visa-stats', type: 'Statistics' },
+  { label: 'Slot Screenshots — Community Shared', href: '/trackers/slot-screenshots', type: 'Tracker' },
+  { label: 'Blog — Immigration Guides', href: '/blog', type: 'Blog' },
+  { label: 'Prediction Accuracy Backtest', href: '/green-card/prediction-accuracy', type: 'Green Card' },
 ];
 
 const faqs = [
@@ -187,6 +204,61 @@ const jsonLd = {
 				</p>
 			</div>
 		</div>
+
+		<!-- New Features Grid -->
+		<div class="mt-16">
+			<h2 class="text-2xl font-bold tracking-tight text-neutral-900 mb-2">New Tools & Features</h2>
+			<p class="text-neutral-500 text-sm mb-6">Recently added calculators, databases, and guides.</p>
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+				<a href="/tools/h1b-lottery-calculator" class="bg-white border border-red-200 rounded-xl p-5 hover:border-red-400 hover:shadow-sm transition-all group">
+					<div class="flex items-center gap-2 mb-2">
+						<span class="text-lg">🎲</span>
+						<span class="text-[10px] font-bold uppercase bg-red-100 text-red-700 px-2 py-0.5 rounded">Hot — FY2027</span>
+					</div>
+					<h3 class="text-sm font-bold text-neutral-900 mb-1">H1B Lottery Odds Calculator</h3>
+					<p class="text-xs text-neutral-500">Calculate your FY2027 selection probability under the new wage-weighted lottery rule.</p>
+				</a>
+
+				<a href="/h1b" class="bg-white border border-neutral-200 rounded-xl p-5 hover:border-neutral-800 hover:shadow-sm transition-all group">
+					<div class="flex items-center gap-2 mb-2">
+						<span class="text-lg">💼</span>
+						<span class="text-[10px] font-bold uppercase bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">New</span>
+					</div>
+					<h3 class="text-sm font-bold text-neutral-900 mb-1">H1B Sponsor & Salary Database</h3>
+					<p class="text-xs text-neutral-500">Search employer LCA data, approval rates, salary ranges, and wage level distribution.</p>
+				</a>
+
+				<a href="/green-card/queue-calculator" class="bg-white border border-neutral-200 rounded-xl p-5 hover:border-neutral-800 hover:shadow-sm transition-all group">
+					<div class="flex items-center gap-2 mb-2">
+						<span class="text-lg">⏳</span>
+						<span class="text-[10px] font-bold uppercase bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">New</span>
+					</div>
+					<h3 class="text-sm font-bold text-neutral-900 mb-1">Green Card Queue Calculator</h3>
+					<p class="text-xs text-neutral-500">Estimate years until your priority date is current — based on real USCIS I-485 inventory.</p>
+				</a>
+
+				<a href="/tools/receipt-number-decoder" class="bg-white border border-neutral-200 rounded-xl p-5 hover:border-neutral-800 hover:shadow-sm transition-all group">
+					<div class="mb-2"><span class="text-lg">🔍</span></div>
+					<h3 class="text-sm font-bold text-neutral-900 mb-1">Receipt Number Decoder</h3>
+					<p class="text-xs text-neutral-500">Decode your USCIS receipt number: service center, fiscal year, and filing date.</p>
+				</a>
+
+				<a href="/green-card/retrogression-tracker" class="bg-white border border-neutral-200 rounded-xl p-5 hover:border-neutral-800 hover:shadow-sm transition-all group">
+					<div class="mb-2"><span class="text-lg">📉</span></div>
+					<h3 class="text-sm font-bold text-neutral-900 mb-1">Retrogression Tracker</h3>
+					<p class="text-xs text-neutral-500">Every month priority dates moved backward — with data on how much and for which categories.</p>
+				</a>
+
+				<a href="/blog" class="bg-white border border-neutral-200 rounded-xl p-5 hover:border-neutral-800 hover:shadow-sm transition-all group">
+					<div class="mb-2"><span class="text-lg">📝</span></div>
+					<h3 class="text-sm font-bold text-neutral-900 mb-1">Immigration Blog</h3>
+					<p class="text-xs text-neutral-500">In-depth guides on H1B lottery, EB-2 India predictions, green card process, and more.</p>
+				</a>
+
+			</div>
+		</div>
+
 
 		<!-- FAQ Section -->
 		<div class="mt-24">

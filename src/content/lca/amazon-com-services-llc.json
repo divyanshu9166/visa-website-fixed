@@ -1,0 +1,27 @@
+{
+  "employerName": "Amazon.com Services LLC",
+  "slug": "amazon-com-services-llc",
+  "totalLCAs": 22105,
+  "approvalRate": 95.1,
+  "avgWage": 172300,
+  "medianWage": 163000,
+  "topTitles": [
+    { "title": "Software Development Engineer", "count": 7823, "avgWage": 174000, "socCode": "15-1252" },
+    { "title": "Senior Software Development Engineer", "count": 4201, "avgWage": 218000, "socCode": "15-1252" },
+    { "title": "Solutions Architect", "count": 1892, "avgWage": 185000, "socCode": "15-1299" },
+    { "title": "Data Engineer", "count": 1203, "avgWage": 162000, "socCode": "15-2051" },
+    { "title": "Product Manager", "count": 1102, "avgWage": 190000, "socCode": "11-2021" },
+    { "title": "Machine Learning Engineer", "count": 892, "avgWage": 205000, "socCode": "15-2051" }
+  ],
+  "topStates": [
+    { "state": "WA", "count": 10203 },
+    { "state": "VA", "count": 3892 },
+    { "state": "CA", "count": 2891 },
+    { "state": "TX", "count": 2103 },
+    { "state": "NY", "count": 1204 }
+  ],
+  "wageLevelDist": { "L1": 5, "L2": 28, "L3": 42, "L4": 25 },
+  "fiscalYear": 2024,
+  "grade": "A",
+  "lastUpdated": "2025-03-15"
+}

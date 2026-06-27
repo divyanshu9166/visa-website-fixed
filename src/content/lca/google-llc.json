@@ -1,0 +1,27 @@
+{
+  "employerName": "Google LLC",
+  "slug": "google-llc",
+  "totalLCAs": 14823,
+  "approvalRate": 97.4,
+  "avgWage": 198450,
+  "medianWage": 189000,
+  "topTitles": [
+    { "title": "Software Engineer", "count": 4102, "avgWage": 195000, "socCode": "15-1252" },
+    { "title": "Senior Software Engineer", "count": 2891, "avgWage": 245000, "socCode": "15-1252" },
+    { "title": "Research Scientist", "count": 1203, "avgWage": 230000, "socCode": "15-2051" },
+    { "title": "Product Manager", "count": 892, "avgWage": 210000, "socCode": "11-2021" },
+    { "title": "Data Scientist", "count": 743, "avgWage": 188000, "socCode": "15-2051" },
+    { "title": "UX Engineer", "count": 412, "avgWage": 175000, "socCode": "15-1255" }
+  ],
+  "topStates": [
+    { "state": "CA", "count": 8901 },
+    { "state": "WA", "count": 2341 },
+    { "state": "NY", "count": 1203 },
+    { "state": "TX", "count": 893 },
+    { "state": "IL", "count": 412 }
+  ],
+  "wageLevelDist": { "L1": 2, "L2": 18, "L3": 48, "L4": 32 },
+  "fiscalYear": 2024,
+  "grade": "A",
+  "lastUpdated": "2025-03-15"
+}

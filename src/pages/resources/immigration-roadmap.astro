@@ -1,0 +1,180 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+
+<Layout
+  title="US Immigration Roadmap 2026 — EB Green Card & H1B Pathway Flowchart"
+  description="Complete US immigration pathway flowchart: H1B → EB Green Card steps, PERM → I-140 → I-485 timeline, family-based options, and citizenship. Visual guide."
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Resources', href: '/resources' }, { label: 'Immigration Roadmap' }]} />
+
+    <div class="mt-8 mb-8">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">US Immigration Roadmap</h1>
+      <p class="text-lg text-neutral-500 max-w-2xl">Visual guide to the employment-based green card pathway — from H1B visa through permanent residency and citizenship.</p>
+    </div>
+
+    <!-- EB Roadmap Flowchart -->
+    <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-8 overflow-x-auto">
+      <h2 class="text-base font-bold text-neutral-900 mb-6">Employment-Based (EB) Green Card Pathway</h2>
+      <div class="min-w-[640px]">
+        <!-- Row 1: Entry -->
+        <div class="flex items-start justify-center gap-4 mb-2">
+          {[
+            { label: 'H-1B Visa', sub: 'Specialty Occupation\nI-129 · 3yr (ext. 6yr)', color: 'bg-blue-50 border-blue-200 text-blue-900' },
+            { label: 'L-1 Visa', sub: 'Intracompany Transfer\nI-129 · 1–3yr', color: 'bg-purple-50 border-purple-200 text-purple-900' },
+            { label: 'O-1 Visa', sub: 'Extraordinary Ability\nI-129 · 1yr', color: 'bg-amber-50 border-amber-200 text-amber-900' },
+          ].map(card => (
+            <div class={`flex-1 border-2 rounded-xl p-3 text-center text-xs ${card.color}`}>
+              <div class="font-extrabold text-sm mb-1">{card.label}</div>
+              <div class="whitespace-pre-line opacity-70">{card.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Arrow down -->
+        <div class="flex justify-center mb-2"><div class="w-px h-6 bg-neutral-300"></div></div>
+        <div class="flex justify-center mb-2"><div class="text-neutral-400 text-xs">Begin Green Card process while on work visa</div></div>
+        <div class="flex justify-center mb-2"><div class="w-px h-6 bg-neutral-300"></div></div>
+
+        <!-- Row 2: PERM or Direct I-140 -->
+        <div class="flex items-start justify-center gap-4 mb-2">
+          {[
+            { label: 'PERM Labor Cert.', sub: 'ETA-9089 · DOL Atlanta\n~10–14 months', color: 'bg-neutral-100 border-neutral-300 text-neutral-900', note: 'Required for EB-2 (non-NIW), EB-3' },
+            { label: 'Skip PERM', sub: 'EB-1 / NIW / EB-5\nDirect I-140', color: 'bg-emerald-50 border-emerald-200 text-emerald-900', note: 'EB-1A, EB-1B, NIW, EB-5' },
+          ].map(card => (
+            <div class={`flex-1 border-2 rounded-xl p-3 text-center text-xs ${card.color}`}>
+              <div class="font-extrabold text-sm mb-1">{card.label}</div>
+              <div class="whitespace-pre-line opacity-70">{card.sub}</div>
+              <div class="text-[10px] mt-1 font-semibold opacity-50">{card.note}</div>
+            </div>
+          ))}
+        </div>
+
+        <div class="flex justify-center mb-2"><div class="w-px h-6 bg-neutral-300"></div></div>
+
+        <!-- Row 3: I-140 -->
+        <div class="flex justify-center mb-2">
+          <div class="w-64 border-2 border-neutral-900 bg-neutral-900 text-white rounded-xl p-3 text-center text-xs">
+            <div class="font-extrabold text-sm mb-1">I-140 Petition</div>
+            <div class="opacity-80">Regular: 6–12 months\nPremium: 15 business days ($2,805)</div>
+            <div class="text-[10px] mt-1 text-neutral-300">✓ Priority date locked on approval</div>
+          </div>
+        </div>
+
+        <div class="flex justify-center mb-2"><div class="w-px h-6 bg-neutral-300"></div></div>
+        <div class="flex justify-center mb-2"><div class="text-neutral-400 text-xs font-semibold">WAIT for Priority Date to become current on Visa Bulletin</div></div>
+        <div class="flex justify-center mb-2"><div class="w-px h-6 bg-neutral-300"></div></div>
+
+        <!-- Row 4: I-485 vs Consular -->
+        <div class="flex items-start justify-center gap-4 mb-2">
+          {[
+            { label: 'I-485 (In US)', sub: 'Adjustment of Status\n+ I-765 EAD + I-131 AP\nFile together when PD current', color: 'bg-blue-50 border-blue-200 text-blue-900' },
+            { label: 'Consular (Abroad)', sub: 'NVC → Consulate\nImmigrant Visa Interview\n3–12 months at NVC', color: 'bg-purple-50 border-purple-200 text-purple-900' },
+          ].map(card => (
+            <div class={`flex-1 border-2 rounded-xl p-3 text-center text-xs ${card.color}`}>
+              <div class="font-extrabold text-sm mb-1">{card.label}</div>
+              <div class="whitespace-pre-line opacity-70">{card.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        <div class="flex justify-center mb-2"><div class="w-px h-6 bg-neutral-300"></div></div>
+
+        <!-- Row 5: Green Card -->
+        <div class="flex justify-center mb-2">
+          <div class="w-64 border-2 border-emerald-600 bg-emerald-600 text-white rounded-xl p-4 text-center">
+            <div class="font-extrabold text-base mb-1">🟢 Green Card</div>
+            <div class="text-xs opacity-90">Permanent Resident (LPR)\nValid 10 years · Renewable</div>
+          </div>
+        </div>
+
+        <div class="flex justify-center mb-2"><div class="w-px h-8 bg-neutral-300"></div></div>
+        <div class="flex justify-center mb-2"><div class="text-neutral-400 text-xs">5 years (or 3 years if married to USC) + physical presence</div></div>
+        <div class="flex justify-center mb-2"><div class="w-px h-6 bg-neutral-300"></div></div>
+
+        <!-- Row 6: Citizenship -->
+        <div class="flex justify-center">
+          <div class="w-64 border-2 border-neutral-900 bg-neutral-900 text-white rounded-xl p-4 text-center">
+            <div class="font-extrabold text-base mb-1">🇺🇸 US Citizenship</div>
+            <div class="text-xs opacity-90">N-400 · Naturalization\nPassport · Full rights</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key timelines -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-base font-bold text-neutral-900 mb-4">Typical Timeline (Rest of World)</h2>
+        <div class="space-y-3 text-sm">
+          {[
+            { stage: 'PERM', time: '10–14 months', note: 'From filing to certification' },
+            { stage: 'I-140 (Premium)', time: '15 business days', note: 'Highly recommended' },
+            { stage: 'Priority Date Wait', time: '0–3 years', note: 'Most non-India/China categories' },
+            { stage: 'I-485 to Green Card', time: '8–20 months', note: 'After filing' },
+            { stage: 'Total EB-2 ROW', time: '2–5 years', note: 'Estimate, varies widely' },
+          ].map(r => (
+            <div class="flex justify-between items-start">
+              <span class="text-neutral-700 font-medium">{r.stage}</span>
+              <div class="text-right">
+                <div class="font-bold text-neutral-900 text-xs">{r.time}</div>
+                <div class="text-xs text-neutral-400">{r.note}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="bg-white border border-red-200 rounded-2xl p-6">
+        <h2 class="text-base font-bold text-neutral-900 mb-4">Timeline for India Nationals</h2>
+        <div class="space-y-3 text-sm">
+          {[
+            { stage: 'PERM', time: '10–14 months', note: 'Same as everyone else' },
+            { stage: 'I-140 (Premium)', time: '15 business days', note: 'Same as everyone else' },
+            { stage: 'Priority Date Wait (EB-2)', time: '20–30+ years', note: 'Current backlog as of 2026' },
+            { stage: 'Priority Date Wait (EB-3)', time: '15–20+ years', note: 'Slightly different from EB-2' },
+            { stage: 'Total EB-2 India', time: '25–35 years', note: 'Without legislative reform' },
+          ].map(r => (
+            <div class="flex justify-between items-start">
+              <span class="text-neutral-700 font-medium">{r.stage}</span>
+              <div class="text-right">
+                <div class={`font-bold text-xs ${r.stage.includes('Wait') ? 'text-red-600' : 'text-neutral-900'}`}>{r.time}</div>
+                <div class="text-xs text-neutral-400">{r.note}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="mt-4 p-3 bg-red-50 rounded-xl text-xs text-red-700">
+          <strong>The 7% per-country cap</strong> is the root cause. India nationals represent ~70% of EB applicants but get the same 7% as any other country. Only Congress can fix this.
+        </div>
+      </div>
+    </div>
+
+    <!-- Key milestones & tips -->
+    <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-8">
+      <h2 class="text-base font-bold text-neutral-900 mb-4">Critical Milestones to Hit ASAP</h2>
+      <div class="space-y-3">
+        {[
+          { priority: 'Immediate', tip: 'Ask employer to file PERM as soon as you join. Every month delay = your priority date pushed back.' },
+          { priority: 'High', tip: 'Always use I-140 Premium Processing ($2,805). Getting your priority date approved fast matters more than saving the fee.' },
+          { priority: 'High', tip: 'File I-485 the first day your priority date is current on the Dates for Filing chart — same day access to EAD.' },
+          { priority: 'Medium', tip: 'After 180 days of I-485 pending with approved I-140, you have AC21 portability. Job change risk drops dramatically.' },
+          { priority: 'Medium', tip: 'If your employer offers H1B6+ extensions (beyond 6 years) based on 365-day-pending PERM/I-140, get it — it buys time.' },
+          { priority: 'Low', tip: 'Track the Visa Bulletin monthly. Set email alerts. A single missed month of filing window can cost you a year.' },
+        ].map(t => (
+          <div class="flex items-start gap-3 p-3 bg-neutral-50 rounded-xl">
+            <span class={`text-[10px] font-extrabold uppercase px-2 py-1 rounded flex-shrink-0 mt-0.5 ${t.priority === 'Immediate' ? 'bg-red-100 text-red-700' : t.priority === 'High' ? 'bg-amber-100 text-amber-700' : t.priority === 'Medium' ? 'bg-blue-100 text-blue-700' : 'bg-neutral-100 text-neutral-600'}`}>{t.priority}</span>
+            <p class="text-sm text-neutral-700">{t.tip}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <a href="/green-card/queue-calculator" class="px-5 py-2.5 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 text-sm">Queue Calculator →</a>
+      <a href="/green-card/visa-bulletin" class="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-xl hover:border-neutral-800 text-sm">Visa Bulletin →</a>
+      <a href="/resources/ac21-portability" class="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-xl hover:border-neutral-800 text-sm">AC21 Guide →</a>
+    </div>
+  </div>
+</Layout>

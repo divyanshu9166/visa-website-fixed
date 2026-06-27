@@ -1,0 +1,26 @@
+{
+  "employerName": "Infosys Limited",
+  "slug": "infosys-limited",
+  "totalLCAs": 31203,
+  "approvalRate": 87.3,
+  "avgWage": 98400,
+  "medianWage": 92000,
+  "topTitles": [
+    { "title": "Technology Analyst", "count": 8923, "avgWage": 88000, "socCode": "15-1299" },
+    { "title": "Senior Systems Engineer", "count": 6201, "avgWage": 102000, "socCode": "15-1299" },
+    { "title": "Technology Lead", "count": 4102, "avgWage": 118000, "socCode": "15-1299" },
+    { "title": "Software Engineer", "count": 3891, "avgWage": 95000, "socCode": "15-1252" },
+    { "title": "Principal Architect", "count": 1203, "avgWage": 145000, "socCode": "15-1299" }
+  ],
+  "topStates": [
+    { "state": "TX", "count": 7823 },
+    { "state": "CA", "count": 5892 },
+    { "state": "NJ", "count": 4203 },
+    { "state": "NY", "count": 3102 },
+    { "state": "IL", "count": 2891 }
+  ],
+  "wageLevelDist": { "L1": 38, "L2": 42, "L3": 16, "L4": 4 },
+  "fiscalYear": 2024,
+  "grade": "C",
+  "lastUpdated": "2025-03-15"
+}

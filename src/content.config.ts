@@ -93,4 +93,41 @@ const appointmentWaitTimes = defineCollection({
   }),
 });
 
-export const collections = { uscisQuarterlyStats, visaBulletin, processingTimes, appointmentWaitTimes };
+const blog = defineCollection({
+  loader: glob({ pattern: "*.md", base: "./src/content/blog" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    publishDate: z.string(),
+    author: z.string().default('US Visa Tracker Team'),
+    category: z.string(),
+    tags: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),
+    image: z.string().optional(),
+  }),
+});
+
+const lca = defineCollection({
+  loader: glob({ pattern: "*.json", base: "./src/content/lca" }),
+  schema: z.object({
+    employerName: z.string(),
+    slug: z.string(),
+    totalLCAs: z.number(),
+    approvalRate: z.number(),
+    avgWage: z.number(),
+    medianWage: z.number(),
+    topTitles: z.array(z.object({
+      title: z.string(),
+      count: z.number(),
+      avgWage: z.number(),
+      socCode: z.string(),
+    })),
+    topStates: z.array(z.object({ state: z.string(), count: z.number() })),
+    wageLevelDist: z.object({ L1: z.number(), L2: z.number(), L3: z.number(), L4: z.number() }),
+    fiscalYear: z.number(),
+    grade: z.string(),   // A, B, C, D, F
+    lastUpdated: z.string(),
+  }),
+});
+
+export const collections = { uscisQuarterlyStats, visaBulletin, processingTimes, appointmentWaitTimes, blog, lca };

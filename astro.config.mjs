@@ -32,12 +32,16 @@ export default defineConfig({
           item.priority = 0.8;
         } else if (url.includes('/us-visa-appointment-wait-times/')) {
           item.priority = 0.7;
-        } else if (url.includes('/uscis-trackers') || url.includes('/trackers/') || url.includes('/us-visa-trackers/') || url.includes('calculator')) {
-          item.priority = 0.6;
+        } else if (url.includes('/h1b/') || url.includes('/tools/') || url.includes('calculator') || url.includes('/blog/')) {
+          item.priority = 0.8;
+        } else if (url.includes('/uscis-trackers') || url.includes('/trackers/') || url.includes('/us-visa-trackers/')) {
+          item.priority = 0.7;
+        } else if (url.includes('/resources/') || url.includes('/green-card/') || url.includes('/visa-stats')) {
+          item.priority = 0.7;
         } else {
           item.priority = 0.5;
         }
-        item.changefreq = url.includes('processing-times') || url.includes('visa-bulletin') || url.includes('wait-times') ? EnumChangefreq.DAILY : EnumChangefreq.MONTHLY;
+        item.changefreq = url.includes('processing-times') || url.includes('visa-bulletin') || url.includes('wait-times') || url.includes('/blog/') ? EnumChangefreq.DAILY : EnumChangefreq.MONTHLY;
         return item;
       },
     }),

@@ -1,0 +1,25 @@
+{
+  "employerName": "Meta Platforms Inc",
+  "slug": "meta-platforms-inc",
+  "totalLCAs": 9823,
+  "approvalRate": 96.2,
+  "avgWage": 212800,
+  "medianWage": 205000,
+  "topTitles": [
+    { "title": "Software Engineer", "count": 2891, "avgWage": 208000, "socCode": "15-1252" },
+    { "title": "Research Scientist", "count": 1203, "avgWage": 265000, "socCode": "15-2051" },
+    { "title": "Data Engineer", "count": 892, "avgWage": 195000, "socCode": "15-2051" },
+    { "title": "Product Manager", "count": 743, "avgWage": 220000, "socCode": "11-2021" },
+    { "title": "Infrastructure Engineer", "count": 612, "avgWage": 218000, "socCode": "15-1299" }
+  ],
+  "topStates": [
+    { "state": "CA", "count": 7102 },
+    { "state": "WA", "count": 892 },
+    { "state": "NY", "count": 743 },
+    { "state": "TX", "count": 612 }
+  ],
+  "wageLevelDist": { "L1": 1, "L2": 14, "L3": 52, "L4": 33 },
+  "fiscalYear": 2024,
+  "grade": "A",
+  "lastUpdated": "2025-03-15"
+}

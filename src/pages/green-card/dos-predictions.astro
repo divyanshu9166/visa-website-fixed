@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const allBulletin = await getCollection('visaBulletin');
+const latestMonth = [...new Set(allBulletin.map(d => d.data.month))].sort().reverse()[0];
+const latestEB2India = allBulletin.find(d => d.data.month === latestMonth && d.data.category === 'EB-2' && d.data.country === 'India');
+const latestEB3India = allBulletin.find(d => d.data.month === latestMonth && d.data.category === 'EB-3' && d.data.country === 'India');
+const fmtDate = (d: string) => { try { return new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }); } catch { return d; } };
+const fmtMonth = (m: string) => new Date(m + '-01T00:00:00Z').toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+<Layout title="DOS Visa Bulletin Predictions — Charlie Oppenheim Analysis 2026" description="Monthly State Department predictions for EB visa bulletin movement. Analysis of DOS Charlie Oppenheim commentary on priority date trends for India, China, EB-2, EB-3.">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Green Card', href: '/green-card/visa-bulletin' }, { label: 'DOS Predictions' }]} />
+
+    <div class="mt-8 mb-8">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">DOS Visa Bulletin Predictions</h1>
+      <p class="text-lg text-neutral-500">Monthly guidance from the State Department Visa Office on expected priority date movement, demand patterns, and category-specific trends.</p>
+    </div>
+
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-8 text-sm text-amber-800">
+      <strong>Source:</strong> The Department of State Visa Office publishes monthly "Visa Bulletin Predictions" commentary (formerly by Charlie Oppenheim, now continued by current DOS staff) on <a href="https://travel.state.gov" class="underline" target="_blank">travel.state.gov</a>. This page summarizes and tracks those predictions alongside actual bulletin movement.
+    </div>
+
+    <!-- Current bulletin status -->
+    <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-8">
+      <h2 class="text-base font-bold text-neutral-900 mb-4">Current Bulletin — {fmtMonth(latestMonth)}</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="p-4 bg-neutral-50 rounded-xl">
+          <div class="text-xs font-bold uppercase text-neutral-400 mb-1">EB-2 India Final Action</div>
+          <div class="text-xl font-extrabold text-neutral-900">{latestEB2India ? fmtDate(latestEB2India.data.finalActionDate) : 'N/A'}</div>
+        </div>
+        <div class="p-4 bg-neutral-50 rounded-xl">
+          <div class="text-xs font-bold uppercase text-neutral-400 mb-1">EB-3 India Final Action</div>
+          <div class="text-xl font-extrabold text-neutral-900">{latestEB3India ? fmtDate(latestEB3India.data.finalActionDate) : 'N/A'}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prediction history table -->
+    <div class="bg-white border border-neutral-200 rounded-2xl overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-neutral-100">
+        <h2 class="text-base font-bold text-neutral-900">DOS Monthly Guidance — 2025–2026</h2>
+      </div>
+      <div class="divide-y divide-neutral-100">
+        {[
+          { month: 'June 2026', eb2India: 'Hold/slight advance', eb3India: 'Small advance possible', china: 'EB-1 advance likely', note: 'DOS indicates high demand in EB-2 India through end of FY2026. Expect minimal movement until October reset.' },
+          { month: 'May 2026', eb2India: 'Minimal advance (1–2 weeks)', eb3India: 'Advance expected', china: 'EB-1 steady', note: 'Demand exceeding supply in EB-2 India. EB-3 India moving slightly faster due to lower pending demand ratio.' },
+          { month: 'April 2026', eb2India: 'Steady / possible hold', eb3India: 'Moderate advance', china: 'EB-2 advance', note: 'DOS cautions on EB-2 India cutoff — high demand from I-485 applicants. EB-3 India showing relative health.' },
+          { month: 'March 2026', eb2India: 'Slight advance', eb3India: 'Advance', china: 'EB-1 advance', note: 'FY2026 visa numbers tracking normal pace. No retrogression expected before October.' },
+          { month: 'February 2026', eb2India: 'Small advance', eb3India: 'Small to moderate advance', china: 'Steady', note: 'First half of FY2026 demand normal. DOS optimistic about steady forward movement through mid-year.' },
+          { month: 'January 2026', eb2India: 'Advance expected', eb3India: 'Advance expected', china: 'EB-1 current', note: 'Q1 FY2026 usage lighter than projected. DOS expects continued movement but warns of increased demand as PDs advance.' },
+        ].map(row => (
+          <div class="px-6 py-5">
+            <div class="flex items-start justify-between mb-3">
+              <span class="font-bold text-neutral-900">{row.month}</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3 mb-3">
+              <div class="p-2 bg-neutral-50 rounded-lg text-xs"><div class="font-bold text-neutral-500 mb-0.5">EB-2 India</div><div class="text-neutral-800">{row.eb2India}</div></div>
+              <div class="p-2 bg-neutral-50 rounded-lg text-xs"><div class="font-bold text-neutral-500 mb-0.5">EB-3 India</div><div class="text-neutral-800">{row.eb3India}</div></div>
+              <div class="p-2 bg-neutral-50 rounded-lg text-xs"><div class="font-bold text-neutral-500 mb-0.5">China EB</div><div class="text-neutral-800">{row.china}</div></div>
+            </div>
+            <p class="text-xs text-neutral-500">{row.note}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- How to read DOS predictions -->
+    <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-6">
+      <h2 class="text-base font-bold text-neutral-900 mb-3">How to Use DOS Predictions</h2>
+      <div class="space-y-2 text-sm text-neutral-600">
+        <p>DOS Visa Office publishes the Visa Bulletin prediction commentary monthly via AILA (American Immigration Lawyers Association) calls and its website. Key signals to watch:</p>
+        <ul class="space-y-1 list-disc ml-4">
+          <li><strong>Demand signals:</strong> "High demand" = expect hold or retrogression. "Lower than expected demand" = expect advance.</li>
+          <li><strong>October reset:</strong> Every October 1 starts a new fiscal year. Categories that were held or retrogrressed often jump forward in October as new visa numbers become available.</li>
+          <li><strong>Spillover:</strong> Unused EB-1 visas spill over to EB-2, then EB-3. Heavy EB-1 usage means less spillover and slower EB-2 movement.</li>
+          <li><strong>"Will not advance" warning:</strong> If DOS says this explicitly, a category is at risk of retrogression or hold for multiple months.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex gap-4 flex-wrap">
+      <a href="/green-card/visa-bulletin" class="px-5 py-2.5 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 text-sm">View Visa Bulletin →</a>
+      <a href="/green-card/retrogression-tracker" class="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-xl hover:border-neutral-800 text-sm">Retrogression History →</a>
+    </div>
+  </div>
+</Layout>

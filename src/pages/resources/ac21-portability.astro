@@ -1,0 +1,82 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+<Layout title="AC21 Portability Guide 2026 — Change Jobs While Green Card is Pending" description="Complete AC21 guide: how to change employers after 180 days of I-485 pending, same/similar occupation rule, how to notify USCIS, and protect your priority date.">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Resources' }, { label: 'AC21 Portability' }]} />
+    <div class="mt-8 mb-8">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">AC21 Job Portability — Complete Guide</h1>
+      <p class="text-lg text-neutral-500">The American Competitiveness in the 21st Century Act (AC21) lets you change employers or jobs without losing your green card priority date — if you meet the requirements.</p>
+    </div>
+
+    <div class="space-y-6">
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">What AC21 Allows</h2>
+        <p class="text-sm text-neutral-600 leading-relaxed">Under AC21 § 106(c), if your I-485 (Adjustment of Status) has been pending for <strong>180 days or more</strong> and your underlying I-140 is approved, you may change employers or job titles — as long as the new position is in the <strong>same or similar occupational classification</strong> as the original petition. Your priority date is preserved and your I-485 remains valid.</p>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">The 3 Requirements — All Must Be Met</h2>
+        <div class="space-y-3">
+          {[
+            { num: '1', title: 'I-485 Pending 180+ Days', desc: 'Your I-485 must have been pending with USCIS for at least 180 calendar days from the date it was received (shown on your I-797 receipt notice). Count from receipt date, not the date you filed.' },
+            { num: '2', title: 'Approved I-140', desc: 'Your underlying I-140 petition must be approved. A pending or denied I-140 does not qualify. If your I-140 was revoked by the petitioning employer, special rules apply — the I-140 may still be considered "valid" for AC21 purposes if it was approved for 180+ days before revocation.' },
+            { num: '3', title: 'Same or Similar Occupation', desc: 'The new job must be in the same or a similar occupational classification. USCIS uses SOC (Standard Occupational Classification) codes. Generally, same SOC code = same. Adjacent SOC codes with similar duties, skills, and wage levels may qualify as "similar." Get a professional opinion on this if unsure.' },
+          ].map(r => (
+            <div class="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl border border-neutral-200">
+              <div class="w-8 h-8 bg-neutral-900 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">{r.num}</div>
+              <div>
+                <div class="font-bold text-neutral-900 mb-1">{r.title}</div>
+                <p class="text-sm text-neutral-600">{r.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">How to Notify USCIS (Step by Step)</h2>
+        <div class="space-y-3 text-sm">
+          {[
+            'Draft a cover letter to USCIS field office handling your I-485, stating: your full name, A-number, receipt number, I-140 receipt number, original employer, new employer, new job title, and SOC code.',
+            'Include a letter from your new employer on company letterhead confirming: job title, SOC code, salary, start date, and a description of duties that mirror the approved I-140 position.',
+            'Include a copy of your approved I-140 petition (I-797 approval notice).',
+            'Send via certified mail (return receipt) to the USCIS service center or field office listed on your most recent I-485 notice.',
+            'Keep a copy of everything. USCIS may issue an RFE (Request for Evidence) asking for more detail on the same/similar occupation analysis.',
+            'Update your address on file with USCIS via AR-11 if you relocated for the new job.',
+          ].map((item, i) => (
+            <div class="flex items-start gap-3 p-3 bg-neutral-50 rounded-xl">
+              <span class="w-5 h-5 bg-neutral-200 text-neutral-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">{i + 1}</span>
+              <span class="text-neutral-600">{item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">What Happens to Your H1B?</h2>
+        <p class="text-sm text-neutral-600 mb-3">AC21 portability is separate from your H1B status. Your I-485 can continue pending under AC21, but your <strong>H1B work authorization</strong> is tied to your H1B sponsor — you need a valid H1B (or other work authorization) to legally work while I-485 is pending.</p>
+        <div class="space-y-2 text-sm">
+          <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800">✅ <strong>Best case:</strong> New employer files H1B transfer. You port both your I-485 (via AC21) and your H1B to the new employer.</div>
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800">⚠️ <strong>If laid off:</strong> See H1B Layoff Guide. Your 60-day grace period applies. File H1B transfer or change status before grace period ends.</div>
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-800">ℹ️ <strong>EAD holders:</strong> If you have an approved EAD from your I-485, you can work for any employer — but AC21 notification to USCIS is still recommended to protect your I-485.</div>
+        </div>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-neutral-900 mb-3">I-140 Revocation by Employer — Special Rules</h2>
+        <p class="text-sm text-neutral-600 leading-relaxed">If your employer withdraws/revokes your I-140 <strong>after it has been approved for 180+ days</strong>, your I-140 is still considered "valid" for AC21 purposes. USCIS cannot revoke it solely because the employer withdrew it, provided you meet AC21's other requirements. This protects workers from retaliation and allows I-485 to continue. If revocation happens <em>before</em> 180 days, your I-485 may be denied.</p>
+      </div>
+    </div>
+
+    <div class="mt-6 p-4 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-500">
+      <strong>Disclaimer:</strong> General information only — not legal advice. AC21 analysis is fact-specific. Consult a licensed immigration attorney before changing jobs while your green card petition is pending.
+    </div>
+
+    <div class="mt-8 flex gap-4 flex-wrap">
+      <a href="/resources/h1b-layoff-guide" class="px-5 py-2.5 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 text-sm">H1B Layoff Guide →</a>
+      <a href="/uscis-processing-times/i-485-eb" class="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-xl hover:border-neutral-800 text-sm">I-485 Processing Times →</a>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,51 @@
+---
+interface Props {
+  pageUrl?: string;
+  pageIdentifier?: string;
+  title?: string;
+}
+const { pageUrl, pageIdentifier, title } = Astro.props;
+const url = pageUrl || Astro.url.href;
+const identifier = pageIdentifier || Astro.url.pathname;
+---
+
+<div class="bg-white border border-neutral-200 rounded-2xl p-6 mt-8">
+  <h3 class="text-base font-bold text-neutral-900 mb-4">Community Discussion</h3>
+  <div id="disqus_thread"></div>
+</div>
+
+<script define:vars={{ url, identifier, title }}>
+  var disqus_config = function () {
+    this.page.url = url;
+    this.page.identifier = identifier;
+    if (title) this.page.title = title;
+  };
+
+  // Replace YOUR_DISQUS_SHORTNAME with your actual Disqus shortname
+  // e.g. 'usvisatracker'
+  window.DISQUS_SHORTNAME = 'usvisatracker';
+
+  function loadDisqus() {
+    if (window.__disqusLoaded) return;
+    window.__disqusLoaded = true;
+    var d = document, s = d.createElement('script');
+    s.src = 'https://' + window.DISQUS_SHORTNAME + '.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+
+  // Lazy-load Disqus when the thread div scrolls into view
+  var observer = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      loadDisqus();
+      observer.disconnect();
+    }
+  }, { rootMargin: '200px' });
+  
+  var el = document.getElementById('disqus_thread');
+  if (el) observer.observe(el);
+</script>
+
+<noscript>
+  <p class="text-sm text-neutral-500">Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" class="underline">comments powered by Disqus</a>.</p>
+</noscript>

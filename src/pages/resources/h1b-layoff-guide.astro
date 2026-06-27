@@ -1,0 +1,110 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+---
+<Layout title="H1B Visa After Layoff — What to Do in 2026 (60-Day Grace Period)" description="Laid off on H1B? You have a 60-day grace period. Here's exactly what to do: find new employer, transfer H1B, invoke AC21, or apply for other status. Complete guide.">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Resources' }, { label: 'H1B Layoff Guide' }]} />
+    <div class="mt-8 mb-8">
+      <span class="inline-block bg-red-100 text-red-700 text-xs font-bold uppercase px-2 py-1 rounded mb-3">Important — Read First</span>
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">Laid Off on H1B? Here's What to Do</h1>
+      <p class="text-lg text-neutral-500">You have a <strong>60-day grace period</strong> from your last day of employment to take action. Here's your step-by-step plan.</p>
+    </div>
+
+    <!-- 60-day timer reminder -->
+    <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8">
+      <h2 class="text-lg font-bold text-red-800 mb-2">⏱️ The 60-Day Grace Period</h2>
+      <p class="text-sm text-red-700 mb-3">When your H1B employment ends (termination, layoff, or voluntary resignation), you have exactly <strong>60 days</strong> to either: find a new H1B sponsor, change your visa status, or depart the US. After 60 days, you begin accruing unlawful presence — which carries severe immigration consequences.</p>
+      <div class="grid grid-cols-3 gap-3 text-center text-xs">
+        <div class="bg-white rounded-lg p-3 border border-red-100"><div class="font-bold text-red-700 text-lg">Day 1</div><div class="text-red-600">Employment ends</div></div>
+        <div class="bg-white rounded-lg p-3 border border-red-100"><div class="font-bold text-amber-600 text-lg">Day 30</div><div class="text-amber-600">Urgently pursue options</div></div>
+        <div class="bg-white rounded-lg p-3 border border-red-100"><div class="font-bold text-red-700 text-lg">Day 60</div><div class="text-red-600">Grace period ends</div></div>
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      {[
+        {
+          step: 1, title: 'Get Your Layoff Documentation',
+          items: [
+            'Request a formal termination letter stating your last day of employment',
+            'Confirm your employer notified USCIS of the termination (they are required to)',
+            'Collect your final pay stub, W-2s, and any severance agreement',
+            'Your last day of authorized work = start of your 60-day grace period',
+          ]
+        },
+        {
+          step: 2, title: 'Understand Your Options (Do All Research Within 2 Weeks)',
+          items: [
+            'Transfer to new H1B employer (most common path — employer files H1B transfer/amendment)',
+            'Change to F-1 student status (requires enrollment in accredited program)',
+            'Change to B-1/B-2 visitor status (not for employment, but buys time)',
+            'File I-485 if your priority date is current and I-140 is approved (portability under AC21)',
+            'Change to O-1, L-1, or E-2 if you qualify (requires separate petition)',
+            'Depart the US voluntarily within 60 days (cleanest exit with no unlawful presence)',
+          ]
+        },
+        {
+          step: 3, title: 'H1B Transfer to New Employer',
+          items: [
+            'Your new employer files Form I-129 (H1B petition) with H1B transfer notation',
+            'You can start working for the new employer as soon as I-129 is filed (portability rule)',
+            'Premium processing ($2,805 fee as of 2025) guarantees 15 business day decision',
+            'New employer must pay prevailing wage for your SOC code and location',
+            'Get a copy of the receipt notice (I-797C) before your 60 days expire',
+          ]
+        },
+        {
+          step: 4, title: 'AC21 Portability — If Your Green Card is in Process',
+          items: [
+            'If your I-140 is approved AND you\'ve had your I-485 pending for 180+ days, you qualify for AC21',
+            'AC21 lets you change employers and/or job titles in the same or similar occupation class',
+            'No need to refile I-140 — your original priority date is preserved',
+            'File an AR-11 (change of address if moved) and send employer letter to your USCIS field office',
+            'See our full AC21 guide: /resources/ac21-portability',
+          ]
+        },
+        {
+          step: 5, title: 'What Triggers Unlawful Presence',
+          items: [
+            'Remaining in the US more than 60 days after last day of authorized employment',
+            '180 days of unlawful presence = 3-year bar from re-entering the US',
+            '365+ days of unlawful presence = 10-year bar from re-entering the US',
+            'These bars trigger when you LEAVE the US — not when you overstay (so don\'t leave if you\'ve accrued ULP)',
+            'An approved change-of-status petition stops accrual of unlawful presence',
+          ]
+        },
+      ].map(section => (
+        <div class="bg-white border border-neutral-200 rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 bg-neutral-900 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">{section.step}</div>
+            <h2 class="text-lg font-bold text-neutral-900">{section.title}</h2>
+          </div>
+          <ul class="space-y-2">
+            {section.items.map(item => (
+              <li class="flex items-start gap-2 text-sm text-neutral-600">
+                <span class="text-neutral-400 mt-0.5 flex-shrink-0">›</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- Severance & H1B -->
+    <div class="mt-8 bg-amber-50 border border-amber-200 rounded-2xl p-6">
+      <h2 class="text-lg font-bold text-amber-900 mb-3">Does Severance Extend My Grace Period?</h2>
+      <p class="text-sm text-amber-800">No. The 60-day grace period starts from your <strong>last day of authorized H1B employment</strong>, not your last paycheck or end of severance. If your last day was March 1 and you receive 60 days of severance pay through April 30, your grace period still ends on April 30. The two happen to align in this example but are legally independent.</p>
+    </div>
+
+    <div class="mt-6 p-4 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-500">
+      <strong>Disclaimer:</strong> This guide provides general information only and does not constitute legal advice. Immigration law is complex and fact-specific. Consult a licensed immigration attorney before taking any action. Rules may have changed — always verify with current USCIS guidance.
+    </div>
+
+    <div class="mt-8 flex gap-4 flex-wrap">
+      <a href="/resources/ac21-portability" class="px-5 py-2.5 bg-neutral-900 text-white font-semibold rounded-xl hover:bg-neutral-700 transition-colors text-sm">AC21 Portability Guide →</a>
+      <a href="/uscis-processing-times/h1b-visa" class="px-5 py-2.5 bg-white border border-neutral-200 text-neutral-900 font-semibold rounded-xl hover:border-neutral-800 transition-colors text-sm">H1B Processing Times →</a>
+    </div>
+  </div>
+</Layout>

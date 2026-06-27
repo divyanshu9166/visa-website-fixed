@@ -41,13 +41,15 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 					<div class="flex-shrink-0 flex items-center">
 						<a href="/" class="text-xl font-bold tracking-tighter text-neutral-900 hover:text-neutral-600 transition-colors">US Visa Tracker</a>
 					</div>
-					<nav class="hidden md:flex space-x-5 items-center">
-						<a href="/uscis-processing-times" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Processing Times</a>
+					<nav class="hidden md:flex space-x-1 items-center">
+						<a href="/uscis-processing-times" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Processing</a>
 						<a href="/green-card/visa-bulletin" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Visa Bulletin</a>
-						<a href="/us-visa-appointment-wait-times" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Wait Times</a>
+						<a href="/h1b" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">H1B DB</a>
+						<a href="/tools" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Tools</a>
 						<a href="/uscis-trackers" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Trackers</a>
-						<a href="/green-card/priority-date-calculator" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">PD Calculator</a>
-						<span class="text-neutral-300">|</span>
+						<a href="/blog" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Blog</a>
+						<a href="/resources" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Resources</a>
+						<span class="text-neutral-200">|</span>
 						<a href="/login" id="nav-auth-link" class="text-neutral-900 px-3 py-1.5 rounded-lg text-sm font-semibold border border-neutral-200 hover:bg-neutral-50 transition-colors">Sign In</a>
 					</nav>
 					<button id="mobile-menu-btn" class="md:hidden p-2 text-neutral-700" aria-label="Open menu" aria-expanded="false">
@@ -59,10 +61,12 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 				<div class="px-4 py-3 flex flex-col space-y-1">
 					<a href="/uscis-processing-times" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Processing Times</a>
 					<a href="/green-card/visa-bulletin" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Visa Bulletin</a>
-					<a href="/us-visa-appointment-wait-times" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Appointment Wait Times</a>
+					<a href="/h1b" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">H1B Database</a>
+					<a href="/tools" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Free Tools</a>
 					<a href="/uscis-trackers" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Community Trackers</a>
-					<a href="/green-card/priority-date-calculator" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">PD Calculator</a>
-					<a href="/uscis-stats/historic-trends" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Historic Trends</a>
+					<a href="/blog" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Blog</a>
+					<a href="/resources" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Resources</a>
+					<a href="/us-visa-appointment-wait-times" class="text-neutral-600 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Appointment Wait Times</a>
 					<a href="/login" class="text-neutral-900 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-semibold">Sign In</a>
 					<a href="/about-us" class="text-neutral-400 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">About</a>
 					<a href="/contact-us" class="text-neutral-400 hover:text-neutral-900 px-2 py-2.5 rounded-md text-sm font-medium">Contact</a>
@@ -98,7 +102,7 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 		</main>
 
 		<footer class="bg-[#fafafa] mt-12 py-12 border-t border-neutral-200">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
 				<div>
 					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">Processing Times</h4>
 					<ul class="space-y-2 text-sm text-neutral-500">
@@ -106,7 +110,8 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 						<li><a href="/uscis-processing-times/i-140" class="hover:text-neutral-900">I-140</a></li>
 						<li><a href="/uscis-processing-times/i-485-eb" class="hover:text-neutral-900">I-485 (EB)</a></li>
 						<li><a href="/uscis-processing-times/n-400" class="hover:text-neutral-900">N-400 Citizenship</a></li>
-						<li><a href="/uscis-processing-times" class="hover:text-neutral-900">View all forms &rarr;</a></li>
+						<li><a href="/uscis-processing-times/nvc" class="hover:text-neutral-900">NVC Processing</a></li>
+						<li><a href="/uscis-processing-times" class="hover:text-neutral-900">View all &rarr;</a></li>
 					</ul>
 				</div>
 				<div>
@@ -114,8 +119,21 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 					<ul class="space-y-2 text-sm text-neutral-500">
 						<li><a href="/green-card/visa-bulletin/india" class="hover:text-neutral-900">Visa Bulletin — India</a></li>
 						<li><a href="/green-card/visa-bulletin/china" class="hover:text-neutral-900">Visa Bulletin — China</a></li>
-						<li><a href="/green-card/visa-bulletin" class="hover:text-neutral-900">All Countries</a></li>
-						<li><a href="/green-card/priority-date-calculator" class="hover:text-neutral-900">Priority Date Calculator</a></li>
+						<li><a href="/green-card/queue-calculator" class="hover:text-neutral-900">Queue Calculator</a></li>
+						<li><a href="/green-card/retrogression-tracker" class="hover:text-neutral-900">Retrogression Tracker</a></li>
+						<li><a href="/green-card/dos-predictions" class="hover:text-neutral-900">DOS Predictions</a></li>
+						<li><a href="/green-card/gc-stats" class="hover:text-neutral-900">GC Statistics</a></li>
+					</ul>
+				</div>
+				<div>
+					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">H1B & Tools</h4>
+					<ul class="space-y-2 text-sm text-neutral-500">
+						<li><a href="/h1b" class="hover:text-neutral-900">H1B Sponsor DB</a></li>
+						<li><a href="/tools/h1b-lottery-calculator" class="hover:text-neutral-900">Lottery Calculator</a></li>
+						<li><a href="/tools/receipt-number-decoder" class="hover:text-neutral-900">Receipt Decoder</a></li>
+						<li><a href="/tools/uscis-phone-calculator" class="hover:text-neutral-900">Phone Navigator</a></li>
+						<li><a href="/green-card/visa-bulletin/hidden-checker" class="hover:text-neutral-900">Hidden Bulletin</a></li>
+						<li><a href="/tools" class="hover:text-neutral-900">All Tools &rarr;</a></li>
 					</ul>
 				</div>
 				<div>
@@ -123,18 +141,20 @@ const { title, description = "Track US Visa & Immigration Processing Times." } =
 					<ul class="space-y-2 text-sm text-neutral-500">
 						<li><a href="/us-visa-appointment-wait-times/india" class="hover:text-neutral-900">India Wait Times</a></li>
 						<li><a href="/us-visa-appointment-wait-times/mexico" class="hover:text-neutral-900">Mexico Wait Times</a></li>
-						<li><a href="/us-visa-appointment-wait-times" class="hover:text-neutral-900">All Countries</a></li>
-						<li><a href="/uscis-trackers" class="hover:text-neutral-900">Community Trackers</a></li>
+						<li><a href="/trackers/slot-screenshots" class="hover:text-neutral-900">Slot Screenshots</a></li>
+						<li><a href="/us-visa-trackers/221g-tracker" class="hover:text-neutral-900">221(g) Tracker</a></li>
+						<li><a href="/uscis-trackers" class="hover:text-neutral-900">All Trackers</a></li>
 					</ul>
 				</div>
 				<div>
-					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">Site</h4>
+					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">Resources</h4>
 					<ul class="space-y-2 text-sm text-neutral-500">
-						<li><a href="/login" class="hover:text-neutral-900">Sign In</a></li>
+						<li><a href="/blog" class="hover:text-neutral-900">Blog</a></li>
+						<li><a href="/resources/how-to-read-visa-bulletin" class="hover:text-neutral-900">How to Read Bulletin</a></li>
+						<li><a href="/resources/h1b-layoff-guide" class="hover:text-neutral-900">H1B Layoff Guide</a></li>
+						<li><a href="/resources/ac21-portability" class="hover:text-neutral-900">AC21 Guide</a></li>
+						<li><a href="/visa-stats" class="hover:text-neutral-900">Visa Statistics</a></li>
 						<li><a href="/about-us" class="hover:text-neutral-900">About Us</a></li>
-						<li><a href="/contact-us" class="hover:text-neutral-900">Contact Us</a></li>
-						<li><a href="/privacy-policy" class="hover:text-neutral-900">Privacy Policy</a></li>
-						<li><a href="/terms-and-conditions" class="hover:text-neutral-900">Terms &amp; Conditions</a></li>
 					</ul>
 				</div>
 			</div>

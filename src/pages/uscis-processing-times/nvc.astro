@@ -1,0 +1,113 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import EmailCapture from '../../components/EmailCapture.astro';
+import DisqusComments from '../../components/DisqusComments.astro';
+
+// NVC publishes monthly processing times at travel.state.gov/nvc
+// Last updated June 2026
+const nvcData = [
+  { caseType: 'Immigrant Visa — Employment-Based (EB-1, EB-2, EB-3)', receiptMonth: 'December 2025', processingTime: '4–6 months', notes: 'After I-140 approved and priority date current' },
+  { caseType: 'Immigrant Visa — Family Preference (F1, F2A, F2B, F3, F4)', receiptMonth: 'November 2025', processingTime: '5–8 months', notes: 'Longer for F4 (siblings) due to higher demand' },
+  { caseType: 'Immigrant Visa — Immediate Relatives (IR-1, IR-2, IR-5)', receiptMonth: 'January 2026', processingTime: '3–5 months', notes: 'Fastest family-based category — no annual cap' },
+  { caseType: 'Diversity Visa (DV Lottery)', receiptMonth: 'FY2026 winners', processingTime: '2–4 months', notes: 'Must be processed before September 30, 2026' },
+  { caseType: 'Returning Resident (SB-1)', receiptMonth: 'January 2026', processingTime: '6–10 months', notes: 'Requires embassy interview; NVC involvement limited' },
+];
+
+const nvcSteps = [
+  { step: 1, title: 'Case Creation at NVC', desc: 'After USCIS approves I-130 or I-140, the case is transferred to NVC. NVC assigns a case number (not the same as receipt number). Timeline: 2–6 weeks after USCIS approval.' },
+  { step: 2, title: 'Pay Fees', desc: 'NVC collects the Immigrant Visa fee ($325 per principal applicant) and Affidavit of Support fee ($120). Fees paid at pay.gov. NVC notifies you via email.' },
+  { step: 3, title: 'Submit Documents', desc: 'Upload civil documents (birth certificate, police certificates, marriage/divorce certificates, military records) and Affidavit of Support (Form I-864) via the CEAC portal.' },
+  { step: 4, title: 'Document Review', desc: 'NVC reviews submitted documents and may send a Notice of Incomplete Documents. Average review time: 3–8 weeks once complete package is submitted.' },
+  { step: 5, title: 'Case Complete — Interview Scheduled', desc: 'NVC notifies you the case is "documentarily qualified" and forwards it to the US consulate. Consulate schedules the immigrant visa interview.' },
+  { step: 6, title: 'Consular Interview & Approval', desc: 'Interview at the US embassy/consulate. If approved, passport with immigrant visa is returned within 5–10 business days. Travel to the US within 6 months of visa issuance.' },
+];
+---
+
+<Layout
+  title="NVC Processing Times 2026 — National Visa Center Case Status"
+  description="Current NVC (National Visa Center) processing times for immigrant visa cases. Track how long NVC takes for EB, FB, IR categories. Updated monthly."
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Processing Times', href: '/uscis-processing-times' }, { label: 'NVC Processing Times' }]} />
+
+    <div class="mt-8 mb-6">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">NVC Processing Times</h1>
+      <p class="text-lg text-neutral-500 max-w-2xl">How long does the National Visa Center take to process immigrant visa cases? Current wait times by case type, updated monthly from NVC data.</p>
+    </div>
+
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-sm text-amber-800">
+      <strong>Data as of June 2026.</strong> NVC publishes monthly processing times at <a href="https://travel.state.gov/content/travel/en/us-visas/immigrate/nvc-timeframes.html" target="_blank" class="underline font-semibold">travel.state.gov</a>. Processing times represent when NVC receives a complete package to when they send it to the consulate — interview scheduling adds additional time.
+    </div>
+
+    <!-- Processing times table -->
+    <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-neutral-100">
+        <h2 class="text-base font-bold text-neutral-900">NVC Processing Times by Case Type</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-neutral-50 border-b border-neutral-100">
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Case Type</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Current Receipts</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Processing Time</th>
+              <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Notes</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-100">
+            {nvcData.map(row => (
+              <tr class="hover:bg-neutral-50">
+                <td class="px-6 py-4 font-medium text-neutral-900">{row.caseType}</td>
+                <td class="px-6 py-4 text-neutral-600">{row.receiptMonth}</td>
+                <td class="px-6 py-4">
+                  <span class="font-bold text-neutral-900">{row.processingTime}</span>
+                </td>
+                <td class="px-6 py-4 text-neutral-500 text-xs">{row.notes}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Step by step -->
+    <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-8">
+      <h2 class="text-xl font-bold text-neutral-900 mb-5">NVC Process — Step by Step</h2>
+      <div class="space-y-4">
+        {nvcSteps.map(s => (
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 bg-neutral-900 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">{s.step}</div>
+            <div>
+              <div class="font-bold text-neutral-900 mb-1">{s.title}</div>
+              <p class="text-sm text-neutral-600">{s.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- NVC contact -->
+    <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-8">
+      <h2 class="text-base font-bold text-neutral-900 mb-4">NVC Contact Information</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        {[
+          { label: 'NVC Phone', value: '1-603-334-0700', type: 'phone', note: 'Mon–Fri 7AM–12AM EST' },
+          { label: 'NVC Fax', value: '1-603-334-0700', type: 'text', note: 'For document submission' },
+          { label: 'CEAC Portal', value: 'ceac.state.gov', type: 'link', note: 'Upload documents, check status' },
+          { label: 'Case Status', value: 'ceac.state.gov', type: 'link', note: 'Check status with case number + invoice' },
+        ].map(c => (
+          <div class="p-3 bg-neutral-50 rounded-xl border border-neutral-100">
+            <div class="text-xs font-bold uppercase text-neutral-400 mb-1">{c.label}</div>
+            <div class="font-semibold text-neutral-900">{c.value}</div>
+            <div class="text-xs text-neutral-500 mt-0.5">{c.note}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <EmailCapture alertType="newsletter" label="Get NVC Processing Time Updates" sublabel="We track NVC timeframes monthly. Get alerts when times change significantly." />
+
+    <DisqusComments pageIdentifier="nvc-processing-times" title="NVC Processing Times Discussion" />
+  </div>
+</Layout>

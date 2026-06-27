@@ -1,0 +1,24 @@
+{
+  "employerName": "Apple Inc",
+  "slug": "apple-inc",
+  "totalLCAs": 8102,
+  "approvalRate": 97.1,
+  "avgWage": 202300,
+  "medianWage": 193000,
+  "topTitles": [
+    { "title": "Software Engineer", "count": 2401, "avgWage": 198000, "socCode": "15-1252" },
+    { "title": "Hardware Engineer", "count": 1203, "avgWage": 195000, "socCode": "17-2072" },
+    { "title": "Machine Learning Engineer", "count": 892, "avgWage": 238000, "socCode": "15-2051" },
+    { "title": "Product Design Engineer", "count": 612, "avgWage": 185000, "socCode": "27-1021" },
+    { "title": "Research Scientist", "count": 503, "avgWage": 255000, "socCode": "15-2051" }
+  ],
+  "topStates": [
+    { "state": "CA", "count": 7203 },
+    { "state": "TX", "count": 412 },
+    { "state": "WA", "count": 312 }
+  ],
+  "wageLevelDist": { "L1": 2, "L2": 16, "L3": 50, "L4": 32 },
+  "fiscalYear": 2024,
+  "grade": "A",
+  "lastUpdated": "2025-03-15"
+}

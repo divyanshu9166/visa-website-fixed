@@ -1,0 +1,173 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const allBulletin = await getCollection('visaBulletin');
+
+// Get all months sorted
+const months = [...new Set(allBulletin.map(d => d.data.month))].sort();
+
+// Find retrogression events: month where cutoff went BACK vs prior month
+// For each country+category combo, compare consecutive months
+type Retro = {
+  month: string;
+  prevMonth: string;
+  category: string;
+  country: string;
+  from: string;
+  to: string;
+  daysMoved: number;
+};
+const retroEvents: Retro[] = [];
+
+const combos = [...new Set(allBulletin.map(d => `${d.data.category}|${d.data.country}`))];
+
+for (const combo of combos) {
+  const [cat, country] = combo.split('|');
+  const series = allBulletin
+    .filter(d => d.data.category === cat && d.data.country === country)
+    .sort((a, b) => a.data.month.localeCompare(b.data.month));
+
+  for (let i = 1; i < series.length; i++) {
+    const prev = series[i - 1];
+    const curr = series[i];
+    const prevDate = prev.data.finalActionDate;
+    const currDate = curr.data.finalActionDate;
+
+    // Skip C (current) and U (unavailable) comparisons
+    if (!prevDate || !currDate || prevDate === 'C' || currDate === 'C' || prevDate === 'U' || currDate === 'U') continue;
+    
+    try {
+      const prevTs = new Date(prevDate + 'T00:00:00Z').getTime();
+      const currTs = new Date(currDate + 'T00:00:00Z').getTime();
+      if (currTs < prevTs) {
+        const daysMoved = Math.round((prevTs - currTs) / (1000 * 60 * 60 * 24));
+        retroEvents.push({
+          month: curr.data.month,
+          prevMonth: prev.data.month,
+          category: cat,
+          country,
+          from: prevDate,
+          to: currDate,
+          daysMoved,
+        });
+      }
+    } catch {}
+  }
+}
+
+retroEvents.sort((a, b) => b.month.localeCompare(a.month));
+
+const fmtMonth = (m: string) => {
+  try { return new Date(m + '-01T00:00:00Z').toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }); }
+  catch { return m; }
+};
+const fmtDate = (d: string) => {
+  try { return new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }); }
+  catch { return d; }
+};
+---
+
+<Layout
+  title="Priority Date Retrogression Tracker — History of Visa Bulletin Setbacks"
+  description="Track every month the US State Department moved EB priority dates backward (retrogression). Full historical data for India, China, Mexico, Philippines."
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Green Card', href: '/green-card/visa-bulletin' }, { label: 'Retrogression Tracker' }]} />
+
+    <div class="mt-8 mb-6">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">Priority Date Retrogression Tracker</h1>
+      <p class="text-lg text-neutral-500 max-w-2xl">Every month where the State Department moved a priority date <strong>backward</strong> (retrogression), breaking the typical forward movement pattern.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-extrabold text-red-600 mb-1">{retroEvents.length}</div>
+        <div class="text-xs text-neutral-500">Total Retrogressions</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-extrabold text-neutral-900 mb-1">{[...new Set(retroEvents.map(r => r.month))].length}</div>
+        <div class="text-xs text-neutral-500">Months Affected</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-extrabold text-neutral-900 mb-1">{retroEvents.length > 0 ? Math.max(...retroEvents.map(r => r.daysMoved)) : 0}</div>
+        <div class="text-xs text-neutral-500">Max Days Set Back</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-extrabold text-neutral-900 mb-1">{retroEvents.length > 0 ? Math.round(retroEvents.reduce((s, r) => s + r.daysMoved, 0) / retroEvents.length) : 0}</div>
+        <div class="text-xs text-neutral-500">Avg Days Set Back</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap gap-3 mb-6">
+      <select id="filterCategory" class="px-4 py-2 rounded-xl border border-neutral-200 text-sm bg-white focus:ring-2 focus:ring-neutral-900">
+        <option value="">All Categories</option>
+        {[...new Set(retroEvents.map(r => r.category))].map(c => <option value={c}>{c}</option>)}
+      </select>
+      <select id="filterCountry" class="px-4 py-2 rounded-xl border border-neutral-200 text-sm bg-white focus:ring-2 focus:ring-neutral-900">
+        <option value="">All Countries</option>
+        {[...new Set(retroEvents.map(r => r.country))].sort().map(c => <option value={c}>{c}</option>)}
+      </select>
+    </div>
+
+    {retroEvents.length === 0 ? (
+      <div class="bg-white border border-neutral-200 rounded-xl p-8 text-center text-neutral-500">
+        No retrogression events found in the current data range (July 2024 – present). Historical data is added as more bulletin months are loaded.
+      </div>
+    ) : (
+      <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm" id="retroTable">
+            <thead>
+              <tr class="bg-neutral-50 border-b border-neutral-100">
+                <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Month</th>
+                <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Category</th>
+                <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Country</th>
+                <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Was</th>
+                <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Set Back To</th>
+                <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Days Lost</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-100">
+              {retroEvents.map(r => (
+                <tr class="hover:bg-red-50 retro-row" data-category={r.category} data-country={r.country}>
+                  <td class="px-6 py-3 font-medium text-neutral-900">{fmtMonth(r.month)}</td>
+                  <td class="px-6 py-3"><span class="inline-block bg-neutral-100 text-neutral-700 text-xs font-bold px-2 py-0.5 rounded">{r.category}</span></td>
+                  <td class="px-6 py-3 text-neutral-600">{r.country}</td>
+                  <td class="px-6 py-3 text-neutral-500 font-mono text-xs">{fmtDate(r.from)}</td>
+                  <td class="px-6 py-3 text-red-600 font-mono text-xs font-bold">↓ {fmtDate(r.to)}</td>
+                  <td class="px-6 py-3 text-right"><span class="inline-block bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded">−{r.daysMoved.toLocaleString()} days</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+
+    <div class="mt-8 p-5 bg-neutral-50 rounded-xl border border-neutral-200 text-sm text-neutral-600">
+      <strong>What is retrogression?</strong> Retrogression occurs when the State Department moves a visa bulletin priority date <em>backward</em> compared to the prior month. This happens when too many people with earlier priority dates apply for visas, depleting the annual cap faster than anticipated. Retrogression is most common in October (start of fiscal year) and in oversubscribed categories like EB-2 and EB-3 for India and China.
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const catFilter = document.getElementById('filterCategory') as HTMLSelectElement;
+  const countryFilter = document.getElementById('filterCountry') as HTMLSelectElement;
+
+  function applyFilters() {
+    const cat = catFilter.value;
+    const country = countryFilter.value;
+    document.querySelectorAll('.retro-row').forEach(row => {
+      const r = row as HTMLElement;
+      const show = (!cat || r.dataset.category === cat) && (!country || r.dataset.country === country);
+      r.style.display = show ? '' : 'none';
+    });
+  }
+
+  catFilter?.addEventListener('change', applyFilters);
+  countryFilter?.addEventListener('change', applyFilters);
+</script>

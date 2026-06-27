@@ -6,6 +6,8 @@ import ProcessingTimeTable from '../../components/ProcessingTimeTable.astro';
 import ProcessingTimeChart from '../../components/ProcessingTimeChart.astro';
 import ReceiptDatePredictor from '../../components/ReceiptDatePredictor.astro';
 import FAQAccordion from '../../components/FAQAccordion.astro';
+import DisqusComments from '../../components/DisqusComments.astro';
+import EmailCapture from '../../components/EmailCapture.astro';
 
 export async function getStaticPaths() {
   const forms = await getCollection('processingTimes');
@@ -137,5 +139,9 @@ const jsonLd = [
     </div>
 
     <FAQAccordion faqs={f.faqs} title={`${f.visaLabel} FAQs`} />
+    <div class="mt-8">
+      <EmailCapture alertType="newsletter" label="Get Processing Time Alerts" sublabel="We'll notify you when USCIS updates processing times for this form." />
+    </div>
+    <DisqusComments pageIdentifier={`processing-${f.visaSlug}`} title={`${f.visaLabel} Processing Time Discussion`} />
   </div>
 </Layout>
