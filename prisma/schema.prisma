@@ -228,3 +228,26 @@ model SlotScreenshot {
   @@index([visaType])
   @@map("slot_screenshots")
 }
+
+// ---------------------------------------------------------------------------
+// LCA Employers DB
+// ---------------------------------------------------------------------------
+model LcaEmployer {
+  id           String   @id @default(uuid())
+  employerName String   @map("employer_name") @unique
+  slug         String   @unique
+  totalLCAs    Int      @map("total_lcas")
+  approvalRate Float    @map("approval_rate")
+  avgWage      Int      @map("avg_wage")
+  medianWage   Int      @map("median_wage")
+  topTitles    Json     @map("top_titles") // [{ title, count, avgWage, socCode }]
+  topStates    Json     @map("top_states") // [{ state, count }]
+  wageLevelDist Json    @map("wage_level_dist") // { L1, L2, L3, L4 }
+  fiscalYear   Int      @map("fiscal_year")
+  grade        String
+  lastUpdated  DateTime @map("last_updated")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([slug])
+  @@map("lca_employers")
+}

@@ -47,6 +47,27 @@ export const onRequestPost = safeHandler<PagesContext>(async ({ request, env }: 
     },
   });
 
+  // Send email via Resend
+  if (env.RESEND_API_KEY) {
+    try {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: 'US Visa Tracker <notifications@usvisatracker.example.com>',
+          to: email,
+          subject: 'Confirm your subscription to US Visa Tracker',
+          html: `<p>Thank you for subscribing to ${alertType} alerts!</p><p>Please <a href="https://usvisatracker.example.com/confirm?token=${sub.token}">click here</a> to confirm your subscription.</p>`
+        })
+      });
+    } catch (e) {
+      console.error('Failed to send confirmation email', e);
+    }
+  }
+
   return jsonResponse({ success: true, id: sub.id, message: 'Subscribed! Check your email to confirm.' });
 });
 

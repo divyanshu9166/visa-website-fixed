@@ -95,7 +95,7 @@ function buildSeedMonths(monthsBack = 24) {
 
 function buildSeedBulletin() {
   const records = [];
-  const months = buildSeedMonths(24);
+  const months = buildSeedMonths(264); // Cover 2002-2023 (22 years * 12)
 
   for (const country of BULLETIN_COUNTRIES) {
     for (const category of BULLETIN_CATEGORIES) {
