@@ -156,7 +156,7 @@ const jsonLd = {
     <FAQAccordion faqs={faqs} title={`${countryMeta.name} Visa Bulletin FAQs`} />
   </div>
     <div class='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8'>
-      <EmailCapture alertType='visa_bulletin' label='Get Visa Bulletin Alerts' sublabel='Email alerts when priority dates change for this country.' metadata={{ country: country }} />
-      <DisqusComments pageIdentifier={`visa-bulletin-${country}`} title={`${country} Visa Bulletin Discussion`} />
+      <EmailCapture alertType='visa_bulletin' label='Get Visa Bulletin Alerts' sublabel='Email alerts when priority dates change for this country.' metadata={{ country: countryMeta.slug }} />
+      <DisqusComments pageIdentifier={`visa-bulletin-${countryMeta.slug}`} title={`${countryMeta.name} Visa Bulletin Discussion`} />
     </div>
 </Layout>

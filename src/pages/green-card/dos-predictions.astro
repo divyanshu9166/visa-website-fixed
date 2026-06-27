@@ -29,11 +29,11 @@ const fmtMonth = (m: string) => new Date(m + '-01T00:00:00Z').toLocaleDateString
       <div class="grid grid-cols-2 gap-4">
         <div class="p-4 bg-neutral-50 rounded-xl">
           <div class="text-xs font-bold uppercase text-neutral-400 mb-1">EB-2 India Final Action</div>
-          <div class="text-xl font-extrabold text-neutral-900">{latestEB2India ? fmtDate(latestEB2India.data.finalActionDate) : 'N/A'}</div>
+          <div class="text-xl font-extrabold text-neutral-900">{latestEB2India?.data.finalActionDate ? fmtDate(latestEB2India.data.finalActionDate) : 'N/A'}</div>
         </div>
         <div class="p-4 bg-neutral-50 rounded-xl">
           <div class="text-xs font-bold uppercase text-neutral-400 mb-1">EB-3 India Final Action</div>
-          <div class="text-xl font-extrabold text-neutral-900">{latestEB3India ? fmtDate(latestEB3India.data.finalActionDate) : 'N/A'}</div>
+          <div class="text-xl font-extrabold text-neutral-900">{latestEB3India?.data.finalActionDate ? fmtDate(latestEB3India.data.finalActionDate) : 'N/A'}</div>
         </div>
       </div>
     </div>
