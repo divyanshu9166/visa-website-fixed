@@ -1,5 +1,5 @@
-import { getPrisma, type Env } from '../../_lib/prisma';
-import { jsonResponse, safeHandler } from '../../_lib/currentUser';
+import { getPrisma, type Env } from '../_lib/prisma';
+import { jsonResponse, safeHandler } from '../_lib/currentUser';
 
 interface PagesContext {
   request: Request;
