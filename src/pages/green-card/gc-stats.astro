@@ -32,26 +32,27 @@ const gcByCountry = [
   { country: 'All Other', fy2024: 87127, pct: 21.5 },
 ];
 
-const totalFY2024 = gcByCategory.reduce((s, r) => s + r.fy2024, 0);
+const dataYear = "FY2024";
+const totalLatest = gcByCategory.reduce((s, r) => s + r.fy2024, 0);
 ---
 
 <Layout
-  title="Green Cards Issued by Year, Category & Country — USCIS Statistics 2024"
-  description="How many green cards were issued in FY2024? Breakdown by EB category, family preference, diversity visa, and country of birth. USCIS annual statistics."
+  title={`Green Cards Issued by Year, Category & Country — USCIS Statistics ${dataYear}`}
+  description={`How many green cards were issued in ${dataYear}? Breakdown by EB category, family preference, diversity visa, and country of birth. USCIS annual statistics.`}
 >
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Green Card', href: '/green-card/visa-bulletin' }, { label: 'Statistics' }]} />
 
     <div class="mt-8 mb-6">
-      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">Green Card Statistics — FY2024</h1>
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">Green Card Statistics — {dataYear}</h1>
       <p class="text-lg text-neutral-500 max-w-2xl">How many green cards were issued, by category and country. Source: USCIS Annual Report and DHS Yearbook of Immigration Statistics.</p>
     </div>
 
     <!-- Total stat -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
       <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center col-span-2">
-        <div class="text-4xl font-extrabold text-neutral-900 mb-1">{totalFY2024.toLocaleString()}</div>
-        <div class="text-sm text-neutral-500">Total Green Cards Issued — FY2024</div>
+        <div class="text-4xl font-extrabold text-neutral-900 mb-1">{totalLatest.toLocaleString()}</div>
+        <div class="text-sm text-neutral-500">Total Green Cards Issued — {dataYear}</div>
       </div>
       <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
         <div class="text-3xl font-extrabold text-neutral-900 mb-1">140,735</div>
@@ -66,7 +67,7 @@ const totalFY2024 = gcByCategory.reduce((s, r) => s + r.fy2024, 0);
     <!-- By category -->
     <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden mb-8">
       <div class="px-6 py-4 border-b border-neutral-100">
-        <h2 class="text-base font-bold text-neutral-900">Green Cards by Category — FY2021–FY2024</h2>
+        <h2 class="text-base font-bold text-neutral-900">Green Cards by Category — FY2021–{dataYear}</h2>
         <p class="text-xs text-neutral-400 mt-1">Source: USCIS Annual Flow Report. Figures are approximate.</p>
       </div>
       <div class="overflow-x-auto">
@@ -74,7 +75,7 @@ const totalFY2024 = gcByCategory.reduce((s, r) => s + r.fy2024, 0);
           <thead>
             <tr class="bg-neutral-50 border-b border-neutral-100">
               <th class="text-left px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">Category</th>
-              <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">FY2024</th>
+              <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">{dataYear}</th>
               <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">FY2023</th>
               <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">FY2022</th>
               <th class="text-right px-6 py-3 text-xs font-bold uppercase tracking-wide text-neutral-500">FY2021</th>
@@ -97,7 +98,7 @@ const totalFY2024 = gcByCategory.reduce((s, r) => s + r.fy2024, 0);
 
     <!-- By country -->
     <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm p-6 mb-8">
-      <h2 class="text-base font-bold text-neutral-900 mb-4">Top Countries of Birth — FY2024 Green Cards</h2>
+      <h2 class="text-base font-bold text-neutral-900 mb-4">Top Countries of Birth — {dataYear} Green Cards</h2>
       <div class="space-y-2">
         {gcByCountry.map(c => (
           <div class="flex items-center gap-4">

@@ -1,7 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
-import { getCollection } from 'astro:content';
+import { PrismaClient } from '@prisma/client';
 
 export async function getStaticPaths() {
   const titleSlugMap: Record<string, string> = {
@@ -20,16 +20,21 @@ export async function getStaticPaths() {
 const { title } = Astro.params;
 const { titleLabel } = Astro.props;
 
-const employers = await getCollection('lca');
+const prisma = new PrismaClient();
+const employers = await prisma.lcaEmployer.findMany({
+  orderBy: { totalLCAs: 'desc' },
+  take: 1000
+});
 
 // Aggregate salary data for this title across all employers
 type TitleMatch = { employer: string; slug: string; count: number; avgWage: number; };
 const matches: TitleMatch[] = [];
 
 for (const emp of employers) {
-  for (const t of emp.data.topTitles) {
+  const topTitles = emp.topTitles as any[] || [];
+  for (const t of topTitles) {
     if (t.title.toLowerCase() === titleLabel.toLowerCase()) {
-      matches.push({ employer: emp.data.employerName, slug: emp.data.slug, count: t.count, avgWage: t.avgWage });
+      matches.push({ employer: emp.employerName, slug: emp.slug, count: t.count, avgWage: t.avgWage });
     }
   }
 }
@@ -52,7 +57,7 @@ const totalLCAs = matches.reduce((s, m) => s + m.count, 0);
 
     <div class="mt-8 mb-6">
       <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">{titleLabel} — H-1B Salary & Sponsorship Data</h1>
-      <p class="text-lg text-neutral-500 max-w-2xl">LCA salary data for <strong>{titleLabel}</strong> across major H-1B sponsors. Based on DOL public disclosure data FY2024.</p>
+      <p class="text-lg text-neutral-500 max-w-2xl">LCA salary data for <strong>{titleLabel}</strong> across major H-1B sponsors. Based on DOL public disclosure data FY{employers[0]?.fiscalYear || 2024}.</p>
     </div>
 
     <!-- Salary overview -->
@@ -121,7 +126,7 @@ const totalLCAs = matches.reduce((s, m) => s + m.count, 0);
     )}
 
     <div class="p-4 bg-neutral-50 rounded-xl border border-neutral-200 text-xs text-neutral-500">
-      <strong>Data source:</strong> DOL LCA (Labor Condition Application) public disclosure data, FY2024. Salaries shown are the prevailing wage level at time of LCA filing — actual offer salaries may differ. Data is for informational purposes only.
+      <strong>Data source:</strong> DOL LCA (Labor Condition Application) public disclosure data, FY{employers[0]?.fiscalYear || 2024}. Salaries shown are the prevailing wage level at time of LCA filing — actual offer salaries may differ. Data is for informational purposes only.
     </div>
 
     <div class="mt-6 flex gap-3">

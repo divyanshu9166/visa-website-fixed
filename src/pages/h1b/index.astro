@@ -1,12 +1,21 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import { getCollection } from 'astro:content';
+import { PrismaClient } from '@prisma/client';
 
-const employers = await getCollection('lca');
-employers.sort((a, b) => b.data.totalLCAs - a.data.totalLCAs);
+const prisma = new PrismaClient();
 
-const totalLCAs = employers.reduce((s, e) => s + e.data.totalLCAs, 0);
+const employers = await prisma.lcaEmployer.findMany({
+  orderBy: { totalLCAs: 'desc' },
+  take: 500
+});
+
+const stats = await prisma.lcaEmployer.aggregate({
+  _sum: { totalLCAs: true },
+  _count: { _all: true }
+});
+const totalLCAs = stats._sum.totalLCAs || 0;
+const totalEmployers = stats._count._all || 0;
 const gradeColor: Record<string, string> = {
   A: 'bg-emerald-100 text-emerald-700',
   B: 'bg-blue-100 text-blue-700',
@@ -36,7 +45,7 @@ const popularTitles = [
 
     <div class="mt-8 mb-8">
       <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">H-1B Sponsor & Salary Database</h1>
-      <p class="text-lg text-neutral-500 max-w-2xl">Search employer sponsorship data, salary ranges, and LCA approval rates from DOL public disclosure data. FY2024 dataset.</p>
+      <p class="text-lg text-neutral-500 max-w-2xl">Search employer sponsorship data, salary ranges, and LCA approval rates from DOL public disclosure data. FY{employers[0]?.fiscalYear || 2024} dataset.</p>
     </div>
 
     <!-- Stats bar -->
@@ -46,11 +55,11 @@ const popularTitles = [
         <div class="text-xs text-neutral-500 mt-0.5">LCA Records</div>
       </div>
       <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
-        <div class="text-2xl font-extrabold text-neutral-900">{employers.length.toLocaleString()}+</div>
+        <div class="text-2xl font-extrabold text-neutral-900">{totalEmployers.toLocaleString()}+</div>
         <div class="text-xs text-neutral-500 mt-0.5">Employers</div>
       </div>
       <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
-        <div class="text-2xl font-extrabold text-neutral-900">FY2024</div>
+        <div class="text-2xl font-extrabold text-neutral-900">FY{employers[0]?.fiscalYear || 2024}</div>
         <div class="text-xs text-neutral-500 mt-0.5">Data Year</div>
       </div>
     </div>
@@ -77,7 +86,7 @@ const popularTitles = [
     <!-- Top employers table -->
     <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden">
       <div class="px-6 py-4 border-b border-neutral-100">
-        <h2 class="text-base font-bold text-neutral-900">Top H1B Sponsors — FY2024</h2>
+        <h2 class="text-base font-bold text-neutral-900">Top H1B Sponsors — FY{employers[0]?.fiscalYear || 2024}</h2>
         <p class="text-xs text-neutral-400 mt-0.5">Source: DOL LCA Disclosure Data. Grade = function of approval rate + wage level distribution.</p>
       </div>
       <div class="overflow-x-auto">
@@ -94,22 +103,22 @@ const popularTitles = [
           </thead>
           <tbody class="divide-y divide-neutral-100" id="empTableBody">
             {employers.map(e => (
-              <tr class="hover:bg-neutral-50 emp-row" data-name={e.data.employerName.toLowerCase()}>
-                <td class="px-6 py-3 font-semibold text-neutral-900">{e.data.employerName}</td>
-                <td class="px-6 py-3 text-right font-mono text-neutral-600">{e.data.totalLCAs.toLocaleString()}</td>
+              <tr class="hover:bg-neutral-50 emp-row" data-name={e.employerName.toLowerCase()}>
+                <td class="px-6 py-3 font-semibold text-neutral-900">{e.employerName}</td>
+                <td class="px-6 py-3 text-right font-mono text-neutral-600">{e.totalLCAs.toLocaleString()}</td>
                 <td class="px-6 py-3 text-right">
-                  <span class={`font-semibold ${e.data.approvalRate >= 95 ? 'text-emerald-600' : e.data.approvalRate >= 88 ? 'text-amber-600' : 'text-red-600'}`}>
-                    {e.data.approvalRate}%
+                  <span class={`font-semibold ${e.approvalRate >= 95 ? 'text-emerald-600' : e.approvalRate >= 88 ? 'text-amber-600' : 'text-red-600'}`}>
+                    {e.approvalRate}%
                   </span>
                 </td>
-                <td class="px-6 py-3 text-right font-mono font-semibold text-neutral-900">${(e.data.avgWage / 1000).toFixed(0)}K</td>
+                <td class="px-6 py-3 text-right font-mono font-semibold text-neutral-900">${(e.avgWage / 1000).toFixed(0)}K</td>
                 <td class="px-6 py-3 text-center">
-                  <span class={`inline-block text-xs font-extrabold px-2 py-0.5 rounded ${gradeColor[e.data.grade] || 'bg-neutral-100 text-neutral-600'}`}>
-                    {e.data.grade}
+                  <span class={`inline-block text-xs font-extrabold px-2 py-0.5 rounded ${gradeColor[e.grade] || 'bg-neutral-100 text-neutral-600'}`}>
+                    {e.grade}
                   </span>
                 </td>
                 <td class="px-6 py-3 text-right">
-                  <a href={`/h1b/${e.data.slug}`} class="text-xs font-semibold text-neutral-400 hover:text-neutral-900 transition-colors">View →</a>
+                  <a href={`/h1b/${e.slug}`} class="text-xs font-semibold text-neutral-400 hover:text-neutral-900 transition-colors">View →</a>
                 </td>
               </tr>
             ))}

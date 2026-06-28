@@ -25,24 +25,25 @@ const f1ByCountry = [
   { country: 'Canada', issued: 10203, change: '+2%' },
   { country: 'Nigeria', issued: 9892, change: '+31%' },
 ];
+const dataYear = "FY2024";
 ---
 
 <Layout
-  title="F-1, B1/B2, H1B Visa Issuance & Refusal Statistics 2024 — By Country"
-  description="US nonimmigrant visa issuance and refusal statistics by visa type and country. F-1 student visa, B1/B2 visitor visa, H-1B data from State Department annual reports."
+  title={`F-1, B1/B2, H1B Visa Issuance & Refusal Statistics ${dataYear} — By Country`}
+  description={`US nonimmigrant visa issuance and refusal statistics by visa type and country. F-1 student visa, B1/B2 visitor visa, H-1B data from State Department annual reports.`}
 >
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Visa Statistics' }]} />
 
     <div class="mt-8 mb-6">
       <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-3">US Nonimmigrant Visa Statistics</h1>
-      <p class="text-lg text-neutral-500 max-w-2xl">Visa issuance and refusal rates by type (F-1, B1/B2, H-1B, L-1, O-1) and by country. Source: State Department Report of the Visa Office FY2024.</p>
+      <p class="text-lg text-neutral-500 max-w-2xl">Visa issuance and refusal rates by type (F-1, B1/B2, H-1B, L-1, O-1) and by country. Source: State Department Report of the Visa Office {dataYear}.</p>
     </div>
 
     <!-- NIV by type table -->
     <div class="bg-white border border-neutral-200 rounded-2xl shadow-sm overflow-hidden mb-8">
       <div class="px-6 py-4 border-b border-neutral-100">
-        <h2 class="text-base font-bold text-neutral-900">Nonimmigrant Visa Issuances by Type — FY2024</h2>
+        <h2 class="text-base font-bold text-neutral-900">Nonimmigrant Visa Issuances by Type — {dataYear}</h2>
         <p class="text-xs text-neutral-400 mt-1">Source: US State Department Report of the Visa Office. Worldwide totals.</p>
       </div>
       <div class="overflow-x-auto">
@@ -79,7 +80,7 @@ const f1ByCountry = [
 
     <!-- F-1 by country -->
     <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-8">
-      <h2 class="text-base font-bold text-neutral-900 mb-4">F-1 Student Visas Issued by Country — FY2024</h2>
+      <h2 class="text-base font-bold text-neutral-900 mb-4">F-1 Student Visas Issued by Country — {dataYear}</h2>
       <div class="space-y-2">
         {f1ByCountry.map(c => {
           const maxVal = f1ByCountry[0].issued;
@@ -100,7 +101,7 @@ const f1ByCountry = [
     </div>
 
     <div class="p-4 bg-neutral-50 rounded-xl border border-neutral-200 text-xs text-neutral-500">
-      <strong>Source:</strong> State Department Report of the Visa Office FY2024. H-1B numbers reflect consular issuances only — domestic I-129 approvals are not included. All figures are approximate and subject to official report revisions.
+      <strong>Source:</strong> State Department Report of the Visa Office {dataYear}. H-1B numbers reflect consular issuances only — domestic I-129 approvals are not included. All figures are approximate and subject to official report revisions.
     </div>
 
     <div class="mt-6 flex gap-3">

@@ -2,15 +2,19 @@
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import DisqusComments from '../../components/DisqusComments.astro';
-import { getCollection } from 'astro:content';
+import { PrismaClient } from '@prisma/client';
 
 export async function getStaticPaths() {
-  const employers = await getCollection('lca');
-  return employers.map(e => ({ params: { employer: e.data.slug }, props: { employer: e } }));
+  const prisma = new PrismaClient();
+  const employers = await prisma.lcaEmployer.findMany({
+    orderBy: { totalLCAs: 'desc' },
+    take: 500
+  });
+  return employers.map(e => ({ params: { employer: e.slug }, props: { employer: e } }));
 }
 
 const { employer } = Astro.props;
-const d = employer.data;
+const d = employer as any;
 
 const gradeColor: Record<string, string> = {
   A: 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -98,7 +102,7 @@ const levelPcts = [d.wageLevelDist.L1, d.wageLevelDist.L2, d.wageLevelDist.L3, d
           </tr>
         </thead>
         <tbody class="divide-y divide-neutral-100">
-          {d.topTitles.map(t => (
+          {d.topTitles.map((t: any) => (
             <tr class="hover:bg-neutral-50">
               <td class="px-6 py-3 font-medium text-neutral-900">{t.title}</td>
               <td class="px-6 py-3 text-right font-mono text-neutral-600">{t.count.toLocaleString()}</td>
@@ -114,7 +118,7 @@ const levelPcts = [d.wageLevelDist.L1, d.wageLevelDist.L2, d.wageLevelDist.L3, d
     <div class="bg-white border border-neutral-200 rounded-2xl p-6 mb-6">
       <h2 class="text-base font-bold text-neutral-900 mb-4">LCA Filings by State</h2>
       <div class="space-y-2">
-        {d.topStates.map(s => {
+        {d.topStates.map((s: any) => {
           const maxCount = d.topStates[0].count;
           const pct = Math.round((s.count / maxCount) * 100);
           return (
