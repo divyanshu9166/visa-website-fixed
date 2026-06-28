@@ -15,35 +15,53 @@ const identifier = pageIdentifier || Astro.url.pathname;
 </div>
 
 <script define:vars={{ url, identifier, title }}>
-  var disqus_config = function () {
+  // Ensure the config is globally available
+  window.disqus_config = function () {
     this.page.url = url;
     this.page.identifier = identifier;
     if (title) this.page.title = title;
   };
 
-  // Replace YOUR_DISQUS_SHORTNAME with your actual Disqus shortname
-  // e.g. 'usvisatracker'
   window.DISQUS_SHORTNAME = 'us-visa-tracker';
 
   function loadDisqus() {
-    if (window.__disqusLoaded) return;
-    window.__disqusLoaded = true;
+    var el = document.getElementById('disqus_thread');
+    if (!el) return;
+
+    if (window.DISQUS) {
+      // Disqus is already loaded on a previous page view. 
+      // We must tell it to reset and re-bind to the new #disqus_thread div.
+      window.DISQUS.reset({
+        reload: true,
+        config: window.disqus_config
+      });
+      return;
+    }
+
+    if (window.__disqusLoading) return;
+    window.__disqusLoading = true;
+
     var d = document, s = d.createElement('script');
     s.src = 'https://' + window.DISQUS_SHORTNAME + '.disqus.com/embed.js';
     s.setAttribute('data-timestamp', +new Date());
     (d.head || d.body).appendChild(s);
   }
 
-  // Lazy-load Disqus when the thread div scrolls into view
-  var observer = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting) {
-      loadDisqus();
-      observer.disconnect();
-    }
-  }, { rootMargin: '200px' });
-  
-  var el = document.getElementById('disqus_thread');
-  if (el) observer.observe(el);
+  // Use Astro's page-load event so this runs on every page transition
+  document.addEventListener('astro:page-load', () => {
+    var el = document.getElementById('disqus_thread');
+    if (!el) return;
+    
+    // Lazy-load Disqus when the thread div scrolls into view
+    var observer = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        loadDisqus();
+        observer.disconnect();
+      }
+    }, { rootMargin: '200px' });
+    
+    observer.observe(el);
+  }, { once: true });
 </script>
 
 <noscript>
