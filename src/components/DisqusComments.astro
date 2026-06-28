@@ -9,9 +9,9 @@ const url = pageUrl || Astro.url.href;
 const identifier = pageIdentifier || Astro.url.pathname;
 ---
 
-<div class="bg-white border border-neutral-200 rounded-2xl p-6 mt-8">
-  <h3 class="text-base font-bold text-neutral-900 mb-4">Community Discussion</h3>
-  <div id="disqus_thread"></div>
+<div class="bg-white border border-neutral-200 rounded-2xl p-6 mt-8" style="background-color: #ffffff; color: #171717;">
+  <h3 class="text-base font-bold text-neutral-900 mb-4" style="color: #171717;">Community Discussion</h3>
+  <div id="disqus_thread" style="color: #171717; background-color: #ffffff;"></div>
 </div>
 
 <script define:vars={{ url, identifier, title }}>
