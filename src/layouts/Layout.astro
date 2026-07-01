@@ -37,7 +37,8 @@ const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 1 ? {
 		<meta charset="UTF-8" />
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
 		<meta name="generator" content={Astro.generator} />
 		{noindex && <meta name="robots" content="noindex,nofollow" />}
 		<title>{title}</title>
@@ -61,11 +62,16 @@ const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 1 ? {
 	<body class="bg-[#fafafa] text-neutral-900 font-sans antialiased min-h-screen flex flex-col selection:bg-neutral-200 selection:text-neutral-900">
 		<header class="bg-white/80 backdrop-blur-md border-b border-neutral-200 sticky top-0 z-10 transition-colors">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="flex justify-between items-center h-16">
-					<div class="flex-shrink-0 flex items-center">
-						<a href="/" class="text-xl font-bold tracking-tighter text-neutral-900 hover:text-neutral-600 transition-colors">US Visa Tracker</a>
+				<div class="flex justify-between items-center py-3 min-h-[5rem]">
+					<!-- Logo -->
+					<div class="flex-shrink-0 flex items-center lg:w-48">
+						<a href="/" class="flex items-center gap-2 text-xl font-bold tracking-tighter text-neutral-900 hover:text-neutral-600 transition-colors">
+							<img src="/logo-black.png" alt="EVC Logo" class="h-20 w-auto object-contain scale-150 origin-left" />
+						</a>
 					</div>
-					<nav class="hidden md:flex space-x-1 items-center">
+
+					<!-- Centered Navigation -->
+					<nav class="hidden lg:flex flex-1 justify-center space-x-2 items-center">
 						<a href="/uscis-processing-times" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Processing</a>
 						<a href="/green-card/visa-bulletin" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Visa Bulletin</a>
 						<a href="/h1b" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">H1B DB</a>
@@ -73,12 +79,15 @@ const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 1 ? {
 						<a href="/uscis-trackers" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Trackers</a>
 						<a href="/blog" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Blog</a>
 						<a href="/resources" class="text-neutral-500 hover:text-neutral-900 px-2 py-2 rounded-md text-sm font-medium transition-colors">Resources</a>
-						<span class="text-neutral-200">|</span>
-						<a href="/login" id="nav-auth-link" class="text-neutral-900 px-3 py-1.5 rounded-lg text-sm font-semibold border border-neutral-200 hover:bg-neutral-50 transition-colors">Sign In</a>
 					</nav>
-					<button id="mobile-menu-btn" class="md:hidden p-2 text-neutral-700" aria-label="Open menu" aria-expanded="false">
-						<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-					</button>
+
+					<!-- Right Side: Auth & Mobile Menu -->
+					<div class="flex items-center justify-end lg:w-48 gap-4">
+						<a href="/login" id="nav-auth-link" class="hidden md:inline-flex text-neutral-900 px-3 py-1.5 rounded-lg text-sm font-semibold border border-neutral-200 hover:bg-neutral-50 transition-colors">Sign In</a>
+						<button id="mobile-menu-btn" class="lg:hidden p-2 text-neutral-700" aria-label="Open menu" aria-expanded="false">
+							<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+						</button>
+					</div>
 				</div>
 			</div>
 			<nav id="mobile-menu" class="hidden md:hidden border-t border-neutral-200 bg-white">
@@ -126,6 +135,11 @@ const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 1 ? {
 		</main>
 
 		<footer class="bg-[#fafafa] mt-12 py-12 border-t border-neutral-200">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+				<a href="/" class="inline-block">
+					<img src="/logo-black.png" alt="EVC Logo" class="h-20 w-auto object-contain scale-150 origin-left opacity-90 hover:opacity-100 transition-opacity" />
+				</a>
+			</div>
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
 				<div>
 					<h4 class="text-xs font-bold text-neutral-900 uppercase tracking-wider mb-3">Processing Times</h4>
