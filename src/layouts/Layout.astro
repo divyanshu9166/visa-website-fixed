@@ -17,7 +17,7 @@ const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 1 ? {
     "@type": "ListItem",
     position: i + 1,
     name: b.label,
-    item: b.href.startsWith('http') ? b.href : `https://usvisatracker.example.com${b.href}`
+    item: b.href.startsWith('http') ? b.href : `https://easyvisacheck.com${b.href}`
   }))
 } : null;
 ---
@@ -46,7 +46,7 @@ const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 1 ? {
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://usvisatracker.example.com/" />
+		<meta property="og:url" content="https://easyvisacheck.com/" />
 		
 		<!-- BreadcrumbList Schema (when breadcrumbs provided) -->
 		{breadcrumbSchema && (

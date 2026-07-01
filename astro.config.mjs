@@ -9,7 +9,7 @@ import { EnumChangefreq } from 'sitemap';
 export default defineConfig({
   // TODO: replace with your real production domain before deploying, and
   // update the matching og:url in src/layouts/Layout.astro.
-  site: 'https://usvisatracker.example.com',
+  site: 'https://easyvisacheck.com',
   vite: {
     plugins: [tailwindcss()],
     server: {
